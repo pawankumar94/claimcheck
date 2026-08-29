@@ -13,9 +13,21 @@ function pct(n: number): string {
  * The part a reader acts on: what the run actually says about the claim,
  * stated before any table, with the uncertainty attached rather than implied.
  */
-function buildVerdictSection(records: ScoredRecord[]): string[] {
-  const { comparisons, warnings } = analyze(records);
+export interface ReportOptions {
+  /** Which policy is the baseline to beat. Defaults to "full". */
+  baselinePolicy?: string;
+  /** Which policy is the challenger. Defaults to "curated". */
+  candidatePolicy?: string;
+  /** Lines inserted before the verdict, e.g. what configurations were compared. */
+  preamble?: string[];
+}
+
+function buildVerdictSection(records: ScoredRecord[], opts: ReportOptions = {}): string[] {
+  const { comparisons, warnings } = analyze(records, opts);
   const lines: string[] = ["## Verdict", ""];
+  if (opts.preamble && opts.preamble.length > 0) {
+    lines.push(...opts.preamble, "");
+  }
 
   if (comparisons.length === 0) {
     lines.push(
@@ -57,7 +69,7 @@ function buildVerdictSection(records: ScoredRecord[]): string[] {
  * policy. The honesty caveats are baked into the output itself, not left
  * for a reader to infer.
  */
-export function buildReport(records: ScoredRecord[]): string {
+export function buildReport(records: ScoredRecord[], opts: ReportOptions = {}): string {
   const byCondition = new Map<string, ScoredRecord[]>();
   for (const r of records) {
     const key = `${r.agent_name} / ${r.policy_name}`;
@@ -69,7 +81,7 @@ export function buildReport(records: ScoredRecord[]): string {
   const lines: string[] = [
     "# claimcheck: report",
     "",
-    ...buildVerdictSection(records),
+    ...buildVerdictSection(records, opts),
     "## Per-task detail",
     "",
     "| task | agent | policy | score | cost (usd) | latency (ms) |",

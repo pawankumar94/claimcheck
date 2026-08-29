@@ -13,6 +13,7 @@ import {
 import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
+import { loadRun, sessionToRecords, startRun, submitAnswers } from "./core/session.js";
 import type { RawRecord } from "./types.js";
 
 const VERSION = "0.1.0";
@@ -51,6 +52,153 @@ export function createServer(): McpServer {
           },
         ],
       };
+    }
+  );
+
+  // ---------------------------------------------------------------------
+  // In-agent evaluation. The calling agent answers the tasks itself, so this
+  // path needs no target CLI, no credentials, and no per-agent output
+  // parsing -- it behaves identically in every MCP client.
+  // ---------------------------------------------------------------------
+
+  server.registerTool(
+    "start_run",
+    {
+      title: "Start an in-agent evaluation run",
+      description:
+        "Begins a run in which YOU (the calling agent) answer the tasks yourself, and returns the task " +
+        "list. No subprocess is spawned and no credentials are needed. Do one run under your current " +
+        "configuration, then have the user change their setup (drop MCP servers, restrict tools) and do " +
+        "a second run, then call compare_runs. claimcheck does NOT enforce the restriction -- the user's " +
+        "real configuration does -- so configNote must honestly describe what was in effect.",
+      inputSchema: {
+        label: z.string().describe('Short name for this condition, e.g. "all-tools" or "read-only"'),
+        configNote: z
+          .string()
+          .min(10)
+          .describe(
+            "What configuration was actually in effect: which MCP servers were connected, which tools " +
+              "were available. Be specific; this is the only record of what the run measured."
+          ),
+        agent: z.string().describe('Which agent is answering, e.g. "claude-code", "cursor", "hermes"'),
+        tasksPath: z.string().optional(),
+        example: z.string().optional().describe('Bundled task set, e.g. "claim-001-tool-count"'),
+      },
+    },
+    async ({ label, configNote, agent, tasksPath, example }) => {
+      if (!tasksPath && !example) throw new Error("Provide either `tasksPath` or `example`.");
+      const resolved = tasksPath ?? builtinExampleTasksPath(example!);
+      const tasksDoc = await loadTasksDoc(resolved);
+      const session = await startRun({ label, configNote, agent, tasksPath: resolved, tasksDoc });
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                runId: session.id,
+                instructions:
+                  "Answer each prompt below using only the tools you actually have right now. Do not " +
+                  "look up the expected answers, and do not adjust how you answer because you know you " +
+                  "are being scored. Then call submit_answers with one entry per task.",
+                tasks: tasksDoc.tasks.map((t) => ({ task_id: t.id, prompt: t.prompt })),
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+  );
+
+  server.registerTool(
+    "submit_answers",
+    {
+      title: "Submit answers for an in-agent run",
+      description:
+        "Records your answers for a run started with start_run. Accepts one or many at a time; " +
+        "re-answering a task replaces the previous answer. Once every task is answered the run is " +
+        "scored against its pre-registered keys and a summary is returned.",
+      inputSchema: {
+        runId: z.string(),
+        answers: z
+          .array(
+            z.object({
+              task_id: z.string(),
+              answer_text: z.string().describe("Your full answer, as you would give it to a user"),
+              latency_ms: z.number().optional(),
+            })
+          )
+          .min(1),
+      },
+    },
+    async ({ runId, answers }) => {
+      const { session, accepted, unknown, remaining } = await submitAnswers(runId, answers);
+      const lines = [`Recorded ${accepted.length} answer(s) for run ${session.id} (${session.label}).`];
+      if (unknown.length > 0) lines.push(`Ignored unknown task id(s): ${unknown.join(", ")}.`);
+
+      if (!session.complete) {
+        lines.push(`${remaining.length} task(s) still unanswered: ${remaining.join(", ")}.`);
+        return { content: [{ type: "text", text: lines.join("\n") }] };
+      }
+
+      const tasksDoc = await loadTasksDoc(session.tasksPath);
+      const scored = scoreRecords(sessionToRecords(session), tasksDoc);
+      const passes = scored.filter((r) => r.score.startsWith("PASS")).length;
+      lines.push(
+        `Run complete: ${passes}/${scored.length} passed.`,
+        `Now change your configuration and run again with a different label, then call compare_runs.`
+      );
+      return { content: [{ type: "text", text: lines.join("\n") }] };
+    }
+  );
+
+  server.registerTool(
+    "compare_runs",
+    {
+      title: "Compare two in-agent runs",
+      description:
+        "Scores two completed runs against the same pre-registered answer keys and reports whether the " +
+        "difference in pass rate is distinguishable from noise, with a 95% confidence interval. Use this " +
+        "to answer whether a configuration change actually helped.",
+      inputSchema: {
+        runIdA: z.string().describe("Baseline run, e.g. the broader configuration"),
+        runIdB: z.string().describe("Candidate run, e.g. the narrower configuration"),
+        outputPath: z.string().optional().describe("Optional path to also write the markdown report to"),
+      },
+    },
+    async ({ runIdA, runIdB, outputPath }) => {
+      const [a, b] = await Promise.all([loadRun(runIdA), loadRun(runIdB)]);
+      if (a.tasksPath !== b.tasksPath) {
+        throw new Error(
+          `Runs used different task sets (${a.tasksPath} vs ${b.tasksPath}); they are not comparable.`
+        );
+      }
+      for (const run of [a, b]) {
+        if (!run.complete) throw new Error(`Run ${run.id} is incomplete; finish it before comparing.`);
+      }
+      if (a.label === b.label) {
+        throw new Error(`Both runs are labelled "${a.label}"; distinct labels are needed to tell them apart.`);
+      }
+
+      const tasksDoc = await loadTasksDoc(a.tasksPath);
+      const scored = scoreRecords([...sessionToRecords(a), ...sessionToRecords(b)], tasksDoc);
+      const report = buildReport(scored, {
+        baselinePolicy: a.label,
+        candidatePolicy: b.label,
+        preamble: [
+          `Configurations compared (as reported by the client, not verified by claimcheck):`,
+          `- **${a.label}** — ${a.configNote}`,
+          `- **${b.label}** — ${b.configNote}`,
+        ],
+      });
+      if (outputPath) {
+        await mkdir(dirname(outputPath), { recursive: true });
+        await writeFile(outputPath, report);
+      }
+      return { content: [{ type: "text", text: report }] };
     }
   );
 

@@ -1,0 +1,5 @@
+{
+  "name": "full",
+  "description": "Broad, unrestricted tool surface -- bare mode's complete tool set with Bash unrestricted and Edit available, even though no task in this claim requires writing anything.",
+  "allowed_tools": "Bash,Read,Edit"
+}

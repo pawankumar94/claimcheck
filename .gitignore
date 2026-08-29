@@ -1,0 +1,5 @@
+results/raw/*.json
+results/scored.json
+results/report.md
+__pycache__/
+*.pyc

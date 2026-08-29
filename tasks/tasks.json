@@ -1,0 +1,71 @@
+{
+  "repo_url": "https://github.com/pawankumar94/nocontext.git",
+  "pinned_sha": "6f0d6f48bfaeb5b09e86236ee5b55c4bef45f2bc",
+  "note": "Answers were extracted by reading README.md and AGENTS.md at this exact SHA. Re-verify against the pinned SHA before a real run, not against main (the repo is under active development).",
+  "tasks": [
+    {
+      "id": "t1-license",
+      "prompt": "What license does this project use?",
+      "source_files": ["LICENSE", "README.md"],
+      "expected_keywords": ["MIT"],
+      "verified": true,
+      "note": "Control task, deliberately trivial. Both conditions should pass; if one doesn't, something's wrong with the harness, not the claim."
+    },
+    {
+      "id": "t2-precommit",
+      "prompt": "According to AGENTS.md, what two npm commands must pass before committing a change?",
+      "source_files": ["AGENTS.md"],
+      "expected_keywords": ["typecheck", "test"],
+      "verified": true,
+      "note": "AGENTS.md: 'npm ci && npm run typecheck && npm test'."
+    },
+    {
+      "id": "t3-p1-improvement",
+      "prompt": "According to the README, by how many percentage points did lexical P@1 improve on held-out questions after navigation surfaces were rewritten, and is that number used as evidence that agent grounding improved?",
+      "source_files": ["README.md"],
+      "expected_keywords": ["33", "83", "not"],
+      "verified": true,
+      "note": "README: lexical P@1 improved +33 to +83 points (Phase 4 / validation/phase4). README explicitly says this is evidence the retrieval *metric* is sensitive to edits, NOT evidence an agent grounds more answers because of them -- a careful answer should say the two are explicitly NOT the same claim. Score conservatively: 'not' alone is a weak proxy for this distinction, review borderline answers by hand."
+    },
+    {
+      "id": "t4-mcp-status",
+      "prompt": "Does this repository currently ship an MCP server? If not, what is it waiting on according to the roadmap?",
+      "source_files": ["README.md"],
+      "expected_keywords": ["not started", "Phase 4"],
+      "verified": true,
+      "note": "README Integrations table: MCP server 'not started -- Phase 5, gated on Phase 4'."
+    },
+    {
+      "id": "t5-planner-section9",
+      "prompt": "What does PLANNER.md section 9 cover, based on how AGENTS.md refers to it?",
+      "source_files": ["AGENTS.md", "PLANNER.md"],
+      "expected_keywords": ["rejected"],
+      "verified": false,
+      "note": "AGENTS.md only says section 9 is 'the full list of what gets rejected' -- I have not read PLANNER.md itself to confirm section 9's actual content. VERIFY against PLANNER.md before trusting this answer key."
+    },
+    {
+      "id": "t6-optional-dependency",
+      "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
+      "source_files": ["README.md", "CONTRIBUTING.md"],
+      "expected_keywords": ["@huggingface/transformers", "advisor"],
+      "verified": true,
+      "note": "README: '@huggingface/transformers ... opt-in because that dependency's current release carries real transitive advisories'. 'advisor' as a stem matches 'advisory'/'advisories'."
+    },
+    {
+      "id": "t7-adversarial-example",
+      "prompt": "Which example directory is described as the committed adversarial test case for keyword-stuffed indexes?",
+      "source_files": ["README.md"],
+      "expected_keywords": ["stuffed-index"],
+      "verified": true,
+      "note": "README: 'examples/stuffed-index/ is the committed adversary this has to keep catching.'"
+    },
+    {
+      "id": "t8-benchmark-comparison",
+      "prompt": "Name the two published benchmarks this project's scoring methodology aligns its metrics with, and explain in one sentence how this project's evaluation differs from what those two benchmarks measure.",
+      "source_files": ["README.md"],
+      "expected_keywords": ["ContextBench", "Retrieval Bench", "fixes the retriever"],
+      "verified": true,
+      "note": "README: ContextBench and Agent Retrieval Bench fix the repo and vary the retriever/agent; nocontext fixes the retriever and varies the navigation surface."
+    }
+  ]
+}

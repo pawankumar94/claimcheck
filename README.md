@@ -22,10 +22,16 @@ Nobody can tell you whether those bets pay off. The advice is anecdotal
 real numbers, they are numbers for their agent, their tasks, their codebase.
 Not yours. So teams ship agent configs on vibes and never find out.
 
-claimcheck turns that into a measurement. You define tasks with known-correct
-answers and two or more configurations. It runs every task under every
-configuration against a real agent CLI, then reports whether the difference is
-distinguishable from noise.
+claimcheck answers that with one command:
+
+```bash
+npx @pawankumar94/claimcheck
+```
+
+It finds whichever agent CLI you already have, runs a public benchmark against
+it twice (once with a lean tool surface, once with a cluttered one), and tells
+you whether the difference is real or noise. You write no config, author no
+tasks, and define no answer keys. Everything it needs ships with it.
 
 ## What a result looks like
 
@@ -47,9 +53,10 @@ That is the point of the tool. Not a leaderboard number, but a bounded answer
 to "did this change do anything." Full write-ups, charts, and the caveats that
 bound them are in [benchmarks/](benchmarks/).
 
-## Install
+## Teach your agent the method
 
-One command. No server, no config file to edit:
+The command above measures. This one installs the *discipline* into whatever
+agent you use, so it stops guessing on your behalf:
 
 ```bash
 npx @pawankumar94/claimcheck install
@@ -78,27 +85,33 @@ freeze answer keys before running, repeat trials, report an interval, never
 compare across agents. The CLI and MCP server below add measurement on top of
 it. They do not replace it.
 
-## Run a measurement
+## Measuring in more detail
+
+The zero-argument run is deliberately small and cheap: 10 tasks, 2 trials, 40
+invocations, a few minutes. It prints what it is about to spend and waits for
+you to say yes.
 
 ```bash
-git clone https://github.com/pawankumar94/claimcheck.git && cd claimcheck
-npm install && npm run build && npm link
-
-claimcheck profiles
-claimcheck run --tasks examples/bfcl-tool-count/tasks.json \
-  --agent claude-code-vertex --policy few-tools --policy many-tools --trials 3
-claimcheck score --tasks examples/bfcl-tool-count/tasks.json
-claimcheck report --baseline many-tools --candidate few-tools
-claimcheck chart
+npx @pawankumar94/claimcheck              # quick look
+npx @pawankumar94/claimcheck --full       # whole task set, 3 trials
+npx @pawankumar94/claimcheck --agent codex --yes
 ```
 
-The bundled example imports its tasks and ground truth from the
+Its tasks and ground truth come from the
 [Berkeley Function Calling Leaderboard](https://github.com/ShishirPatil/gorilla),
 so the corpus is not self-authored. See
 [examples/bfcl-tool-count/](examples/bfcl-tool-count/).
 
-Runs spend real API budget on whichever agent you point them at. The example
-above cost $4.26 for 180 invocations.
+Authoring your own tasks is the extension path, not the starting point. When
+you want it, the pipeline is four commands and the formats are in
+[docs/architecture.md](docs/architecture.md):
+
+```bash
+claimcheck run --tasks my-tasks.json --agent codex --policy a --policy b --trials 3
+claimcheck score --tasks my-tasks.json
+claimcheck report
+claimcheck chart
+```
 
 ## How it works
 

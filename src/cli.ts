@@ -7,9 +7,12 @@ import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { startMcpServer } from "./mcp-server.js";
-import { describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
+import { builtinExampleTasksPath, describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
 import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "./core/install.js";
 import { buildCharts } from "./core/chart.js";
+import { explainNoAgent, pickDefaultAgent } from "./core/detect.js";
+import { analyze } from "./core/analysis.js";
+import { runEvaluation as runEval } from "./core/runner.js";
 import { importBfclFromFiles } from "./core/import-bfcl.js";
 import type { RawRecord } from "./types.js";
 
@@ -33,6 +36,88 @@ program
     "A/B test a coding agent's configuration: run the same tasks under different tool policies and compare pass rates."
   )
   .version("0.1.0");
+
+program
+  .command("measure", { isDefault: true })
+  .description("Measure whether trimming your agent's tool surface changes task success. Needs no files: tasks, answer keys, and agent profiles all ship with claimcheck.")
+  .option("--agent <name>", "agent to measure; auto-detected from what is installed if omitted")
+  .option("--example <name>", "bundled task set to use", "bfcl-tool-count")
+  .option("--trials <n>", "repeats per task per policy", "2")
+  .option("--tasks-limit <n>", "how many tasks to run", "10")
+  .option("--full", "run the whole task set at 3 trials instead of the quick default")
+  .option("--out-dir <path>", "where to write raw results", "./results/raw")
+  .option("--yes", "skip the cost confirmation prompt")
+  .action(async (opts) => {
+    const { chosen, all } = opts.agent
+      ? { chosen: (await (await import("./core/detect.js")).detectAgents()).find((a) => a.name === opts.agent) ?? null, all: [] }
+      : await pickDefaultAgent();
+
+    if (!chosen) {
+      console.error(opts.agent ? `No built-in profile named "${opts.agent}".` : explainNoAgent(all));
+      process.exitCode = 1;
+      return;
+    }
+
+    const tasksPath = builtinExampleTasksPath(opts.example);
+    const tasksDoc = await loadTasksDoc(tasksPath);
+    if (!opts.full) tasksDoc.tasks = tasksDoc.tasks.slice(0, Number(opts.tasksLimit));
+
+    // Policies come from the task set itself, so the user never names them.
+    const policies = Object.keys(tasksDoc.tasks[0]?.prompt_by_policy ?? {});
+    if (policies.length !== 2) {
+      console.error(`Task set "${opts.example}" does not define exactly two policies to compare.`);
+      process.exitCode = 1;
+      return;
+    }
+
+    const profile = await resolveAgentProfile(chosen.name);
+    const trials = opts.full ? 3 : Number(opts.trials);
+    const invocations = tasksDoc.tasks.length * 2 * trials;
+    console.log(`Measuring ${chosen.name} on "${opts.example}": ${policies.join(" vs ")}`);
+    console.log(`${tasksDoc.tasks.length} tasks x 2 policies x ${trials} trials = ${invocations} invocations against your own account.`);
+    console.log(`Roughly ${Math.ceil((invocations * 12) / 60)} min. This spends real API budget on ${chosen.command}.`);
+    if (!opts.full) console.log(`This is the quick default. Use --full for the whole task set at 3 trials.`);
+    console.log();
+
+    if (!opts.yes && process.stdin.isTTY) {
+      const rl = (await import("node:readline/promises")).createInterface({ input: process.stdin, output: process.stdout });
+      const answer = (await rl.question("Run it? [y/N] ")).trim().toLowerCase();
+      rl.close();
+      if (answer !== "y" && answer !== "yes") {
+        console.log("Nothing run.");
+        return;
+      }
+      console.log();
+    } else if (!opts.yes) {
+      // Non-interactive and unconfirmed: refuse rather than silently spend.
+      console.error("Refusing to spend budget without confirmation. Re-run with --yes (no TTY to prompt on).");
+      process.exitCode = 1;
+      return;
+    }
+
+    const records = await runEval({
+      tasksDoc, agents: [profile], policyNames: policies, outDir: opts.outDir, trials,
+      onRecord: (r) => process.stdout.write(r.ok ? "." : "x"),
+    });
+    process.stdout.write("\n\n");
+
+    const scored = scoreRecords(records, tasksDoc);
+    const { comparisons, warnings } = analyze(scored, { candidatePolicy: policies[0]!, baselinePolicy: policies[1]! });
+    const failures = records.filter((r) => !r.ok).length;
+    if (failures > 0) console.log(`${failures} invocation(s) failed at the harness level and are excluded.\n`);
+
+    for (const c of comparisons) {
+      console.log(`  ${c.candidate.policy.padEnd(14)} ${c.candidate.passes}/${c.candidate.n} (${c.candidate.passRate.toFixed(0)}%)`);
+      console.log(`  ${c.baseline.policy.padEnd(14)} ${c.baseline.passes}/${c.baseline.n} (${c.baseline.passRate.toFixed(0)}%)\n`);
+      console.log(`  ${c.deltaPoints >= 0 ? "+" : ""}${c.deltaPoints.toFixed(0)} points, 95% CI ${c.ci95[0].toFixed(0)} to ${c.ci95[1].toFixed(0)}`);
+      console.log(`  ${c.verdict}\n`);
+    }
+    for (const w of warnings) console.log(`  note: ${w}`);
+
+    const cost = records.reduce((a, r) => a + (r.metrics?.cost ?? 0), 0);
+    if (cost > 0) console.log(`\n  spent: $${cost.toFixed(2)}`);
+    console.log(`\n  Charts: claimcheck chart --input <scored.json>   Full report: claimcheck report`);
+  });
 
 program
   .command("install")

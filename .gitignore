@@ -1,5 +1,12 @@
 node_modules/
 dist/
+
+# Agent-specific local config. claimcheck is agent-agnostic by design --
+# per-agent settings belong on your machine, not in the repo. Shared
+# guidance for agents lives in AGENTS.md and docs/architecture.md.
+.claude/
+.cursor/
+.codex/
 results/raw/*.json
 results/scored.json
 results/report.md

@@ -1,28 +1,24 @@
----
-name: claimcheck-flow
-description: Explains claimcheck's architecture and run/score/report flow -- what tasks, policies, and agent profiles are, how they combine, and how to extend any of them. Use when asked to run an evaluation, add a new claim, write or debug an agent profile, or otherwise work on this repo.
----
+# Architecture
 
-# claimcheck flow
-
-This file is a plain markdown doc first, a Claude Code skill second -- read
-it the same way regardless of which agent opened it.
+Internals and extension points. For what claimcheck is and how to run it,
+see [README.md](../README.md); for the rules that keep results trustworthy,
+see [AGENTS.md](../AGENTS.md).
 
 ## What this repo is
 
-A tool for testing specific claims about coding-agent behavior (e.g.
-"fewer tools improves task success") against real CLI-based coding agents,
-by running the same read-only comprehension tasks under different tool
-policies and scoring the answers against a pre-registered keyword key.
+A harness for measuring whether a coding-agent configuration change actually
+affects task success. It runs the same tasks under different configurations
+("policies") against a real agent CLI and scores the answers against
+pre-registered keyword keys.
 
 ## The three pieces of data, and where they live
 
-1. **Tasks** (`tasks.json`, e.g. [`examples/claim-001-tool-count/tasks.json`](../../examples/claim-001-tool-count/tasks.json))
+1. **Tasks** (`tasks.json`, e.g. [`examples/claim-001-tool-count/tasks.json`](../examples/claim-001-tool-count/tasks.json))
    -- a pinned repo (`repo_url` + `pinned_sha`) and a list of prompts, each
    with `expected_keywords` (the pre-registered answer key) and a `verified`
    flag (whether that answer key has actually been checked against the
    source, not just inferred). Agent-neutral: no CLI flags appear here.
-2. **Policies** (`policies/*.json`, e.g. [`examples/claim-001-tool-count/policies/`](../../examples/claim-001-tool-count/policies/))
+2. **Policies** (`policies/*.json`, e.g. [`examples/claim-001-tool-count/policies/`](../examples/claim-001-tool-count/policies/))
    -- just a `name` + human-readable `description` of a tool-access *intent*
    (e.g. "curated" = narrow/read-only, "full" = broad/write-capable). No
    flags here either.
@@ -30,8 +26,8 @@ policies and scoring the answers against a pre-registered keyword key.
    choose for a custom one) -- the only place agent-specific syntax lives.
    A profile says how to invoke one agent's CLI, and maps each policy
    *name* to that agent's actual flags via `policyArgs`. See
-   [`profiles/claude-code.json`](../../profiles/claude-code.json) for a
-   complete, verified example, and [`examples/agent-profiles/`](../../examples/agent-profiles/)
+   [`profiles/claude-code.json`](../profiles/claude-code.json) for a
+   complete, verified example, and [`examples/agent-profiles/`](../examples/agent-profiles/)
    for unverified templates (Codex, Cursor).
 
 Supporting a new agent means writing one profile JSON file. It never means
@@ -52,14 +48,14 @@ claimcheck report [--input ./results/scored.json]
 - `score` keyword-matches each raw record's answer text against its task's
   `expected_keywords` (short alphanumeric keywords match on word
   boundaries; longer/punctuated ones fall back to substring -- see
-  [`src/core/scorer.ts`](../../src/core/scorer.ts)).
+  [`src/core/scorer.ts`](../src/core/scorer.ts)).
 - `report` aggregates scored records into a markdown table with pass rate,
   cost, and latency per agent/policy, plus a caveats section that's part of
   the output, not left for a reader to infer.
 
 It's also available as an MCP server (`claimcheck mcp`, stdio transport)
 exposing `run_evaluation` / `score_results` / `generate_report` as tools --
-see [`src/mcp-server.ts`](../../src/mcp-server.ts) -- so an MCP-capable
+see [`src/mcp-server.ts`](../src/mcp-server.ts) -- so an MCP-capable
 agent can drive this whole flow itself instead of shelling out to the CLI.
 
 ## Key code, if you need to change behavior
@@ -81,7 +77,7 @@ agent can drive this whole flow itself instead of shelling out to the CLI.
 
 ## Adding a new agent
 
-1. Write a profile JSON (see [README.md#writing-an-agent-profile](../../README.md#writing-an-agent-profile)
+1. Write a profile JSON (see [README.md#writing-an-agent-profile](../README.md#writing-an-agent-profile)
    for the schema).
 2. Set `"verified": false` with a `"verificationNote"` describing exactly
    what you haven't confirmed yet. `run` prints a warning at invocation
@@ -89,7 +85,7 @@ agent can drive this whole flow itself instead of shelling out to the CLI.
    run it against a live install and checked the output shape.
 3. Test it against a task without spending real API budget by pointing
    `output.type` at `"text"` and running a trivial local command first, or
-   by adapting the fake-agent pattern in [`test/invoke.test.ts`](../../test/invoke.test.ts)
+   by adapting the fake-agent pattern in [`test/invoke.test.ts`](../test/invoke.test.ts)
    (a real subprocess, but driven through `node -e`, so no external CLI or
    network is required).
 
@@ -106,7 +102,7 @@ Run `npm test` first -- it exercises the full run/score/report pipeline
 against a local git repo and a fake node-based agent, no network or
 credentials needed. If that doesn't pass cleanly, a real run's numbers
 aren't trustworthy either, regardless of what they say. See
-[`AGENTS.md`](../../AGENTS.md) for the full list of ways this project can be
+[`AGENTS.md`](../AGENTS.md) for the full list of ways this project can be
 broken silently (circular answer keys, single-trial conclusions, folding
 `ERROR`/`UNVERIFIED ANSWER KEY` rows into a pass rate, cross-agent
 comparisons without acknowledging the confound).

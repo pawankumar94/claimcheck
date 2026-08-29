@@ -1,114 +1,100 @@
 # claimcheck
 
-**Does restricting a coding agent's tools actually make it perform better —
-or is that just something people repeat?**
+**A/B test your coding agent's configuration instead of guessing.**
 
-"Cut your agent's tool count, it'll perform better" is everywhere right now
-in AI-coding discourse, always as an anecdote ("I did it, it felt better"),
-never as an actual test. claimcheck runs the actual test: give a coding
-agent the same task twice — once with a broad tool set, once with a
-narrow one — and check the answer against a known-correct key. It does this
-against whichever coding agent's CLI you actually use (Claude Code, Gemini
-CLI, Codex, Cursor, Aider, or one you wrote yourself), not just one.
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](package.json)
+
+## The problem
+
+Every coding agent has knobs: which tools it can call, how many MCP servers
+it connects to, what goes in its context, which model it runs. Change any of
+them and you're making a bet about task success.
+
+Nobody can tell you whether those bets pay off. The advice is all anecdotal —
+*"I trimmed our MCP tools and it felt sharper"* — and even where someone has
+real numbers, they're numbers for their agent, their tasks, their codebase.
+Not yours. So teams ship agent configs on vibes and never find out.
+
+claimcheck turns that into a measurement. Define a set of tasks with
+known-correct answers, define two or more configurations, and it runs every
+task under every configuration against a real agent CLI, then reports pass
+rates side by side.
+
+It works with whichever agent you actually use — Claude Code, Gemini CLI,
+Codex, Cursor, or your own — because agent-specific invocation details live
+in a small JSON profile rather than in the tool itself.
 
 ## Quickstart
 
 ```bash
 git clone https://github.com/pawankumar94/claimcheck.git && cd claimcheck
-npm install && npm run build
-npm link   # puts `claimcheck` on PATH -- or use `node dist/cli.js` instead below
+npm install && npm run build && npm link
+```
 
+Then run the bundled example, which tests the most-repeated config claim in
+circulation — *does restricting an agent's tools improve task success?*
+
+```bash
 claimcheck run --tasks examples/claim-001-tool-count/tasks.json \
   --agent gemini-cli --policy curated --policy full
 claimcheck score --tasks examples/claim-001-tool-count/tasks.json
-claimcheck report
-cat results/report.md
+claimcheck report && cat results/report.md
 ```
 
-(Not yet published to npm. `--agent gemini-cli` needs the `gemini` CLI
-installed and a `GEMINI_API_KEY` set — swap in `--agent claude-code` for
-Claude Code instead. See [Agent support](#agent-support) below for what's
-actually been tested.)
-
-Task `t1-license` in that example asks: *"What license does this project
-use?"* — with the answer key `["MIT"]`, pre-written from the repo's actual
-LICENSE file before any run happens (so there's no way to move the
-goalposts after seeing an answer). Here's real output from that command,
-run against Gemini CLI:
+Each task pairs a question with an answer key written from the source before
+any run happens, so results can't be graded to taste after the fact.
+`t1-license` asks *"What license does this project use?"* against key
+`["MIT"]`. Real output from that command against Gemini CLI:
 
 | task | agent | policy | score | latency (ms) |
 |---|---|---|---|---|
 | t1-license | gemini-cli | curated (narrow tools) | PASS | 10864 |
 | t1-license | gemini-cli | full (broad tools) | PASS | 12483 |
 
-`claimcheck report` aggregates rows like this into a per-condition pass
-rate, so instead of a vibe you get a number: did the narrow tool set match,
-beat, or lose to the broad one, on tasks that are answerable either way.
+Scale that to a full task set and `claimcheck report` gives you a pass rate
+per configuration — an answer, not an impression.
 
-## What this is not
-
-Not a benchmark suite, not a product endorsing any one agent, not a claim
-about *your* setup. One claim, one corpus per run, directional signal —
-not a statistically powered result on a single trial. See
-[examples/claim-001-tool-count/](examples/claim-001-tool-count/) for the
-full pilot claim this project started from, including exactly what would
-falsify it and the sample-size caveats.
-
-New to this repo? [`.claude/skills/claimcheck-flow/SKILL.md`](.claude/skills/claimcheck-flow/SKILL.md)
-is a plain-markdown flow guide covering the architecture and how to extend
-it -- written to be equally useful whether you're Claude Code (which also
-surfaces it as a skill), Codex, Cursor, or a human.
+> Requires the target agent's CLI installed and authenticated. The example
+> above needs `gemini` and `GEMINI_API_KEY`; substitute `--agent claude-code`
+> for Claude Code. See [Agent support](#agent-support).
 
 ## How it works
 
-claimcheck has three pieces of data and one pipeline:
+Three inputs, one pipeline.
 
-1. **A tasks doc** (`tasks.json`) — read-only comprehension questions about a
-   pinned public repo, each with a pre-registered answer key
-   (`expected_keywords`). Agent-neutral: no agent's flags appear here.
-2. **Policies** (`policies/*.json`) — named, agent-neutral descriptions of a
-   tool-access intent (e.g. "curated": narrow and read-only; "full": broad,
-   write-capable). These are just names + descriptions; they carry no flags.
-3. **Agent profiles** (`profiles/*.json` or your own file) — the only
-   agent-specific part of this whole system. A profile says how to invoke
-   one agent's CLI, and how each policy *name* maps to that agent's actual
-   flags. This is the entire mechanism that makes claimcheck agent-agnostic:
-   supporting a new agent means writing one JSON file, not new code. See
-   [Writing an agent profile](#writing-an-agent-profile).
+| Input | What it is | Agent-specific? |
+|---|---|---|
+| **Tasks** (`tasks.json`) | Questions about a pinned repo, each with a pre-registered answer key | No |
+| **Policies** (`policies/*.json`) | Named configurations under test — e.g. `curated` vs `full` | No |
+| **Agent profiles** (`profiles/*.json`) | How to invoke one agent's CLI, and how each policy name maps to its flags | **Yes — only here** |
 
-The pipeline: `claimcheck run` clones the pinned repo fresh per invocation
-(isolates state between trials/agents), invokes each agent CLI per its
-profile, and writes raw JSON results. `claimcheck score` keyword-matches
-each result against its answer key. `claimcheck report` aggregates into a
-markdown table: pass/fail, cost, latency, per task/agent/policy.
+```
+claimcheck run     → fresh repo checkout per invocation, calls the agent CLI, writes raw JSON
+claimcheck score   → matches each answer against its pre-registered key
+claimcheck report  → aggregates into pass rate, cost, and latency per agent × policy
+```
+
+Confining agent syntax to the profile is what makes the rest portable:
+supporting a new agent is writing one JSON file, never touching pipeline
+code. `buildInvocation()` in [src/agents/profile.ts](src/agents/profile.ts)
+is the single place a policy becomes a command line.
 
 ## Agent support
 
 | Agent | Profile | Status |
 |---|---|---|
-| Claude Code | [profiles/claude-code.json](profiles/claude-code.json) | Verified against a live `claude` 2.1.220 install — flags and JSON output schema confirmed with a real invocation. Real task-answering not yet confirmed (the environment used to verify this had no `ANTHROPIC_API_KEY`); see the profile's `verificationNote`. |
-| Gemini CLI | [profiles/gemini-cli.json](profiles/gemini-cli.json) | Verified end to end — a real `claimcheck run` against the pinned example repo passed under both `curated` and `full` with a live API key. No cost field: Gemini CLI reports token counts, not USD, so `cost` shows `n/a` for this agent. |
-| Codex CLI | [examples/agent-profiles/codex.example.json](examples/agent-profiles/codex.example.json) | Unverified template — flags are best-effort guesses, not checked against a live install. See the file's `verificationNote` for exactly what to confirm. |
-| Cursor CLI | [examples/agent-profiles/cursor-cli.example.json](examples/agent-profiles/cursor-cli.example.json) | Unverified template — same caveat as Codex. |
-| Aider / anything else | — | Not yet written. Any CLI-based coding agent works the same way: write a profile (see [Writing an agent profile](#writing-an-agent-profile)) and it plugs into the same run/score/report pipeline. |
+| **Gemini CLI** | [`profiles/gemini-cli.json`](profiles/gemini-cli.json) | **Verified end to end.** A real run against the example task set passed under both policies. Reports tokens rather than USD, so `cost` shows `n/a`. |
+| **Claude Code** | [`profiles/claude-code.json`](profiles/claude-code.json) | **Partially verified.** Flags and output schema confirmed against a live `claude` 2.1.220 install; task-answering not yet confirmed (verification environment had no API key). |
+| Codex CLI | [`examples/agent-profiles/codex.example.json`](examples/agent-profiles/codex.example.json) | Template only — flags unverified against a live install. |
+| Cursor CLI | [`examples/agent-profiles/cursor-cli.example.json`](examples/agent-profiles/cursor-cli.example.json) | Template only — flags unverified against a live install. |
+| Anything else | — | Write a profile; see below. |
 
-## Flags, in more detail
-
-`--agent` accepts either a built-in profile name (looked up in
-[profiles/](profiles/)) or a path to your own profile JSON file, and can be
-repeated to run multiple agents in one pass. `--policy` can be repeated too,
-but every agent profile you pass must implement every policy name you ask
-for (`policyArgs.<name>`), or that combination errors out loudly rather than
-silently skipping.
-
-This spends real API/usage budget on whichever agent you point it at — cost
-and latency scale with tasks × agents × policies × trials.
+Each profile records its own verification status, and `claimcheck run` warns
+when it uses an unverified one, so results carry that caveat instead of
+looking more solid than they are.
 
 ## Writing an agent profile
-
-A profile is a small JSON file — see [profiles/claude-code.json](profiles/claude-code.json)
-for a complete, working example, and [examples/agent-profiles/](examples/agent-profiles/)
-for unverified starting templates for Codex and Cursor's CLIs.
 
 ```json
 {
@@ -125,62 +111,68 @@ for unverified starting templates for Codex and Cursor's CLIs.
 }
 ```
 
-- `policyArgs` is the piece every agent must define for itself — tool names
-  and flag syntax are not standardized across coding agents, so this is
-  where a policy's *intent* ("curated" = narrow/read-only) becomes that
-  agent's actual invocation.
-- `promptPlacement` controls where the prompt goes: `"after-base"` (default,
-  as an arg right after `baseArgs`), `"end"` (appended after everything
-  else), or `"stdin"` (written to the process's stdin instead of passed as
-  an arg — for CLIs that read the prompt that way).
-- `output.type` is `"json"` (parse stdout, pull fields by dot-path via
-  `resultField`/`costField`/`sessionIdField`) or `"text"` (raw stdout is the
-  result, no cost/session data).
-- Set `"verified": false` with a `"verificationNote"` if you haven't
-  confirmed these flags against a live install — claimcheck prints a warning
-  at run time when it sees this, so results carry the caveat instead of
-  looking more trustworthy than they are. `examples/agent-profiles/*.example.json`
-  in this repo do exactly that; flip to `"verified": true` only once you've
-  actually run it and checked the output, the way `profiles/claude-code.json`
-  and `profiles/gemini-cli.json` note they were (see [Agent support](#agent-support)
-  for what each one's verification did and didn't cover).
+| Field | Purpose |
+|---|---|
+| `policyArgs` | Maps each policy name to that agent's actual flags. Tool names and flag syntax aren't standardized across agents, so this translation is per-agent by necessity. |
+| `promptPlacement` | `after-base` (default), `end`, or `stdin`, depending on how the CLI accepts a prompt. |
+| `output` | `json` parses stdout and reads fields by dot-path; `text` treats stdout as the answer. |
+| `verified` | Set `false` with a `verificationNote` until you've run it against a live install and checked the output. |
 
-## Using it as an MCP server
+Working examples: [`profiles/gemini-cli.json`](profiles/gemini-cli.json),
+[`profiles/claude-code.json`](profiles/claude-code.json).
+
+## Use as an MCP server
 
 ```bash
 claimcheck mcp
 ```
 
-Starts claimcheck over stdio as an MCP server exposing `run_evaluation`,
-`score_results`, and `generate_report` tools — so any MCP-capable agent
-(Claude Code, Cursor, etc.) can add claimcheck as a plugin and drive an
-evaluation itself, including pointing it at its own agent profile to
-evaluate itself.
+Exposes `run_evaluation`, `score_results`, and `generate_report` over stdio,
+so an MCP-capable agent can run an evaluation itself — including pointing
+claimcheck at its own profile to measure its own configuration.
 
-## Verifying the pipeline without spending API credits
-
-Every piece of the pipeline (scoring, reporting, profile→invocation
-translation, output parsing, the run orchestration itself) has unit/e2e
-tests that use a fake node-based "agent" and a local git repo — no real
-coding-agent CLI or network access required:
+## Development
 
 ```bash
-npm test
+npm test        # 34 tests, no network or agent CLI required
+npm run build
+npm run typecheck
 ```
 
-## Adding a second claim
+The suite covers the full pipeline using a stub agent and a local git repo,
+so you can validate changes without spending API budget.
+[docs/architecture.md](docs/architecture.md) covers the internals;
+[AGENTS.md](AGENTS.md) is the entry point for coding agents working in this
+repo.
 
-Copy [examples/claim-001-tool-count/](examples/claim-001-tool-count/) as a
-template: write a new `tasks.json` and `policies/*.json`, reuse whichever
-agent profiles you already have. Each claim is independent — nothing here
-assumes there's only ever one, and nothing ties a claim to one agent.
+## Scope and limits
+
+Worth being explicit, since the output looks like data:
+
+- **A single trial is not a result.** Model sampling varies. Use `--trials 3`
+  or more before treating any difference as real.
+- **Scoring is keyword matching, not comprehension.** Deliberately simple and
+  auditable, but spot-check `PARTIAL` and `FAIL` rows by hand.
+- **Cross-agent comparisons carry a confound.** Different agents interpret
+  the same prompt differently regardless of configuration. Within-agent
+  policy comparisons are the sound use.
+- **Results are scoped to the task set.** Repo-comprehension findings don't
+  automatically transfer to code generation or refactoring.
+
+`claimcheck report` prints these caveats alongside every report.
+
+## Adding a claim
+
+Copy [`examples/claim-001-tool-count/`](examples/claim-001-tool-count/):
+a new `tasks.json` plus `policies/*.json`, reusing existing agent profiles.
+Claims are independent — nothing assumes there's only one.
 
 ## History
 
-This started as a Python, Claude-Code-only pilot harness. That version is
-preserved as-is under [legacy-python/](legacy-python/) for reference — it
-still documents the original claim, its falsification criteria, and a known
-substring-matching false-positive fix worth reading before extending the
-scorer further. The TypeScript package here is a full rewrite: same
-underlying method, generalized so any CLI-based agent can be the subject,
-not just Claude Code.
+Started as a Python harness that only drove Claude Code, preserved as-is in
+[`legacy-python/`](legacy-python/). This TypeScript rewrite keeps the method
+and generalizes the subject: any CLI-based coding agent, not one.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

@@ -1,13 +1,11 @@
 # AGENTS.md
 
 If you're an agent working in this repo, read
-[`.claude/skills/claimcheck-flow/SKILL.md`](.claude/skills/claimcheck-flow/SKILL.md)
-first -- it's a plain markdown flow guide (Claude Code also surfaces it as a
-skill, but nothing in it is Claude-specific), and covers the architecture,
-the run/score/report pipeline, and how to add a claim or an agent profile in
-one place.
+[`docs/architecture.md`](docs/architecture.md) first -- it covers the
+internals, the run/score/report pipeline, and how to add a claim or an agent
+profile in one place.
 
-Otherwise, start with [`README.md`](README.md) for what this is and how to run it, and
+Then [`README.md`](README.md) for what this is and how to run it, and
 [`examples/claim-001-tool-count/`](examples/claim-001-tool-count/) for the
 specific pilot hypothesis, corpus, and what would falsify it. There is
 deliberately no PLANNER.md yet -- writing a phased roadmap before a real,

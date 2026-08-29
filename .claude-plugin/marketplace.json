@@ -1,0 +1,26 @@
+{
+  "name": "claimcheck",
+  "owner": {
+    "name": "Pawan Kumar",
+    "url": "https://github.com/pawankumar94"
+  },
+  "metadata": {
+    "description": "A/B testing for coding-agent configuration.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "claimcheck",
+      "source": "./",
+      "description": "A/B test your coding agent's configuration. Runs the same tasks under different tool policies against a real agent CLI and reports whether the difference is real.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Pawan Kumar",
+        "url": "https://github.com/pawankumar94"
+      },
+      "homepage": "https://github.com/pawankumar94/claimcheck",
+      "license": "MIT",
+      "keywords": ["evaluation", "benchmark", "mcp", "agent-config", "ab-testing"]
+    }
+  ]
+}

@@ -2,8 +2,9 @@
 
 Tests specific, widely repeated claims about coding-agent behavior (e.g.
 "reducing the number of tools an agent can use improves its task success")
-against **any CLI-based coding agent** — Claude Code, Codex, Cursor, Aider,
-or one you built yourself — instead of another single-agent anecdote.
+against **any CLI-based coding agent** — Claude Code, Gemini CLI, Codex,
+Cursor, Aider, or one you built yourself — instead of another
+single-agent anecdote.
 
 ## What this is not
 
@@ -48,10 +49,21 @@ markdown table: pass/fail, cost, latency, per task/agent/policy.
 ```bash
 npm install
 npm run build
+npm link   # optional: puts `claimcheck` on PATH -- otherwise replace
+           # `claimcheck` with `node dist/cli.js` in every command below
 ```
 
-(Not yet published to npm — run locally via `npm link`, or `node dist/cli.js`
-directly, until it is.)
+Not yet published to npm.
+
+## Agent support
+
+| Agent | Profile | Status |
+|---|---|---|
+| Claude Code | [profiles/claude-code.json](profiles/claude-code.json) | Verified against a live `claude` 2.1.220 install — flags and JSON output schema confirmed with a real invocation. Real task-answering not yet confirmed (the environment used to verify this had no `ANTHROPIC_API_KEY`); see the profile's `verificationNote`. |
+| Gemini CLI | [profiles/gemini-cli.json](profiles/gemini-cli.json) | Verified end to end — a real `claimcheck run` against the pinned example repo passed under both `curated` and `full` with a live API key. No cost field: Gemini CLI reports token counts, not USD, so `cost` shows `n/a` for this agent. |
+| Codex CLI | [examples/agent-profiles/codex.example.json](examples/agent-profiles/codex.example.json) | Unverified template — flags are best-effort guesses, not checked against a live install. See the file's `verificationNote` for exactly what to confirm. |
+| Cursor CLI | [examples/agent-profiles/cursor-cli.example.json](examples/agent-profiles/cursor-cli.example.json) | Unverified template — same caveat as Codex. |
+| Aider / anything else | — | Not yet written. Any CLI-based coding agent works the same way: write a profile (see [Writing an agent profile](#writing-an-agent-profile)) and it plugs into the same run/score/report pipeline. |
 
 ## Running it
 
@@ -112,8 +124,11 @@ for unverified starting templates for Codex and Cursor's CLIs.
 - Set `"verified": false` with a `"verificationNote"` if you haven't
   confirmed these flags against a live install — claimcheck prints a warning
   at run time when it sees this, so results carry the caveat instead of
-  looking more trustworthy than they are. `profiles/claude-code.json` in
-  this repo does exactly that.
+  looking more trustworthy than they are. `examples/agent-profiles/*.example.json`
+  in this repo do exactly that; flip to `"verified": true` only once you've
+  actually run it and checked the output, the way `profiles/claude-code.json`
+  and `profiles/gemini-cli.json` note they were (see [Agent support](#agent-support)
+  for what each one's verification did and didn't cover).
 
 ## Using it as an MCP server
 

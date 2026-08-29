@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="brand/svg/claimcheck-icon.svg" width="112" alt="claimcheck logo">
+  <img src="brand/social/og-1280x640.png" width="960" alt="ClaimCheck verification ticket beside a coding workspace">
 </p>
 
 <h1 align="center">claimcheck</h1>

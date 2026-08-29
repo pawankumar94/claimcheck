@@ -1,7 +1,55 @@
 import type { ScoredRecord } from "../types.js";
+import { analyze } from "./analysis.js";
 
 function mean(nums: number[]): number {
   return nums.reduce((a, b) => a + b, 0) / nums.length;
+}
+
+function pct(n: number): string {
+  return `${n >= 0 ? "+" : ""}${n.toFixed(0)}`;
+}
+
+/**
+ * The part a reader acts on: what the run actually says about the claim,
+ * stated before any table, with the uncertainty attached rather than implied.
+ */
+function buildVerdictSection(records: ScoredRecord[]): string[] {
+  const { comparisons, warnings } = analyze(records);
+  const lines: string[] = ["## Verdict", ""];
+
+  if (comparisons.length === 0) {
+    lines.push(
+      "No within-agent policy comparison was possible -- a comparison needs the same agent run " +
+        "under both a narrower and a broader policy.",
+      ""
+    );
+  }
+
+  for (const c of comparisons) {
+    lines.push(
+      `**${c.agent}** — ${c.verdict}`,
+      "",
+      `| policy | pass rate | n |`,
+      `|---|---|---|`,
+      `| ${c.candidate.policy} | ${c.candidate.passes}/${c.candidate.n} (${c.candidate.passRate.toFixed(0)}%) | ${c.candidate.n} |`,
+      `| ${c.baseline.policy} | ${c.baseline.passes}/${c.baseline.n} (${c.baseline.passRate.toFixed(0)}%) | ${c.baseline.n} |`,
+      "",
+      `Difference: **${pct(c.deltaPoints)} points** ` +
+        `(95% CI ${pct(c.ci95[0])} to ${pct(c.ci95[1])}, Agresti-Caffo). ` +
+        (c.distinguishable
+          ? "The interval excludes zero."
+          : "The interval includes zero, so the two are not distinguishable at this sample size."),
+      ""
+    );
+  }
+
+  if (warnings.length > 0) {
+    lines.push("### Caveats that bound this verdict", "");
+    for (const w of warnings) lines.push(`- ${w}`);
+    lines.push("");
+  }
+
+  return lines;
 }
 
 /**
@@ -21,6 +69,7 @@ export function buildReport(records: ScoredRecord[]): string {
   const lines: string[] = [
     "# claimcheck: report",
     "",
+    ...buildVerdictSection(records),
     "## Per-task detail",
     "",
     "| task | agent | policy | score | cost (usd) | latency (ms) |",

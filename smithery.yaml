@@ -7,5 +7,5 @@ startCommand:
     command: npx
     args:
       - "-y"
-      - "@pawankumar94/diedinchat"
+      - "diedinchat"
       - "mcp"

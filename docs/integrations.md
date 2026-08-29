@@ -5,13 +5,12 @@ works across essentially every current coding agent. Install it once and any
 MCP-capable client can drive evaluations directly, with no per-agent adapter and no
 wrapper script.
 
-> **Not yet on npm.** The configs below use `npx @pawankumar94/diedinchat`,
-> which will work once the package is published. Until then, clone the repo,
-> run `npm install && npm run build && npm link`, and use `diedinchat` as the
-> `command` with `["mcp"]` as the args.
+> Install from npm: `npx -y diedinchat mcp`. Clone-and-link still works if
+> you're hacking on this repo.
+
 
 ```bash
-npx -y @pawankumar94/diedinchat mcp
+npx -y diedinchat mcp
 ```
 
 That command is the whole integration. Everything below is just where each
@@ -40,7 +39,7 @@ has to know where npm installed the package.
 ### Claude Code
 
 ```bash
-claude mcp add diedinchat -- npx -y @pawankumar94/diedinchat mcp
+claude mcp add diedinchat -- npx -y diedinchat mcp
 ```
 
 Add `-s user` to make it available in every project rather than just the
@@ -55,7 +54,7 @@ current one.
   "mcpServers": {
     "diedinchat": {
       "command": "npx",
-      "args": ["-y", "@pawankumar94/diedinchat", "mcp"]
+      "args": ["-y", "diedinchat", "mcp"]
     }
   }
 }
@@ -71,7 +70,7 @@ current one.
     "diedinchat": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@pawankumar94/diedinchat", "mcp"]
+      "args": ["-y", "diedinchat", "mcp"]
     }
   }
 }
@@ -86,7 +85,7 @@ current one.
   "mcpServers": {
     "diedinchat": {
       "command": "npx",
-      "args": ["-y", "@pawankumar94/diedinchat", "mcp"]
+      "args": ["-y", "diedinchat", "mcp"]
     }
   }
 }
@@ -99,15 +98,15 @@ current one.
 ```toml
 [mcp_servers.diedinchat]
 command = "npx"
-args = ["-y", "@pawankumar94/diedinchat", "mcp"]
+args = ["-y", "diedinchat", "mcp"]
 ```
 
 ### Anything else (Smithery / Windsurf / Zed / Claude Desktop)
 
-To install automatically via [Smithery](https://smithery.ai/server/@pawankumar94/diedinchat):
+To install automatically via [Smithery](https://smithery.ai/server/diedinchat):
 
 ```bash
-npx -y @smithery/cli install @pawankumar94/diedinchat --client claude
+npx -y @smithery/cli install diedinchat --client claude
 ```
 
 Or configure manually: most other MCP clients (Windsurf, Zed, Claude Desktop, Continue, and the rest)
@@ -145,7 +144,7 @@ another trial.
 The same pipeline is importable if you'd rather script it:
 
 ```ts
-import { resolveAgentProfile, runEvaluation, scoreRecords, buildReport, loadTasksDoc } from "@pawankumar94/diedinchat";
+import { resolveAgentProfile, runEvaluation, scoreRecords, buildReport, loadTasksDoc } from "diedinchat";
 
 const tasksDoc = await loadTasksDoc("./tasks.json");
 const agent = await resolveAgentProfile("gemini-cli");

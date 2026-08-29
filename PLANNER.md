@@ -27,7 +27,7 @@ Do not rebuild these. Extend them.
 | MCP | [`src/mcp-server.ts`](src/mcp-server.ts) | `pin_claim`, `list_claims_for_file`, `check_claim` + the lab tools |
 | Install | [`src/core/install.ts`](src/core/install.ts), [`templates/diedinchat.md`](templates/diedinchat.md) | Writes pinning discipline into Claude / Cursor / Copilot / `AGENTS.md` / … |
 | Tests | [`test/claims.test.ts`](test/claims.test.ts), [`test/install.test.ts`](test/install.test.ts), [`test/mcp-server.test.ts`](test/mcp-server.test.ts) | 129 tests; `npm test` must stay green |
-| Name | package `@pawankumar94/diedinchat`, bin `diedinchat`, GitHub `pawankumar94/diedinchat` | Old `claimcheck` URLs redirect |
+| Name | package `diedinchat`, bin `diedinchat`, GitHub `pawankumar94/diedinchat` | Old `claimcheck` URLs redirect |
 
 ```bash
 npm test
@@ -125,17 +125,13 @@ Pin 3–5 real constraints about *this* codebase into `.diedinchat/` (tracked):
 
 ## Phase 4 — Publish the convention
 
-Not before Phase 1 has a number, unless a human says ship anyway.
+npm name `diedinchat` is reserved (0.1.0). That is **not** a launch.
 
-- npm: `@pawankumar94/diedinchat` — `files` in `package.json` already
-  includes `dist`, `templates`, `skills`, `profiles`, `examples`.
-- Smithery: [`smithery.yaml`](smithery.yaml) already points at the new
-  name; verify the listing after publish.
-- [`docs/integrations.md`](docs/integrations.md) still says “Not yet on
-  npm” — flip that the day it is.
-- GitHub About / topics (`mcp`, `cli`, `coding-agents`) and social
-  preview: human in Settings. Description should stay the pitch, not the
-  lab.
+- Smithery: verify [`smithery.yaml`](smithery.yaml) after a real listing.
+  Do not submit the directory until a stranger can pin a ticket without
+  reading this file.
+- GitHub social preview: human in Settings → `brand/social/og-1280x640.png`.
+
 
 ---
 

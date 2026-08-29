@@ -156,8 +156,8 @@ It finds whichever agent CLI you already have, runs a public benchmark against
 it twice (once with a lean tool surface, once with a cluttered one), and tells
 you whether the difference is real or noise.
 
-> **Not yet on npm.** The clone-and-link above is the working install today.
-> Once published, that becomes `npx @pawankumar94/diedinchat`.
+> On npm: `npx diedinchat`. Clone-and-link above is for hacking on this repo.
+
 
 ### What a result looks like
 

@@ -1,20 +1,58 @@
 # claimcheck
 
-Tests specific, widely repeated claims about coding-agent behavior (e.g.
-"reducing the number of tools an agent can use improves its task success")
-against **any CLI-based coding agent** — Claude Code, Gemini CLI, Codex,
-Cursor, Aider, or one you built yourself — instead of another
-single-agent anecdote.
+**Does restricting a coding agent's tools actually make it perform better —
+or is that just something people repeat?**
+
+"Cut your agent's tool count, it'll perform better" is everywhere right now
+in AI-coding discourse, always as an anecdote ("I did it, it felt better"),
+never as an actual test. claimcheck runs the actual test: give a coding
+agent the same task twice — once with a broad tool set, once with a
+narrow one — and check the answer against a known-correct key. It does this
+against whichever coding agent's CLI you actually use (Claude Code, Gemini
+CLI, Codex, Cursor, Aider, or one you wrote yourself), not just one.
+
+## Quickstart
+
+```bash
+git clone https://github.com/pawankumar94/claimcheck.git && cd claimcheck
+npm install && npm run build
+npm link   # puts `claimcheck` on PATH -- or use `node dist/cli.js` instead below
+
+claimcheck run --tasks examples/claim-001-tool-count/tasks.json \
+  --agent gemini-cli --policy curated --policy full
+claimcheck score --tasks examples/claim-001-tool-count/tasks.json
+claimcheck report
+cat results/report.md
+```
+
+(Not yet published to npm. `--agent gemini-cli` needs the `gemini` CLI
+installed and a `GEMINI_API_KEY` set — swap in `--agent claude-code` for
+Claude Code instead. See [Agent support](#agent-support) below for what's
+actually been tested.)
+
+Task `t1-license` in that example asks: *"What license does this project
+use?"* — with the answer key `["MIT"]`, pre-written from the repo's actual
+LICENSE file before any run happens (so there's no way to move the
+goalposts after seeing an answer). Here's real output from that command,
+run against Gemini CLI:
+
+| task | agent | policy | score | latency (ms) |
+|---|---|---|---|---|
+| t1-license | gemini-cli | curated (narrow tools) | PASS | 10864 |
+| t1-license | gemini-cli | full (broad tools) | PASS | 12483 |
+
+`claimcheck report` aggregates rows like this into a per-condition pass
+rate, so instead of a vibe you get a number: did the narrow tool set match,
+beat, or lose to the broad one, on tasks that are answerable either way.
 
 ## What this is not
 
 Not a benchmark suite, not a product endorsing any one agent, not a claim
-about *your* setup. One claim, one corpus, a comparison you can run against
-whichever agents you actually use. See
+about *your* setup. One claim, one corpus per run, directional signal —
+not a statistically powered result on a single trial. See
 [examples/claim-001-tool-count/](examples/claim-001-tool-count/) for the
-pilot claim this project started from, including what would falsify it and
-the sample-size caveats — this is directional-signal tooling, not a
-statistically powered result generator on its own.
+full pilot claim this project started from, including exactly what would
+falsify it and the sample-size caveats.
 
 New to this repo? [`.claude/skills/claimcheck-flow/SKILL.md`](.claude/skills/claimcheck-flow/SKILL.md)
 is a plain-markdown flow guide covering the architecture and how to extend
@@ -44,17 +82,6 @@ profile, and writes raw JSON results. `claimcheck score` keyword-matches
 each result against its answer key. `claimcheck report` aggregates into a
 markdown table: pass/fail, cost, latency, per task/agent/policy.
 
-## Install
-
-```bash
-npm install
-npm run build
-npm link   # optional: puts `claimcheck` on PATH -- otherwise replace
-           # `claimcheck` with `node dist/cli.js` in every command below
-```
-
-Not yet published to npm.
-
 ## Agent support
 
 | Agent | Profile | Status |
@@ -65,19 +92,7 @@ Not yet published to npm.
 | Cursor CLI | [examples/agent-profiles/cursor-cli.example.json](examples/agent-profiles/cursor-cli.example.json) | Unverified template — same caveat as Codex. |
 | Aider / anything else | — | Not yet written. Any CLI-based coding agent works the same way: write a profile (see [Writing an agent profile](#writing-an-agent-profile)) and it plugs into the same run/score/report pipeline. |
 
-## Running it
-
-```bash
-claimcheck run \
-  --tasks examples/claim-001-tool-count/tasks.json \
-  --agent claude-code \
-  --policy curated --policy full \
-  --trials 3
-
-claimcheck score --tasks examples/claim-001-tool-count/tasks.json
-claimcheck report
-cat results/report.md
-```
+## Flags, in more detail
 
 `--agent` accepts either a built-in profile name (looked up in
 [profiles/](profiles/)) or a path to your own profile JSON file, and can be

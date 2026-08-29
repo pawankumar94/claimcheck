@@ -1,17 +1,21 @@
 <p align="center">
-  <img src="brand/png/icon-256.png" width="220" alt="diedinchat">
+  <img src="brand/svg/diedinchat-icon.svg" width="112" alt="diedinchat logo">
 </p>
 
 <h1 align="center">diedinchat</h1>
 
-<p align="center"><strong>Pin what an agent asserted to the files it was about.<br>The chat dies. The ticket does not.</strong></p>
+<p align="center"><strong>File-bound claims for coding agents.</strong><br>The chat ends. What it learned about your files should not.</p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-145C60.svg" alt="MIT license"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D18.17-2DB8A8.svg" alt="Node 18.17 or newer"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-11110F.svg" alt="MIT license"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D18.17-C7FF35.svg" alt="Node 18.17 or newer"></a>
 </p>
 
-## The problem
+<p align="center">
+  <img src="brand/social/diedinchat-hero.png" width="100%" alt="A terminal archivist retrieves a file-bound claim from archived Monday, Tuesday, and Wednesday chat sessions">
+</p>
+
+## The sentence died in chat
 
 You have an app like this:
 

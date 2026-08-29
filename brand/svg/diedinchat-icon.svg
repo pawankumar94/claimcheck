@@ -1,55 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="DiedInChat">
-  <rect width="1024" height="1024" fill="#0B1220"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">diedinchat</title>
+  <desc id="desc">A terminal archivist retrieves a durable claim from the Wednesday chat drawer.</desc>
 
-  <!-- context sliver: diff -->
-  <rect x="-30" y="180" width="460" height="680" rx="28" fill="#2A3444"/>
-  <rect x="300" y="230" width="4" height="580" fill="#37465A"/>
-  <g fill="#2DB8A8">
-    <rect x="348" y="268" width="22" height="5" rx="2"/><rect x="357" y="259" width="5" height="22" rx="2"/>
-    <rect x="348" y="348" width="22" height="5" rx="2"/><rect x="357" y="339" width="5" height="22" rx="2"/>
-    <rect x="348" y="428" width="22" height="5" rx="2"/><rect x="357" y="419" width="5" height="22" rx="2"/>
-    <rect x="348" y="508" width="22" height="5" rx="2"/><rect x="357" y="499" width="5" height="22" rx="2"/>
-    <rect x="348" y="588" width="22" height="5" rx="2"/><rect x="357" y="579" width="5" height="22" rx="2"/>
-    <rect x="348" y="668" width="22" height="5" rx="2"/><rect x="357" y="659" width="5" height="22" rx="2"/>
-  </g>
+  <rect width="512" height="512" rx="96" fill="#F4F0E7"/>
 
-  <!-- claim ticket -->
-  <rect x="250" y="170" width="860" height="690" rx="36" fill="#F3EDE1"/>
-  <circle cx="250" cy="512" r="28" fill="#0B1220"/>
-  <g fill="#0B1220">
-    <circle cx="320" cy="250" r="9"/>
-    <circle cx="320" cy="318" r="9"/>
-    <circle cx="320" cy="386" r="9"/>
-    <circle cx="320" cy="454" r="9"/>
-    <circle cx="320" cy="522" r="9"/>
-    <circle cx="320" cy="590" r="9"/>
-    <circle cx="320" cy="658" r="9"/>
-    <circle cx="320" cy="726" r="9"/>
-    <circle cx="320" cy="794" r="9"/>
-  </g>
-  <g fill="#C8BEAA">
-    <circle cx="390" cy="220" r="3"/><circle cx="390" cy="248" r="3"/>
-    <circle cx="390" cy="276" r="3"/><circle cx="390" cy="304" r="3"/>
-    <circle cx="390" cy="332" r="3"/><circle cx="390" cy="360" r="3"/>
-    <circle cx="390" cy="388" r="3"/><circle cx="390" cy="416" r="3"/>
-    <circle cx="390" cy="444" r="3"/><circle cx="390" cy="472" r="3"/>
-    <circle cx="390" cy="500" r="3"/><circle cx="390" cy="528" r="3"/>
-    <circle cx="390" cy="556" r="3"/><circle cx="390" cy="584" r="3"/>
-    <circle cx="390" cy="612" r="3"/><circle cx="390" cy="640" r="3"/>
-    <circle cx="390" cy="668" r="3"/><circle cx="390" cy="696" r="3"/>
-    <circle cx="390" cy="724" r="3"/><circle cx="390" cy="752" r="3"/>
-    <circle cx="390" cy="780" r="3"/><circle cx="390" cy="808" r="3"/>
-  </g>
+  <!-- Three closed-over chat sessions. -->
+  <path d="M62 70H284V430H62Z" fill="none" stroke="#11110F" stroke-width="14"/>
+  <path d="M62 190H284M62 310H284" stroke="#11110F" stroke-width="14"/>
+  <path d="M142 130H204M142 250H204" stroke="#11110F" stroke-width="14" stroke-linecap="square"/>
+  <circle cx="91" cy="130" r="7" fill="#11110F"/>
+  <circle cx="91" cy="250" r="7" fill="#11110F"/>
+  <circle cx="91" cy="370" r="7" fill="#11110F"/>
 
-  <!-- stamped check -->
-  <g transform="translate(430 360)">
-    <rect width="200" height="200" rx="28" fill="#145C60"/>
-    <rect x="28" y="28" width="144" height="144" rx="18" fill="#F3EDE1"/>
-    <path d="M64 112 L96 144 L148 72" fill="none" stroke="#146E70" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-  <g transform="translate(590 300) rotate(-38)">
-    <rect x="0" y="40" width="78" height="150" rx="22" fill="#1E8480"/>
-    <rect x="-12" y="0" width="102" height="58" rx="24" fill="#2DB8A8"/>
-    <ellipse cx="39" cy="16" rx="48" ry="26" fill="#1A6E70"/>
-  </g>
+  <!-- Wednesday opens; one file-bound assertion leaves the chat. -->
+  <path d="M84 334H304V422H84Z" fill="#F4F0E7" stroke="#11110F" stroke-width="14"/>
+  <path d="M174 330H354V398H174Z" fill="#C7FF35" stroke="#11110F" stroke-width="12"/>
+  <path d="M198 310H258V334H198Z" fill="#C7FF35" stroke="#11110F" stroke-width="12"/>
+  <path d="M202 360H294M202 380H266" stroke="#11110F" stroke-width="9"/>
+  <circle cx="330" cy="364" r="9" fill="#11110F"/>
+
+  <!-- The agent is a tool: terminal, arm, rail. No face. -->
+  <rect x="346" y="122" width="112" height="92" rx="12" fill="#11110F"/>
+  <path d="M370 154L388 168L370 182M400 182H424" fill="none" stroke="#F4F0E7" stroke-width="10" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M400 214V250" stroke="#11110F" stroke-width="14"/>
+  <rect x="352" y="246" width="96" height="98" rx="10" fill="none" stroke="#11110F" stroke-width="14"/>
+  <path d="M354 270L304 300L334 342" fill="none" stroke="#11110F" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="304" cy="300" r="12" fill="#F4F0E7" stroke="#11110F" stroke-width="9"/>
+  <path d="M374 344V390M426 344V390M350 390H450" stroke="#11110F" stroke-width="14" stroke-linecap="square"/>
 </svg>

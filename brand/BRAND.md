@@ -1,30 +1,29 @@
-# DiedInChat brand
+# diedinchat brand
 
-Drop this `brand/` folder at the root of the diedinchat repo.
+## Story
 
-## Use on GitHub
+Each drawer is an agent session: Monday, Tuesday, Wednesday. Chats close and
+disappear. The highlighted claim card is attached to a source path, stored in
+the repository, and retrieved by the next agent. The chat died; the claim did
+not.
 
-1. Profile / org avatar: `png/icon-1024.png`
-2. Repository social preview (Settings → General → Social preview): `social/og-1280x640.png`
-   Optional named version: `social/og-1280x640-wordmark.png`
-3. README / site mark: `svg/diedinchat-icon.svg` or `png/icon-256.png`
-4. Favicon: `svg/diedinchat-favicon.svg` or `png/favicon.ico`
+The agent is a mechanical archivist built from terminal and drafting-tool
+forms. It is infrastructure, not a friendly assistant mascot.
 
-## Files
+## Official assets
 
-```
-brand/
-  svg/diedinchat-icon.svg
-  svg/diedinchat-social.svg
-  svg/diedinchat-favicon.svg
-  png/icon-1024.png
-  png/icon-512.png
-  png/icon-256.png
-  png/icon-32.png
-  png/favicon-32.png
-  png/favicon.ico
-  social/og-1280x640.png
-  social/og-1280x640-wordmark.png
-```
+- GitHub avatar: `png/icon-1024.png`
+- README hero: `social/diedinchat-hero.png`
+- GitHub social preview: `social/og-1280x640.png`
+- Editable avatar: `svg/diedinchat-icon.svg`
+- Favicon: `svg/diedinchat-favicon.svg` or `png/favicon.ico`
 
-Colors: navy `#0B1220`, cream `#F3EDE1`, teal `#2DB8A8`, stamp `#145C60`.
+## Palette
+
+- Ink: `#11110F`
+- Paper: `#F4F0E7`
+- Claim: `#C7FF35`
+
+Use chartreuse only for claims and their file-path tabs. Everything else stays
+ink and paper. Do not add gradients, glow, generic chat bubbles, checkmarks,
+pushpins, ghosts, or humanoid robot faces.

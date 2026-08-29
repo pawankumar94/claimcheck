@@ -296,6 +296,7 @@ program
   .option("--many <n>", "distractor functions in the wide arm", "40")
   .option("--limit <n>", "cap the number of imported tasks")
   .option("--seed <n>", "seed for distractor sampling, so imports reproduce", "1")
+  .option("--strict-args", "also require each required argument value, matching what BFCL itself checks")
   .option("--output <path>", "where to write the task set", "./tasks-bfcl.json")
   .action(async (opts) => {
     const doc = await importBfclFromFiles(opts.entries, opts.groundTruth, {
@@ -303,6 +304,7 @@ program
       manyDistractors: Number(opts.many),
       ...(opts.limit ? { limit: Number(opts.limit) } : {}),
       seed: Number(opts.seed),
+      ...(opts.strictArgs ? { strictArgs: true } : {}),
     });
     await writeFile(opts.output, JSON.stringify(doc, null, 2));
     const policies = Object.keys(doc.tasks[0]?.prompt_by_policy ?? {});

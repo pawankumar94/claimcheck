@@ -12,7 +12,12 @@
  */
 export type AcceptanceCriterion =
   | string
-  | { any_of: string[]; label?: string }
+  /**
+   * An alternative may itself be a conjunction. An array-valued argument has
+   * several acceptable orderings and spellings, and each of those is a set of
+   * substrings that must all appear, so a flat string list cannot express it.
+   */
+  | { any_of: Array<string | { all_of: string[] }>; label?: string }
   | { all_of: string[]; label?: string }
   | { regex: string; flags?: string; label?: string };
 

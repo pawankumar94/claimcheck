@@ -44,14 +44,20 @@ export function keywordPresent(keyword: string, textLower: string): boolean {
 export function describeCriterion(c: AcceptanceCriterion): string {
   if (typeof c === "string") return c;
   if (c.label) return c.label;
-  if ("any_of" in c) return `any of [${c.any_of.join(" | ")}]`;
+  if ("any_of" in c)
+    return `any of [${c.any_of.map((a) => (typeof a === "string" ? a : a.all_of.join(" + "))).join(" | ")}]`;
   if ("all_of" in c) return `all of [${c.all_of.join(" + ")}]`;
   return `/${c.regex}/`;
 }
 
 export function criterionSatisfied(c: AcceptanceCriterion, textLower: string): boolean {
   if (typeof c === "string") return keywordPresent(c, textLower);
-  if ("any_of" in c) return c.any_of.some((k) => keywordPresent(k, textLower));
+  if ("any_of" in c)
+    return c.any_of.some((alt) =>
+      typeof alt === "string"
+        ? keywordPresent(alt, textLower)
+        : alt.all_of.every((k) => keywordPresent(k, textLower))
+    );
   if ("all_of" in c) return c.all_of.every((k) => keywordPresent(k, textLower));
   try {
     return new RegExp(c.regex, c.flags ?? "i").test(textLower);

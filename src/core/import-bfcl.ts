@@ -71,6 +71,19 @@ export function buildPrompt(entry: BfclEntry, functions: BfclEntry["function"]):
 }
 
 export interface ImportOptions {
+  /**
+   * When true, acceptance also requires each REQUIRED argument value to appear
+   * in the answer, not just the function name. BFCL's own evaluation checks
+   * arguments, so name-only scoring measures something easier than the
+   * benchmark does and saturates: frontier models hit 100% on the `multiple`
+   * category by name alone, leaving no headroom to detect anything.
+   *
+   * The rule is mechanical, taken from BFCL's ground-truth format: a parameter
+   * whose accepted-value list contains "" is optional and is skipped; every
+   * other parameter must have one of its accepted values present. Nothing is
+   * hand-tuned per task.
+   */
+  strictArgs?: boolean;
   /** Distractors shown in the narrow arm. */
   fewDistractors: number;
   /** Distractors shown in the wide arm -- this is the variable under test. */
@@ -140,6 +153,37 @@ export function importBfcl(
         : { any_of: [...correctNames], label: `one of ${[...correctNames].join(" | ")}` },
     ];
 
+    if (opts.strictArgs) {
+      for (const call of gt.ground_truth) {
+        for (const [fnName, params] of Object.entries(call)) {
+          for (const [param, accepted] of Object.entries(params as Record<string, unknown[]>)) {
+            if (!Array.isArray(accepted) || accepted.includes("")) continue; // optional
+            // An accepted value may itself be an array (an argument that takes
+            // a list). Those need every element present, not a comma-joined
+            // stringification, which is what String([a,b]) would produce.
+            const alternatives: Array<string | { all_of: string[] }> = [];
+            for (const v of accepted) {
+              if (v === null || v === undefined) continue;
+              if (Array.isArray(v)) {
+                const parts = v.map((x) => String(x)).filter((x) => x.length > 0);
+                if (parts.length > 0) alternatives.push({ all_of: parts });
+                continue;
+              }
+              const str = String(v);
+              if (str.length === 0) continue;
+              alternatives.push(str);
+              // Models format arguments inconsistently ("3x + 2" vs "3x+2"),
+              // so accept the space-free spelling of the same value too.
+              const tight = str.replace(/\s+/g, "");
+              if (tight !== str && tight.length > 0) alternatives.push(tight);
+            }
+            if (alternatives.length === 0) continue;
+            accept.push({ any_of: alternatives, label: `${fnName}.${param}` });
+          }
+        }
+      }
+    }
+
     return {
       id: entry.id,
       prompt: buildPrompt(entry, entry.function),
@@ -153,7 +197,8 @@ export function importBfcl(
         `Imported from BFCL entry ${entry.id}. Correct function(s): ${[...correctNames].join(", ")}. ` +
         `Question and ground truth are BFCL's, not authored here. The two arms show the same ` +
         `${entry.function.length} original candidate(s) plus ${opts.fewDistractors} vs ` +
-        `${opts.manyDistractors} irrelevant distractors, so only tool count differs.`,
+        `${opts.manyDistractors} irrelevant distractors, so only tool count differs.` +
+        (opts.strictArgs ? ` Acceptance requires the required argument values too, matching what BFCL itself checks.` : ""),
     };
   });
 
@@ -165,7 +210,10 @@ export function importBfcl(
       note:
         `Questions and ground-truth calls are BFCL's. claimcheck adds only the distractor contrast ` +
         `(${opts.fewDistractors} vs ${opts.manyDistractors} irrelevant functions) and scores by whether ` +
-        `the correct function name appears in the answer -- a weaker check than BFCL's own AST match, ` +
+        (opts.strictArgs
+          ? `the correct function name and every required argument value appear in the answer. That is closer to `
+          : `the correct function name appears in the answer -- a weaker check than `) +
+        `BFCL's own AST match, but still not identical to it (values are matched as substrings, not parsed), ` +
         `so these numbers are NOT comparable to BFCL leaderboard scores.`,
     },
     note:

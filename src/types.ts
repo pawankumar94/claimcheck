@@ -150,7 +150,7 @@ export interface ScoredRecord extends RawRecord {
 export type ClaimStatus = "open" | "supported" | "contradicted" | "stale";
 
 /**
- * An assertion pinned to paths in this repo. Lives in `.claims/<id>.json` so
+ * An assertion pinned to paths in this repo. Lives in `.diedinchat/<id>.json` so
  * it survives session end and agent-switch. `status` is derived from file
  * hashes (stale) and frozen evidence (supported / contradicted); `open` means
  * the files have not moved and no evidence was registered to check.

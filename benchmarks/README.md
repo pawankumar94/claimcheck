@@ -1,6 +1,6 @@
 # Benchmarks
 
-Every run claimcheck has produced, with the caveats that bound it. Numbers are
+Every run diedinchat has produced, with the caveats that bound it. Numbers are
 curated here by hand; raw run output stays untracked.
 
 ## Results so far
@@ -8,7 +8,7 @@ curated here by hand; raw run output stays untracked.
 | Run | Agent | Variable tested | Result | Distinguishable? |
 |---|---|---|---|---|
 | [2026-08-29-gemini-cli](2026-08-29-gemini-cli/) | Gemini CLI 0.10.0 | Tool count (`--allowed-tools` vs unrestricted) | 75% vs 71%, **+4 pts** (CI −21 to +28) | No |
-| [2026-08-29-codex-in-agent](2026-08-29-codex-in-agent/) | Codex CLI 0.147.0 | Tool count (29 MCP servers vs claimcheck only) | 75% vs 75%, **0 pts** (CI −40 to +40) | No |
+| [2026-08-29-codex-in-agent](2026-08-29-codex-in-agent/) | Codex CLI 0.147.0 | Tool count (29 MCP servers vs diedinchat only) | 75% vs 75%, **0 pts** (CI −40 to +40) | No |
 | [2026-08-29-codex-sandbox](2026-08-29-codex-sandbox/) | Codex CLI 0.147.0 | Sandbox permission, **not** tool count | 88% vs 88%, **0 pts** (CI −20 to +20) | No |
 
 ## What three runs actually show

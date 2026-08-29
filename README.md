@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="brand/png/icon-256.png" width="220" alt="claimcheck">
+  <img src="brand/png/icon-256.png" width="220" alt="diedinchat">
 </p>
 
-<h1 align="center">claimcheck</h1>
+<h1 align="center">diedinchat</h1>
 
 <p align="center"><strong>Pin what an agent asserted to the files it was about.<br>The chat dies. The ticket does not.</strong></p>
 
@@ -70,7 +70,7 @@ A ticket pinned to paths, stored in the repo, visible to whatever agent opens it
 }
 ```
 
-`.claims/auth-surface.json` is git-tracked. It is not in anyone’s chat.
+`.diedinchat/auth-surface.json` is git-tracked. It is not in anyone’s chat.
 
 Three things that ticket does:
 
@@ -86,7 +86,7 @@ There is no world where we ship twelve deep IDE plugins first. The product that 
 
 | Layer | What | Who it hits |
 |---|---|---|
-| **Files** | `.claims/` in git | Every tool that can read the project |
+| **Files** | `.diedinchat/` in git | Every tool that can read the project |
 | **Install** | One rule written into the file each agent already loads | Claude, Cursor, Copilot, Codex, Gemini, Windsurf, Cline, `AGENTS.md` |
 | **MCP** | `pin_claim` / `list_claims_for_file` / `check_claim` | Any MCP client, same server |
 | **IDE chrome** | Stamp on a file in the tree (later) | Cursor / VS Code — optional |
@@ -95,7 +95,7 @@ Same tickets if you switch tools, because they live next to the code.
 
 ```
 You:  "don't put auth in routes, only middleware"
-Agent: pin → .claims/auth-surface.json
+Agent: pin → .diedinchat/auth-surface.json
 
 --- days later, different IDE, empty chat ---
 
@@ -103,24 +103,24 @@ You:  "add a /admin route"
 Agent: list tickets on src/routes/ → sees the stamp → puts auth in middleware
 ```
 
-`claimcheck install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
+`diedinchat install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
 
 ## Where we are
 
-**Shipping on this branch:** `pin` / `status` / `check`, a `.claims/` store,
+**Shipping on this branch:** `pin` / `status` / `check`, a `.diedinchat/` store,
 MCP tools (`pin_claim`, `list_claims_for_file`, `check_claim`), and an
 install template that teaches pinning rather than only evals. Bare
-`claimcheck` is now `status` (local, free), not a budget-spending measure.
+`diedinchat` is now `status` (local, free), not a budget-spending measure.
 
 ```bash
-claimcheck pin --text "Auth only through middleware." --file src/middleware.ts
-claimcheck status src/middleware.ts
-claimcheck check
+diedinchat pin --text "Auth only through middleware." --file src/middleware.ts
+diedinchat status src/middleware.ts
+diedinchat check
 ```
 
-**Still the lab:** `claimcheck measure` A/B-tests a coding-agent config
+**Still the lab:** `diedinchat measure` A/B-tests a coding-agent config
 against frozen tasks. Use it to prove tickets work (honor rate with vs
-without `.claims/`), not as the homepage claim.
+without `.diedinchat/`), not as the homepage claim.
 
 If you are here to run the lab, skip to [Lab: measuring a config claim](#lab-measuring-a-config-claim).
 
@@ -131,9 +131,9 @@ If you are here to run the lab, skip to [Lab: measuring a config claim](#lab-mea
 This is what the CLI does today. It answers a narrower question: *did this agent-config change actually help, or is that a vibe?*
 
 ```bash
-git clone https://github.com/pawankumar94/claimcheck.git && cd claimcheck
+git clone https://github.com/pawankumar94/diedinchat.git && cd diedinchat
 npm install && npm run build && npm link
-claimcheck
+diedinchat
 ```
 
 It finds whichever agent CLI you already have, runs a public benchmark against
@@ -141,7 +141,7 @@ it twice (once with a lean tool surface, once with a cluttered one), and tells
 you whether the difference is real or noise.
 
 > **Not yet on npm.** The clone-and-link above is the working install today.
-> Once published, that becomes `npx @pawankumar94/claimcheck`.
+> Once published, that becomes `npx @pawankumar94/diedinchat`.
 
 ### What a result looks like
 
@@ -170,20 +170,20 @@ violation rate. A demo is not a result.
 ### Teach your agent the method
 
 ```bash
-claimcheck install
+diedinchat install
 ```
 
-It detects which coding agents your project uses and writes claimcheck's method
+It detects which coding agents your project uses and writes diedinchat's method
 into the file each one already reads:
 
 | Agent | File written |
 |---|---|
-| <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> Claude Code | `.claude/skills/claimcheck/SKILL.md` |
-| <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> Cursor | `.cursor/rules/claimcheck.mdc` |
-| <img src="brand/icons/copilot.svg" width="16" height="16" valign="middle" /> GitHub Copilot | `.github/instructions/claimcheck.instructions.md` |
-| <img src="brand/icons/hermes.png" width="16" height="16" valign="middle" /> Hermes Agent | `.hermes/skills/claimcheck/SKILL.md` |
-| <img src="brand/icons/windsurf.svg" width="16" height="16" valign="middle" /> Windsurf | `.windsurf/rules/claimcheck.md` |
-| <img src="brand/icons/cline.svg" width="16" height="16" valign="middle" /> Cline | `.clinerules/claimcheck.md` |
+| <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> Claude Code | `.claude/skills/diedinchat/SKILL.md` |
+| <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> Cursor | `.cursor/rules/diedinchat.mdc` |
+| <img src="brand/icons/copilot.svg" width="16" height="16" valign="middle" /> GitHub Copilot | `.github/instructions/diedinchat.instructions.md` |
+| <img src="brand/icons/hermes.png" width="16" height="16" valign="middle" /> Hermes Agent | `.hermes/skills/diedinchat/SKILL.md` |
+| <img src="brand/icons/windsurf.svg" width="16" height="16" valign="middle" /> Windsurf | `.windsurf/rules/diedinchat.md` |
+| <img src="brand/icons/cline.svg" width="16" height="16" valign="middle" /> Cline | `.clinerules/diedinchat.md` |
 | <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> Antigravity / Gemini | `skills/…`, `AGENTS.md` |
 | Any agent | `AGENTS.md`, appended in a fenced block |
 | Portable | `skills/…`, `.agents/skills/…` (Agent Skills) |
@@ -199,9 +199,9 @@ invocations, a few minutes. It prints what it is about to spend and waits for
 you to say yes.
 
 ```bash
-claimcheck                     # quick look
-claimcheck --full              # whole task set, 3 trials
-claimcheck --agent codex --yes
+diedinchat                     # quick look
+diedinchat --full              # whole task set, 3 trials
+diedinchat --agent codex --yes
 ```
 
 Its tasks and ground truth come from the
@@ -214,10 +214,10 @@ you want it, the pipeline is four commands and the formats are in
 [docs/architecture.md](docs/architecture.md):
 
 ```bash
-claimcheck run --tasks my-tasks.json --agent codex --policy a --policy b --trials 3
-claimcheck score --tasks my-tasks.json
-claimcheck report
-claimcheck chart
+diedinchat run --tasks my-tasks.json --agent codex --policy a --policy b --trials 3
+diedinchat score --tasks my-tasks.json
+diedinchat report
+diedinchat chart
 ```
 
 ### How the lab works
@@ -231,10 +231,10 @@ Three inputs, one pipeline:
 | **Agent profiles** (`profiles/*.json`) | How to invoke one agent's CLI, and how each policy maps to its flags | Yes, only here |
 
 ```
-claimcheck run     calls the agent CLI once per task x policy x trial, writes raw JSON
-claimcheck score   matches each answer against its pre-registered criteria
-claimcheck report  verdict, pass rate, and a 95% interval on the difference
-claimcheck chart   SVG charts, including the interval drawn against zero
+diedinchat run     calls the agent CLI once per task x policy x trial, writes raw JSON
+diedinchat score   matches each answer against its pre-registered criteria
+diedinchat report  verdict, pass rate, and a 95% interval on the difference
+diedinchat chart   SVG charts, including the interval drawn against zero
 ```
 
 Confining agent syntax to the profile is what keeps the rest portable.
@@ -251,7 +251,7 @@ code.
 | <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> **Cursor CLI** | [`examples/agent-profiles/`](examples/agent-profiles/) | Template only, flags unverified. |
 | Anything else | | Write a profile, see below. |
 
-Every profile records its own verification status, and `claimcheck run` warns
+Every profile records its own verification status, and `diedinchat run` warns
 when it uses an unverified one, so a result carries that caveat instead of
 looking more solid than it is.
 
@@ -282,7 +282,7 @@ looking more solid than it is.
 ### Use it as an MCP server
 
 ```bash
-claimcheck mcp
+diedinchat mcp
 ```
 
 Two paths are exposed today. **In-agent** (`start_run`, `submit_answers`,
@@ -312,7 +312,7 @@ Worth stating plainly, since the output looks like data:
 - **Results are scoped to the task set.** Function-selection findings do not
   automatically transfer to code generation — or to “will an agent honor a stamp.”
 
-`claimcheck report` prints these alongside every report.
+`diedinchat report` prints these alongside every report.
 
 ## Development
 

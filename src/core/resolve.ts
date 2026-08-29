@@ -8,7 +8,7 @@ import type { AgentProfile } from "../types.js";
 /**
  * Root of the installed package, so built-in profiles and bundled examples
  * are findable no matter where the caller's cwd is. This matters most when
- * claimcheck runs as an MCP server: the calling agent has no idea where npm
+ * diedinchat runs as an MCP server: the calling agent has no idea where npm
  * put the package, so it can only refer to built-ins by name.
  */
 function findPackageRoot(startDir: string): string {

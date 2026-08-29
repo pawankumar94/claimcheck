@@ -1,4 +1,4 @@
-# claimcheck: Codex in-agent report
+# diedinchat: Codex in-agent report
 
 ## Verdict
 
@@ -30,8 +30,8 @@ except a large difference.
 ## Configuration notes
 
 - `codex-full`: normal user configuration retained, with configured MCP servers
-  and enabled plugins, plus claimcheck.
-- `codex-minimal`: user configuration ignored, only claimcheck MCP configured.
+  and enabled plugins, plus diedinchat.
+- `codex-minimal`: user configuration ignored, only diedinchat MCP configured.
 - Both: Codex CLI 0.147.0, `gpt-5.6-sol`, medium reasoning, read-only sandbox,
   pinned `nocontext` checkout at `6f0d6f48`.
 

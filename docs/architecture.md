@@ -1,6 +1,6 @@
 # Architecture
 
-Internals and extension points. For what claimcheck is and how to run it,
+Internals and extension points. For what diedinchat is and how to run it,
 see [README.md](../README.md); for the rules that keep results trustworthy,
 see [AGENTS.md](../AGENTS.md).
 
@@ -36,9 +36,9 @@ touching the run/score/report code.
 ## The pipeline
 
 ```
-claimcheck run    --tasks <tasks.json> --agent <name-or-path> [--agent ...] --policy <name> [--policy ...] [--trials N]
-claimcheck score  --tasks <tasks.json> [--raw-dir ./results/raw]
-claimcheck report [--input ./results/scored.json]
+diedinchat run    --tasks <tasks.json> --agent <name-or-path> [--agent ...] --policy <name> [--policy ...] [--trials N]
+diedinchat score  --tasks <tasks.json> [--raw-dir ./results/raw]
+diedinchat report [--input ./results/scored.json]
 ```
 
 - `run` clones the pinned repo fresh per (agent, policy, task, trial)
@@ -53,7 +53,7 @@ claimcheck report [--input ./results/scored.json]
   cost, and latency per agent/policy, plus a caveats section that's part of
   the output, not left for a reader to infer.
 
-It's also available as an MCP server (`claimcheck mcp`, stdio transport)
+It's also available as an MCP server (`diedinchat mcp`, stdio transport)
 exposing `run_evaluation` / `score_results` / `generate_report` as tools --
 see [`src/mcp-server.ts`](../src/mcp-server.ts) -- so an MCP-capable
 agent can drive this whole flow itself instead of shelling out to the CLI.

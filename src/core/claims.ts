@@ -5,7 +5,7 @@ import { join, relative, resolve, sep } from "node:path";
 import { scoreOne } from "./scorer.js";
 import type { AcceptanceCriterion, ClaimStatus, FileClaim } from "../types.js";
 
-export const CLAIMS_DIR = ".claims";
+export const CLAIMS_DIR = ".diedinchat";
 
 export interface ClaimEvaluation {
   claim: FileClaim;

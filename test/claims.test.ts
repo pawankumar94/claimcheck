@@ -14,7 +14,7 @@ import type { FileClaim } from "../src/types.js";
 let root: string;
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "claimcheck-claims-"));
+  root = await mkdtemp(join(tmpdir(), "diedinchat-claims-"));
   await mkdir(join(root, "src", "routes"), { recursive: true });
   await writeFile(join(root, "src", "middleware.ts"), "export function auth() { return true }\n");
   await writeFile(join(root, "src", "routes", "home.ts"), "export const home = 1\n");
@@ -33,7 +33,7 @@ describe("makeClaimId", () => {
 });
 
 describe("pinClaim", () => {
-  it("writes a ticket under .claims and records file hashes", async () => {
+  it("writes a ticket under .diedinchat and records file hashes", async () => {
     const { claim, action, path } = await pinClaim({
       root,
       text: "Auth only goes through src/middleware.ts.",

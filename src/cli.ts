@@ -32,7 +32,7 @@ async function loadRawRecords(dir: string): Promise<RawRecord[]> {
 
 function printEvaluations(evals: ClaimEvaluation[]): void {
   if (evals.length === 0) {
-    console.log("No tickets. Pin one with:  claimcheck pin --text \"...\" --file src/...");
+    console.log("No tickets. Pin one with:  diedinchat pin --text \"...\" --file src/...");
     return;
   }
   for (const e of evals) {
@@ -52,9 +52,9 @@ function printEvaluations(evals: ClaimEvaluation[]): void {
 
 const program = new Command();
 program
-  .name("claimcheck")
+  .name("diedinchat")
   .description(
-    "Pin what an agent asserted to the files it was about. Tickets live in .claims/, survive sessions, and go stale when those files change."
+    "Pin what an agent asserted to the files it was about. Tickets live in .diedinchat/, survive sessions, and go stale when those files change."
   )
   .version("0.1.0");
 
@@ -70,7 +70,7 @@ program
 
 program
   .command("pin")
-  .description("Pin an assertion to one or more files. Writes .claims/<id>.json.")
+  .description("Pin an assertion to one or more files. Writes .diedinchat/<id>.json.")
   .requiredOption("--text <text>", "the assertion")
   .option("--file <path>", "file or directory the assertion is about (repeatable)", collect, [])
   .option("--id <id>", "ticket id; default is a slug of --text")
@@ -112,7 +112,7 @@ program
 
 program
   .command("measure")
-  .description("Lab: measure whether trimming your agent's tool surface changes task success. Needs no files: tasks, answer keys, and agent profiles all ship with claimcheck.")
+  .description("Lab: measure whether trimming your agent's tool surface changes task success. Needs no files: tasks, answer keys, and agent profiles all ship with diedinchat.")
   .option("--agent <name>", "agent to measure; auto-detected from what is installed if omitted")
   .option("--example <name>", "bundled task set to use", "bfcl-tool-count")
   .option("--trials <n>", "repeats per task per policy", "2")
@@ -160,7 +160,7 @@ program
     if (policies.length !== 2) {
       console.error(
         `Task set "${opts.example}" defines ${policies.length} prompt-level policies, so there is no ` +
-          `two-way comparison to run automatically. Use \`claimcheck run\` and name the policies yourself.`
+          `two-way comparison to run automatically. Use \`diedinchat run\` and name the policies yourself.`
       );
       process.exitCode = 1;
       return;
@@ -212,12 +212,12 @@ program
 
     const cost = records.reduce((a, r) => a + (r.metrics?.cost ?? 0), 0);
     if (cost > 0) console.log(`\n  spent: $${cost.toFixed(2)}`);
-    console.log(`\n  Charts: claimcheck chart --input <scored.json>   Full report: claimcheck report`);
+    console.log(`\n  Charts: diedinchat chart --input <scored.json>   Full report: diedinchat report`);
   });
 
 program
   .command("install")
-  .description("Install claimcheck's methodology into this project for your coding agent(s). No server, no config edit.")
+  .description("Install diedinchat's methodology into this project for your coding agent(s). No server, no config edit.")
   .option("--target <id>", "framework to install for (repeatable); omit to auto-detect", collect, [])
   .option("--all", "install for every supported framework")
   .option("--list", "list supported frameworks and where each file goes")
@@ -227,8 +227,8 @@ program
     if (opts.list) {
       console.log("Supported targets:\n");
       for (const t of TARGETS) console.log(`  ${t.id.padEnd(14)} ${t.path.padEnd(48)} ${t.label}`);
-      console.log("\nInstall one:   claimcheck install --target cursor");
-      console.log("Install all:   claimcheck install --all");
+      console.log("\nInstall one:   diedinchat install --target cursor");
+      console.log("Install all:   diedinchat install --all");
       return;
     }
 
@@ -243,8 +243,8 @@ program
     if (targets.length === 0) {
       console.log(
         "No coding-agent framework detected in this project.\n" +
-          "Pick one explicitly (claimcheck install --target cursor), see the list\n" +
-          "(claimcheck install --list), or install everywhere (--all)."
+          "Pick one explicitly (diedinchat install --target cursor), see the list\n" +
+          "(diedinchat install --list), or install everywhere (--all)."
       );
       return;
     }
@@ -255,7 +255,7 @@ program
     }
     console.log(
       `\nDone. Your agent now pins assertions to files and checks tickets before editing.\n` +
-        `Tickets: claimcheck pin / status / check. Lab: claimcheck measure. MCP: claimcheck mcp.`
+        `Tickets: diedinchat pin / status / check. Lab: diedinchat measure. MCP: diedinchat mcp.`
     );
   });
 
@@ -279,7 +279,7 @@ program
     }
     console.log("Bundled example task sets:\n");
     for (const e of examples) console.log(`  ${e}`);
-    console.log("\nUse a profile name with --agent, e.g.  claimcheck run --agent gemini-cli ...");
+    console.log("\nUse a profile name with --agent, e.g.  diedinchat run --agent gemini-cli ...");
   });
 
 program
@@ -416,7 +416,7 @@ program
 
 program
   .command("mcp")
-  .description("Start claimcheck as an MCP server (stdio) so any MCP-capable agent can call it as a tool.")
+  .description("Start diedinchat as an MCP server (stdio) so any MCP-capable agent can call it as a tool.")
   .action(async () => {
     await startMcpServer();
   });

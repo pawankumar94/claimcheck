@@ -1,10 +1,10 @@
 {
-  "name": "@pawankumar94/claimcheck",
+  "name": "@pawankumar94/diedinchat",
   "version": "0.1.0",
   "description": "Pin what a coding agent asserted to the files it was about. Tickets live in the repo, survive sessions and tool switches, and go stale when those files change. Also ships a lab CLI/MCP to measure agent-config claims without anecdotes.",
   "type": "module",
   "bin": {
-    "claimcheck": "./dist/cli.js"
+    "diedinchat": "./dist/cli.js"
   },
   "main": "./dist/index.js",
   "exports": {
@@ -46,12 +46,12 @@
   "author": "Pawan Kumar",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pawankumar94/claimcheck.git"
+    "url": "git+https://github.com/pawankumar94/diedinchat.git"
   },
   "bugs": {
-    "url": "https://github.com/pawankumar94/claimcheck/issues"
+    "url": "https://github.com/pawankumar94/diedinchat/issues"
   },
-  "homepage": "https://github.com/pawankumar94/claimcheck#readme",
+  "homepage": "https://github.com/pawankumar94/diedinchat#readme",
   "publishConfig": {
     "access": "public"
   },

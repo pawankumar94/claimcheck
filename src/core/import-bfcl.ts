@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import type { AcceptanceCriterion, Task, TasksDoc } from "../types.js";
 
 /**
- * Imports the Berkeley Function Calling Leaderboard (BFCL) into a claimcheck
+ * Imports the Berkeley Function Calling Leaderboard (BFCL) into a diedinchat
  * task set.
  *
  * Why BFCL specifically: claim 001 is about how many tools an agent sees, and
@@ -208,7 +208,7 @@ export function importBfcl(
       url: "https://github.com/ShishirPatil/gorilla/tree/main/berkeley-function-call-leaderboard",
       license: "Apache-2.0",
       note:
-        `Questions and ground-truth calls are BFCL's. claimcheck adds only the distractor contrast ` +
+        `Questions and ground-truth calls are BFCL's. diedinchat adds only the distractor contrast ` +
         `(${opts.fewDistractors} vs ${opts.manyDistractors} irrelevant functions) and scores by whether ` +
         (opts.strictArgs
           ? `the correct function name and every required argument value appear in the answer. That is closer to `

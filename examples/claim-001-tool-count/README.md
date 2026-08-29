@@ -1,7 +1,7 @@
 # Example: claim 001, fewer tools improves task success
 
 This is the original pilot claim this project was built around, now expressed
-in claimcheck's agent-agnostic format: `tasks.json` and `policies/*.json`
+in diedinchat's agent-agnostic format: `tasks.json` and `policies/*.json`
 here are pure data, with no agent-specific flags in them. Any agent profile
 (built-in `claude-code`, or your own) plugs into this task set unchanged.
 
@@ -11,14 +11,14 @@ Full hypothesis, corpus, and falsification criteria:
 ## Running it against Claude Code
 
 ```bash
-claimcheck run \
+diedinchat run \
   --tasks examples/claim-001-tool-count/tasks.json \
   --agent claude-code \
   --policy curated --policy full \
   --trials 3
 
-claimcheck score --tasks examples/claim-001-tool-count/tasks.json
-claimcheck report
+diedinchat score --tasks examples/claim-001-tool-count/tasks.json
+diedinchat report
 ```
 
 `claude-code` here resolves to the built-in [profiles/claude-code.json](../../profiles/claude-code.json)
@@ -31,7 +31,7 @@ run's numbers.
 Point `--agent` at a profile JSON file instead of a built-in name:
 
 ```bash
-claimcheck run \
+diedinchat run \
   --tasks examples/claim-001-tool-count/tasks.json \
   --agent claude-code \
   --agent ./my-codex-profile.json \

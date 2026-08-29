@@ -62,7 +62,7 @@ export async function pickDefaultAgent(): Promise<{ chosen: DetectedAgent | null
 
 /** Human-readable explanation of why no agent could be selected. */
 export function explainNoAgent(all: DetectedAgent[]): string {
-  const lines = ["No coding agent is ready to measure. claimcheck found:", ""];
+  const lines = ["No coding agent is ready to measure. diedinchat found:", ""];
   for (const a of all) {
     const status = !a.installed
       ? `not installed (needs \`${a.command}\` on PATH)`
@@ -74,7 +74,7 @@ export function explainNoAgent(all: DetectedAgent[]): string {
   lines.push(
     "",
     "Install one of those CLIs and authenticate it, then run this again.",
-    "Nothing else needs configuring: the tasks and answer keys ship with claimcheck."
+    "Nothing else needs configuring: the tasks and answer keys ship with diedinchat."
   );
   return lines.join("\n");
 }

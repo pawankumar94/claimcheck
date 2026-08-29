@@ -1,4 +1,4 @@
-# Smithery configuration for claimcheck MCP server
+# Smithery configuration for diedinchat MCP server
 # https://smithery.ai/docs/config
 
 startCommand:
@@ -7,5 +7,5 @@ startCommand:
     command: npx
     args:
       - "-y"
-      - "@pawankumar94/claimcheck"
+      - "@pawankumar94/diedinchat"
       - "mcp"

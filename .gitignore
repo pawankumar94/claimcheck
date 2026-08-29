@@ -1,14 +1,14 @@
 node_modules/
 dist/
 
-# Agent-specific local config. claimcheck is agent-agnostic by design --
+# Agent-specific local config. diedinchat is agent-agnostic by design --
 # per-agent settings belong on your machine, not in the repo. Shared
 # guidance for agents lives in AGENTS.md and docs/architecture.md.
 .claude/
 .cursor/
 .codex/
 # Scratch output from a local lab run. Published results are curated by hand
-# into benchmarks/<date>-<agent>/. File tickets live in .claims/ and ARE
+# into benchmarks/<date>-<agent>/. File tickets live in .diedinchat/ and ARE
 # committed — that is how they survive agent-switch.
 results/
 __pycache__/

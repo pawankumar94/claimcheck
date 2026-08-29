@@ -1,7 +1,7 @@
 {
   "id": "20260829-181134-codex-minimal",
   "label": "codex-minimal",
-  "configNote": "Codex CLI 0.147.0, gpt-5.6-sol medium, read-only sandbox, user config ignored, only claimcheck MCP configured.",
+  "configNote": "Codex CLI 0.147.0, gpt-5.6-sol medium, read-only sandbox, user config ignored, only diedinchat MCP configured.",
   "complete": true,
   "codex_tokens": 54357,
   "answers": [

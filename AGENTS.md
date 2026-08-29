@@ -5,12 +5,12 @@ If you're an agent working in this repo, read [`README.md`](README.md) first
 [`docs/architecture.md`](docs/architecture.md) for the lab internals
 (run/score/report, agent profiles).
 
-**Product direction (do not reverse this in a drive-by):** claimcheck is
-becoming file-bound tickets — assertions pinned to paths in `.claims/`,
+**Product direction (do not reverse this in a drive-by):** diedinchat is
+becoming file-bound tickets — assertions pinned to paths in `.diedinchat/`,
 visible across sessions and agents, flipping `stale` when those files
 change. The existing eval CLI is the *lab* we use to prove that works, not
-the product. Next code: `pin` / `status` / `check`, a `.claims/` store,
-MCP verbs for those, then rewrite `templates/claimcheck.md` so `install`
+the product. Next code: `pin` / `status` / `check`, a `.diedinchat/` store,
+MCP verbs for those, then rewrite `templates/diedinchat.md` so `install`
 teaches pinning rather than only measurement. Do not add a PLANNER.md.
 Do not lead new copy with BFCL or config A/B.
 
@@ -29,7 +29,7 @@ policies (`policies/*.json`) are pure data with no agent's flags in them.
 (profile, policy name, prompt) into a concrete command line -- if you're
 looking for "where does an agent's syntax get resolved," it's there and
 nowhere else. Supporting a new agent is writing a profile JSON file, not
-new code. Ticket storage (when it lands) is repo-local `.claims/`, not
+new code. Ticket storage (when it lands) is repo-local `.diedinchat/`, not
 agent-specific.
 
 ## Before you trust a result
@@ -73,8 +73,8 @@ first.
 - Rewriting the README problem back into "A/B test your MCP tools" after
   this direction change. The lab stays; it is not the pitch.
 
-<!-- claimcheck:start -->
-# claimcheck: measuring agent configuration changes
+<!-- diedinchat:start -->
+# diedinchat: measuring agent configuration changes
 
 Use this whenever someone asks whether a change to an agent's setup (tools, MCP servers, context, model, prompt) actually made it better. The answer is a measurement, not an impression.
 
@@ -104,17 +104,17 @@ Agent configuration advice is almost entirely anecdotal: *"I cut our tool count 
 
 ## Running it
 
-If the `claimcheck` CLI is available:
+If the `diedinchat` CLI is available:
 
 ```bash
-claimcheck profiles                                   # what can be measured
-claimcheck run --tasks <tasks.json> --agent <name> \
+diedinchat profiles                                   # what can be measured
+diedinchat run --tasks <tasks.json> --agent <name> \
   --policy curated --policy full --trials 3
-claimcheck score --tasks <tasks.json>
-claimcheck report                                     # verdict + CI
+diedinchat score --tasks <tasks.json>
+diedinchat report                                     # verdict + CI
 ```
 
-If the claimcheck MCP server is connected, `start_run` / `submit_answers` / `compare_runs` do the same thing with you as the subject: answer the tasks yourself under one configuration, have the user change their real setup, answer again, then compare. Record honestly what configuration was in effect, because the restriction is enforced by the user's actual config, not by claimcheck.
+If the diedinchat MCP server is connected, `start_run` / `submit_answers` / `compare_runs` do the same thing with you as the subject: answer the tasks yourself under one configuration, have the user change their real setup, answer again, then compare. Record honestly what configuration was in effect, because the restriction is enforced by the user's actual config, not by diedinchat.
 
 If neither is installed, you can still follow the method above by hand. The discipline is the point; the tooling only removes arithmetic.
 
@@ -122,4 +122,4 @@ If neither is installed, you can still follow the method above by hand. The disc
 
 Lead with whether the difference was distinguishable. Then the rates, then the interval, then the caveats that bound them. Never present a statistically indistinguishable gap as a win, and never drop the caveats when summarising, because they are what makes the number worth anything.
 
-<!-- claimcheck:end -->
+<!-- diedinchat:end -->

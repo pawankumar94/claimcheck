@@ -1,7 +1,7 @@
 {
   "id": "20260829-181255-codex-full",
   "label": "codex-full",
-  "configNote": "Codex CLI 0.147.0, gpt-5.6-sol medium, read-only sandbox, normal user configuration retained with its configured MCP servers and enabled plugins, plus claimcheck MCP.",
+  "configNote": "Codex CLI 0.147.0, gpt-5.6-sol medium, read-only sandbox, normal user configuration retained with its configured MCP servers and enabled plugins, plus diedinchat MCP.",
   "complete": true,
   "codex_tokens": 43636,
   "answers": [

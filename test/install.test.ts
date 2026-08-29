@@ -8,7 +8,7 @@ let root: string;
 let body: string;
 
 beforeEach(async () => {
-  root = await mkdtemp(join(tmpdir(), "claimcheck-proj-"));
+  root = await mkdtemp(join(tmpdir(), "diedinchat-proj-"));
   body = await loadTemplate();
 });
 
@@ -46,7 +46,7 @@ describe("installTarget", () => {
       const outcome = await installTarget(target, root, body);
       expect(outcome.action).toBe("created");
       const written = await readFile(join(root, target.path), "utf-8");
-      expect(written).toContain("claimcheck: file-bound tickets");
+      expect(written).toContain("diedinchat: file-bound tickets");
     }
   });
 
@@ -54,11 +54,11 @@ describe("installTarget", () => {
     await installTarget(findTarget("cursor"), root, body);
     await installTarget(findTarget("agent-skills"), root, body);
 
-    const cursor = await readFile(join(root, ".cursor/rules/claimcheck.mdc"), "utf-8");
-    const skill = await readFile(join(root, "skills/claimcheck/SKILL.md"), "utf-8");
+    const cursor = await readFile(join(root, ".cursor/rules/diedinchat.mdc"), "utf-8");
+    const skill = await readFile(join(root, "skills/diedinchat/SKILL.md"), "utf-8");
 
     expect(cursor).toMatch(/^---\ndescription: .*\nalwaysApply: true\n---/);
-    expect(skill).toMatch(/^---\nname: claimcheck\n/);
+    expect(skill).toMatch(/^---\nname: diedinchat\n/);
     // Guidance must not drift between frameworks.
     expect(cursor.split("---\n\n")[1]).toBe(skill.split("---\n\n")[1]);
   });
@@ -71,8 +71,8 @@ describe("installTarget", () => {
     await installTarget(target, root, body);
 
     const content = await readFile(join(root, "AGENTS.md"), "utf-8");
-    expect(content.match(/claimcheck:start/g)).toHaveLength(1);
-    expect(content.match(/claimcheck:end/g)).toHaveLength(1);
+    expect(content.match(/diedinchat:start/g)).toHaveLength(1);
+    expect(content.match(/diedinchat:end/g)).toHaveLength(1);
   });
 
   it("never destroys content the user wrote in a shared file", async () => {
@@ -84,13 +84,13 @@ describe("installTarget", () => {
 
     const content = await readFile(join(root, "AGENTS.md"), "utf-8");
     expect(content).toContain("Do not delete this line.");
-    expect(content.indexOf("Do not delete this line.")).toBeLessThan(content.indexOf("claimcheck:start"));
+    expect(content.indexOf("Do not delete this line.")).toBeLessThan(content.indexOf("diedinchat:start"));
   });
 
   it("creates a shared file with just the fenced block when none exists", async () => {
     await installTarget(findTarget("agents-md"), root, body);
     const content = await readFile(join(root, "AGENTS.md"), "utf-8");
-    expect(content.startsWith("<!-- claimcheck:start -->")).toBe(true);
+    expect(content.startsWith("<!-- diedinchat:start -->")).toBe(true);
   });
 
   it("reports 'skipped' when an owned file is already byte-identical", async () => {
@@ -109,10 +109,10 @@ describe("skill-host targets", () => {
     await installTarget(findTarget("hermes"), root, body);
     await installTarget(findTarget("claude-code"), root, body);
 
-    const hermes = await readFile(join(root, ".hermes/skills/claimcheck/SKILL.md"), "utf-8");
-    const claude = await readFile(join(root, ".claude/skills/claimcheck/SKILL.md"), "utf-8");
+    const hermes = await readFile(join(root, ".hermes/skills/diedinchat/SKILL.md"), "utf-8");
+    const claude = await readFile(join(root, ".claude/skills/diedinchat/SKILL.md"), "utf-8");
 
-    expect(hermes).toMatch(/^---\nname: claimcheck\ndescription: .*\nversion: 1\.0\.0\n---/);
+    expect(hermes).toMatch(/^---\nname: diedinchat\ndescription: .*\nversion: 1\.0\.0\n---/);
     expect(claude).not.toContain("version:");
     // Guidance itself must still be identical across hosts.
     expect(hermes.split("---\n\n")[1]).toBe(claude.split("---\n\n")[1]);
@@ -121,6 +121,6 @@ describe("skill-host targets", () => {
   it("supports the generic cross-agent .agents/skills location", async () => {
     const outcome = await installTarget(findTarget("agents-skills"), root, body);
     expect(outcome.action).toBe("created");
-    expect(await readFile(join(root, ".agents/skills/claimcheck/SKILL.md"), "utf-8")).toContain("Pin assertions to files");
+    expect(await readFile(join(root, ".agents/skills/diedinchat/SKILL.md"), "utf-8")).toContain("Pin assertions to files");
   });
 });

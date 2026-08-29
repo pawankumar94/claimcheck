@@ -1,22 +1,22 @@
-# ClaimCheck brand
+# DiedInChat brand
 
-Drop this `brand/` folder at the root of the claimcheck repo.
+Drop this `brand/` folder at the root of the diedinchat repo.
 
 ## Use on GitHub
 
 1. Profile / org avatar: `png/icon-1024.png`
 2. Repository social preview (Settings → General → Social preview): `social/og-1280x640.png`
    Optional named version: `social/og-1280x640-wordmark.png`
-3. README / site mark: `svg/claimcheck-icon.svg` or `png/icon-256.png`
-4. Favicon: `svg/claimcheck-favicon.svg` or `png/favicon.ico`
+3. README / site mark: `svg/diedinchat-icon.svg` or `png/icon-256.png`
+4. Favicon: `svg/diedinchat-favicon.svg` or `png/favicon.ico`
 
 ## Files
 
 ```
 brand/
-  svg/claimcheck-icon.svg
-  svg/claimcheck-social.svg
-  svg/claimcheck-favicon.svg
+  svg/diedinchat-icon.svg
+  svg/diedinchat-social.svg
+  svg/diedinchat-favicon.svg
   png/icon-1024.png
   png/icon-512.png
   png/icon-256.png

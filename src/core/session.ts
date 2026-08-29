@@ -10,11 +10,11 @@ import type { RawRecord, TasksDoc } from "../types.js";
  * The subprocess pipeline (runner.ts) spawns an agent CLI and parses its
  * stdout, which forces a per-agent profile of flags and output formats. This
  * module is the portable alternative: the agent you are already talking to
- * answers the tasks itself through MCP tools, and claimcheck only stores and
+ * answers the tasks itself through MCP tools, and diedinchat only stores and
  * scores. Nothing here knows what agent is on the other end, so it works
  * identically in every MCP client.
  *
- * The trade is that claimcheck does not enforce the tool restriction -- the
+ * The trade is that diedinchat does not enforce the tool restriction -- the
  * user does, by changing their real configuration between runs. That is
  * stronger evidence than a simulated restriction, but only if the run records
  * honestly what configuration it was taken under, which is why `configNote`
@@ -44,12 +44,12 @@ export interface RunSession {
   complete: boolean;
 }
 
-export function claimcheckHome(): string {
-  return process.env.CLAIMCHECK_HOME ?? join(homedir(), ".claimcheck");
+export function diedinchatHome(): string {
+  return process.env.DIEDINCHAT_HOME ?? join(homedir(), ".diedinchat");
 }
 
 function runsDir(): string {
-  return join(claimcheckHome(), "runs");
+  return join(diedinchatHome(), "runs");
 }
 
 function runPath(id: string): string {

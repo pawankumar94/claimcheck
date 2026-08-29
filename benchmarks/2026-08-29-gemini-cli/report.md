@@ -1,4 +1,4 @@
-# claimcheck: report
+# diedinchat: report
 
 ## Verdict
 

@@ -3,7 +3,7 @@
     "name": "Berkeley Function Calling Leaderboard (BFCL)",
     "url": "https://github.com/ShishirPatil/gorilla/tree/main/berkeley-function-call-leaderboard",
     "license": "Apache-2.0",
-    "note": "Questions and ground-truth calls are BFCL's. claimcheck adds only the distractor contrast (0 vs 40 irrelevant functions) and scores by whether the correct function name appears in the answer -- a weaker check than BFCL's own AST match, so these numbers are NOT comparable to BFCL leaderboard scores."
+    "note": "Questions and ground-truth calls are BFCL's. diedinchat adds only the distractor contrast (0 vs 40 irrelevant functions) and scores by whether the correct function name appears in the answer -- a weaker check than BFCL's own AST match, so these numbers are NOT comparable to BFCL leaderboard scores."
   },
   "note": "Self-contained task set: no repository is cloned, since each prompt carries its own function specs.",
   "tasks": [

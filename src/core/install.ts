@@ -26,64 +26,63 @@ export interface InstallTarget {
 }
 
 const DESCRIPTION =
-  "Measure whether an agent configuration change actually helped: pre-registered answer keys, " +
-  "repeated trials, and a confidence interval instead of an impression.";
+  "Pin assertions about this repo to the files they cite, list tickets before editing a path, and re-check when those files change. Do not leave constraints only in chat.";
 
 export const TARGETS: InstallTarget[] = [
   {
     id: "claude-code",
     label: "Claude Code (skill)",
-    path: ".claude/skills/claimcheck/SKILL.md",
+    path: ".claude/skills/diedinchat/SKILL.md",
     detect: [".claude", "CLAUDE.md"],
-    render: (body) => `---\nname: claimcheck\ndescription: ${DESCRIPTION}\n---\n\n${body}`,
+    render: (body) => `---\nname: diedinchat\ndescription: ${DESCRIPTION}\n---\n\n${body}`,
   },
   {
     id: "agent-skills",
     label: "Agent Skills (portable SKILL.md)",
-    path: "skills/claimcheck/SKILL.md",
+    path: "skills/diedinchat/SKILL.md",
     detect: ["skills"],
-    render: (body) => `---\nname: claimcheck\ndescription: ${DESCRIPTION}\n---\n\n${body}`,
+    render: (body) => `---\nname: diedinchat\ndescription: ${DESCRIPTION}\n---\n\n${body}`,
   },
   {
     id: "hermes",
     label: "Hermes Agent (project skill)",
-    path: ".hermes/skills/claimcheck/SKILL.md",
+    path: ".hermes/skills/diedinchat/SKILL.md",
     detect: [".hermes"],
     // Hermes requires a `version` field that the other skill hosts do not.
-    render: (body) => `---\nname: claimcheck\ndescription: ${DESCRIPTION}\nversion: 1.0.0\n---\n\n${body}`,
+    render: (body) => `---\nname: diedinchat\ndescription: ${DESCRIPTION}\nversion: 1.0.0\n---\n\n${body}`,
   },
   {
     id: "agents-skills",
     label: "Generic .agents/skills (cross-agent)",
-    path: ".agents/skills/claimcheck/SKILL.md",
+    path: ".agents/skills/diedinchat/SKILL.md",
     detect: [".agents"],
-    render: (body) => `---\nname: claimcheck\ndescription: ${DESCRIPTION}\nversion: 1.0.0\n---\n\n${body}`,
+    render: (body) => `---\nname: diedinchat\ndescription: ${DESCRIPTION}\nversion: 1.0.0\n---\n\n${body}`,
   },
   {
     id: "cursor",
     label: "Cursor (project rule)",
-    path: ".cursor/rules/claimcheck.mdc",
+    path: ".cursor/rules/diedinchat.mdc",
     detect: [".cursor"],
-    render: (body) => `---\ndescription: ${DESCRIPTION}\nalwaysApply: false\n---\n\n${body}`,
+    render: (body) => `---\ndescription: ${DESCRIPTION}\nalwaysApply: true\n---\n\n${body}`,
   },
   {
     id: "windsurf",
     label: "Windsurf (project rule)",
-    path: ".windsurf/rules/claimcheck.md",
+    path: ".windsurf/rules/diedinchat.md",
     detect: [".windsurf"],
     render: (body) => `---\ndescription: ${DESCRIPTION}\n---\n\n${body}`,
   },
   {
     id: "cline",
     label: "Cline (project rule)",
-    path: ".clinerules/claimcheck.md",
+    path: ".clinerules/diedinchat.md",
     detect: [".clinerules"],
     render: (body) => body,
   },
   {
     id: "copilot",
     label: "GitHub Copilot (instructions)",
-    path: ".github/instructions/claimcheck.instructions.md",
+    path: ".github/instructions/diedinchat.instructions.md",
     detect: [".github/copilot-instructions.md", ".github"],
     render: (body) => `---\napplyTo: "**"\n---\n\n${body}`,
   },
@@ -111,11 +110,11 @@ export function detectTargets(projectRoot: string): InstallTarget[] {
 }
 
 export async function loadTemplate(): Promise<string> {
-  return readFile(join(PACKAGE_ROOT, "templates", "claimcheck.md"), "utf-8");
+  return readFile(join(PACKAGE_ROOT, "templates", "diedinchat.md"), "utf-8");
 }
 
-const MARKER_START = "<!-- claimcheck:start -->";
-const MARKER_END = "<!-- claimcheck:end -->";
+const MARKER_START = "<!-- diedinchat:start -->";
+const MARKER_END = "<!-- diedinchat:end -->";
 
 export interface InstallOutcome {
   target: InstallTarget;
@@ -125,7 +124,7 @@ export interface InstallOutcome {
 
 /**
  * Writes one target. Appended sections are fenced by HTML comments so a
- * re-install replaces claimcheck's own block and never touches anything else
+ * re-install replaces diedinchat's own block and never touches anything else
  * the user has written in a shared file like AGENTS.md.
  */
 export async function installTarget(

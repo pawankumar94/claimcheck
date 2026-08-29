@@ -30,7 +30,7 @@ afterEach(() => {
 });
 
 async function fakeBinDir(names: string[]): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), "claimcheck-bin-"));
+  const dir = await mkdtemp(join(tmpdir(), "diedinchat-bin-"));
   for (const n of names) {
     const p = join(dir, n);
     await writeFile(p, "#!/bin/sh\nexit 0\n");
@@ -105,6 +105,6 @@ describe("explainNoAgent", () => {
     expect(msg).toMatch(/gemini-cli\s+installed, but missing GEMINI_API_KEY/);
     expect(msg).toMatch(/claude-code\s+not installed \(needs `claude` on PATH\)/);
     // The whole point of zero-config: no task authoring is implied anywhere.
-    expect(msg).toMatch(/tasks and answer keys ship with claimcheck/);
+    expect(msg).toMatch(/tasks and answer keys ship with diedinchat/);
   });
 });

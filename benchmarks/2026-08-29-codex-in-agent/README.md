@@ -1,8 +1,8 @@
 # Run: 2026-08-29, Codex in-agent evaluation
 
-This run dogfoods claimcheck as an MCP server inside Codex. It compares the
+This run dogfoods diedinchat as an MCP server inside Codex. It compares the
 same Codex model with the normal user tool configuration against a minimal
-configuration containing only claimcheck.
+configuration containing only diedinchat.
 
 ## Setup
 
@@ -11,13 +11,13 @@ configuration containing only claimcheck.
 | Agent | Codex CLI 0.147.0, `gpt-5.6-sol`, medium reasoning |
 | Task set | `examples/claim-001-tool-count`, 8 repository questions |
 | Corpus | `pawankumar94/nocontext` at `6f0d6f48` |
-| Full condition | Normal user config, 29 configured MCP servers and 12 enabled plugins, plus claimcheck |
-| Minimal condition | User config ignored, only claimcheck MCP configured |
+| Full condition | Normal user config, 29 configured MCP servers and 12 enabled plugins, plus diedinchat |
+| Minimal condition | User config ignored, only diedinchat MCP configured |
 | Held constant | Model, reasoning effort, pinned checkout, read-only sandbox, prompt |
 | Trials | 1 Codex session per condition |
 
 The MCP server was run from the local build. This does not validate the public
-`npx claimcheck` installation path.
+`npx diedinchat` installation path.
 
 ## Result
 
@@ -49,27 +49,27 @@ Codex condition missed those facts.
 ## MCP integration findings
 
 Codex discovered and called `start_run`, `submit_answers`, and `compare_runs`
-from the local claimcheck server.
+from the local diedinchat server.
 
 The first non-interactive attempt failed because Codex cancelled the MCP tool
 calls under its default approval behavior. The successful runs set:
 
 ```toml
-[mcp_servers.claimcheck]
+[mcp_servers.diedinchat]
 default_tools_approval_mode = "approve"
 ```
 
 The broad condition also printed authentication errors from several unrelated
-configured MCP servers. claimcheck still completed, but this startup noise is
+configured MCP servers. diedinchat still completed, but this startup noise is
 part of the real cost of a large user configuration.
 
 ## Limits
 
 - This is an in-agent run. All eight tasks share one Codex conversation, so it
   is not equivalent to the subprocess runner's fresh session per task.
-- claimcheck records no token or latency data for in-agent answers. Token totals
+- diedinchat records no token or latency data for in-agent answers. Token totals
   above were copied from the Codex CLI summaries.
-- The full configuration is described by the client. claimcheck does not verify
+- The full configuration is described by the client. diedinchat does not verify
   which host tools were actually available.
 - Codex uses deferred tool loading, so configured tool count does not imply that
   every schema entered the model context.

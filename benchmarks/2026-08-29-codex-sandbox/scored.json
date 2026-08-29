@@ -8,7 +8,7 @@
     "ok": true,
     "latency_ms": 18783,
     "metrics": {
-      "result_text": "The project uses the [MIT License](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-Gmw232/repo/LICENSE), copyright © 2026 Pawan Kumar.",
+      "result_text": "The project uses the [MIT License](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-Gmw232/repo/LICENSE), copyright © 2026 Pawan Kumar.",
       "cost": null,
       "session_id": null
     },
@@ -24,7 +24,7 @@
     "ok": true,
     "latency_ms": 10655,
     "metrics": {
-      "result_text": "The project uses the **MIT License**, copyrighted © 2026 Pawan Kumar. See [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-AidAs0/repo/LICENSE).",
+      "result_text": "The project uses the **MIT License**, copyrighted © 2026 Pawan Kumar. See [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-AidAs0/repo/LICENSE).",
       "cost": null,
       "session_id": null
     },
@@ -40,7 +40,7 @@
     "ok": true,
     "latency_ms": 9407,
     "metrics": {
-      "result_text": "This project uses the **MIT License**, confirmed by [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-wd4Po9/repo/LICENSE) and `package.json`.",
+      "result_text": "This project uses the **MIT License**, confirmed by [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-wd4Po9/repo/LICENSE) and `package.json`.",
       "cost": null,
       "session_id": null
     },
@@ -72,7 +72,7 @@
     "ok": true,
     "latency_ms": 12447,
     "metrics": {
-      "result_text": "The project uses the **MIT License**, confirmed by [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-F0AOpU/repo/LICENSE) and [package.json](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-F0AOpU/repo/package.json:42).",
+      "result_text": "The project uses the **MIT License**, confirmed by [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-F0AOpU/repo/LICENSE) and [package.json](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-F0AOpU/repo/package.json:42).",
       "cost": null,
       "session_id": null
     },
@@ -88,7 +88,7 @@
     "ok": true,
     "latency_ms": 9572,
     "metrics": {
-      "result_text": "This project uses the **MIT License**, confirmed by `LICENSE`, `package.json`, and the README. See [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-uHl0NF/repo/LICENSE).",
+      "result_text": "This project uses the **MIT License**, confirmed by `LICENSE`, `package.json`, and the README. See [LICENSE](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-uHl0NF/repo/LICENSE).",
       "cost": null,
       "session_id": null
     },
@@ -248,7 +248,7 @@
     "ok": true,
     "latency_ms": 11478,
     "metrics": {
-      "result_text": "Lexical P@1 improved by **33 to 83 percentage points**, depending on the repository. No—the README treats this only as evidence that the retrieval metric responds to real edits, **not** as evidence that agent grounding improved. [README.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-tbExKa/repo/README.md:62)",
+      "result_text": "Lexical P@1 improved by **33 to 83 percentage points**, depending on the repository. No—the README treats this only as evidence that the retrieval metric responds to real edits, **not** as evidence that agent grounding improved. [README.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-tbExKa/repo/README.md:62)",
       "cost": null,
       "session_id": null
     },
@@ -296,7 +296,7 @@
     "ok": true,
     "latency_ms": 22244,
     "metrics": {
-      "result_text": "No. The repository currently ships only the library and CLI; there is no `src/surfaces/mcp.ts`, MCP package, or server entry point.\n\nAccording to [PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-2BIVxL/repo/PLANNER.md:593), the MCP server belongs to Phase 5 and was waiting on Phase 4 evidence that the measurement corresponds to meaningful agent behavior—not merely an improved retrieval score. Phase 4 is now complete, with a narrower finding: fixing missing document pointers improved grounding, while rewording existing pointers did not in two tested repositories.\n\nSo the Phase 4 gate has effectively been reached, but MCP implementation and distribution have not started. The remaining roadmap work is to:\n\n- Build it as a thin adapter over `analyze()` using an in-memory `CorpusSource`.\n- Ship it separately as `nocontext-mcp`.\n- Test it unchanged in at least two MCP clients.\n- Publish and verify it in the official MCP registry.\n- Preserve a clean audit for the base `nocontext` package.\n\nThe README’s “waiting on Phase 4” language is slightly stale because it also records Phase 4b as done.",
+      "result_text": "No. The repository currently ships only the library and CLI; there is no `src/surfaces/mcp.ts`, MCP package, or server entry point.\n\nAccording to [PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-2BIVxL/repo/PLANNER.md:593), the MCP server belongs to Phase 5 and was waiting on Phase 4 evidence that the measurement corresponds to meaningful agent behavior—not merely an improved retrieval score. Phase 4 is now complete, with a narrower finding: fixing missing document pointers improved grounding, while rewording existing pointers did not in two tested repositories.\n\nSo the Phase 4 gate has effectively been reached, but MCP implementation and distribution have not started. The remaining roadmap work is to:\n\n- Build it as a thin adapter over `analyze()` using an in-memory `CorpusSource`.\n- Ship it separately as `nocontext-mcp`.\n- Test it unchanged in at least two MCP clients.\n- Publish and verify it in the official MCP registry.\n- Preserve a clean audit for the base `nocontext` package.\n\nThe README’s “waiting on Phase 4” language is slightly stale because it also records Phase 4b as done.",
       "cost": null,
       "session_id": null
     },
@@ -312,7 +312,7 @@
     "ok": true,
     "latency_ms": 36081,
     "metrics": {
-      "result_text": "No. The repository currently ships only a CLI surface: [`src/surfaces/cli.ts`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-bDkUsK/repo/src/surfaces/cli.ts). The planned `src/surfaces/mcp.ts` does not exist.\n\nAccording to [`PLANNER.md`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-bDkUsK/repo/PLANNER.md:590), the MCP server was gated on Phase 4: empirical evidence that improving the navigation surface affects real-agent grounding or exploration, so the project would not distribute an unproven claim.\n\nThat study is now recorded as complete. Its narrower finding was that adding missing pointers improved grounding, while merely rewording existing pointers did not in two of three repositories. Therefore, the original Phase 4 dependency has effectively cleared, but Phase 5 implementation and distribution have not begun. Remaining work includes:\n\n- Building the thin MCP adapter.\n- Publishing it separately as `nocontext-mcp`.\n- Testing it unchanged in at least two MCP clients.\n- Publishing and verifying it in the official MCP registry.\n\nThere are also unfinished validation items—particularly Phase 3’s independent human probe review and an outside-reader check of output legibility. Some README/status text still says Phase 4 is “not started,” so the roadmap documentation is internally stale; the later, more detailed planner sections mark Phase 4a and 4b done.",
+      "result_text": "No. The repository currently ships only a CLI surface: [`src/surfaces/cli.ts`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-bDkUsK/repo/src/surfaces/cli.ts). The planned `src/surfaces/mcp.ts` does not exist.\n\nAccording to [`PLANNER.md`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-bDkUsK/repo/PLANNER.md:590), the MCP server was gated on Phase 4: empirical evidence that improving the navigation surface affects real-agent grounding or exploration, so the project would not distribute an unproven claim.\n\nThat study is now recorded as complete. Its narrower finding was that adding missing pointers improved grounding, while merely rewording existing pointers did not in two of three repositories. Therefore, the original Phase 4 dependency has effectively cleared, but Phase 5 implementation and distribution have not begun. Remaining work includes:\n\n- Building the thin MCP adapter.\n- Publishing it separately as `nocontext-mcp`.\n- Testing it unchanged in at least two MCP clients.\n- Publishing and verifying it in the official MCP registry.\n\nThere are also unfinished validation items—particularly Phase 3’s independent human probe review and an outside-reader check of output legibility. Some README/status text still says Phase 4 is “not started,” so the roadmap documentation is internally stale; the later, more detailed planner sections mark Phase 4a and 4b done.",
       "cost": null,
       "session_id": null
     },
@@ -328,7 +328,7 @@
     "ok": true,
     "latency_ms": 29974,
     "metrics": {
-      "result_text": "No. The repository currently ships only a CLI surface; `src/surfaces/mcp.ts` does not exist, and even the planned in-memory document source is still a stub ([memory.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-fnxm1U/repo/src/sources/memory.ts:1)).\n\nThe roadmap placed the MCP server in Phase 5, gated on Phase 4 proving that improved navigation scores translate into better agent behavior—not merely better retrieval metrics ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-fnxm1U/repo/PLANNER.md:590)).\n\nThere is a documentation mismatch, though:\n\n- Phase 4b is now marked complete, with a narrower finding: missing pointers improved grounding under a three-read constraint, while better wording alone did not ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-fnxm1U/repo/PLANNER.md:641)).\n- Some README roadmap text still describes Phase 4 as “not started” ([README.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-fnxm1U/repo/README.md:240)).\n\nSo the original evidence gate has effectively been run. What remains is Phase 5 implementation and release work: build the thin MCP adapter, package it separately as `nocontext-mcp`, test it in at least two MCP clients, and publish it to the official MCP registry ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-fnxm1U/repo/PLANNER.md:596)).",
+      "result_text": "No. The repository currently ships only a CLI surface; `src/surfaces/mcp.ts` does not exist, and even the planned in-memory document source is still a stub ([memory.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-fnxm1U/repo/src/sources/memory.ts:1)).\n\nThe roadmap placed the MCP server in Phase 5, gated on Phase 4 proving that improved navigation scores translate into better agent behavior—not merely better retrieval metrics ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-fnxm1U/repo/PLANNER.md:590)).\n\nThere is a documentation mismatch, though:\n\n- Phase 4b is now marked complete, with a narrower finding: missing pointers improved grounding under a three-read constraint, while better wording alone did not ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-fnxm1U/repo/PLANNER.md:641)).\n- Some README roadmap text still describes Phase 4 as “not started” ([README.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-fnxm1U/repo/README.md:240)).\n\nSo the original evidence gate has effectively been run. What remains is Phase 5 implementation and release work: build the thin MCP adapter, package it separately as `nocontext-mcp`, test it in at least two MCP clients, and publish it to the official MCP registry ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-fnxm1U/repo/PLANNER.md:596)).",
       "cost": null,
       "session_id": null
     },
@@ -344,7 +344,7 @@
     "ok": true,
     "latency_ms": 28742,
     "metrics": {
-      "result_text": "No. The repository currently ships only a CLI surface: `src/surfaces/` contains [cli.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-m5nwkD/repo/src/surfaces/cli.ts), and the package exposes only that executable. The roadmap explicitly leaves `src/surfaces/mcp.ts` unchecked.\n\nThe MCP server was waiting on Phase 4—evidence that improved navigation scores affect real-agent behavior, rather than merely retrieval metrics. Phase 4b has now finished, with a narrower finding: missing pointers affected grounding under a three-read budget, while poorly worded existing pointers did not in two tested repositories. A real ranked-retrieval/MCP-resource-picker condition remains untested.\n\nThe next planned work is Phase 5:\n\n- Implement the MCP adapter over the existing `CorpusSource` and `analyze()` architecture.\n- Ship it separately as `nocontext-mcp`.\n- Test it unchanged in at least two MCP clients.\n- Publish it to the official MCP registry.\n\nOne caveat: parts of the README still say Phase 4 is “not started,” but [PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-m5nwkD/repo/PLANNER.md:496) records Phase 4b as completed, so those roadmap summaries are stale.",
+      "result_text": "No. The repository currently ships only a CLI surface: `src/surfaces/` contains [cli.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-m5nwkD/repo/src/surfaces/cli.ts), and the package exposes only that executable. The roadmap explicitly leaves `src/surfaces/mcp.ts` unchecked.\n\nThe MCP server was waiting on Phase 4—evidence that improved navigation scores affect real-agent behavior, rather than merely retrieval metrics. Phase 4b has now finished, with a narrower finding: missing pointers affected grounding under a three-read budget, while poorly worded existing pointers did not in two tested repositories. A real ranked-retrieval/MCP-resource-picker condition remains untested.\n\nThe next planned work is Phase 5:\n\n- Implement the MCP adapter over the existing `CorpusSource` and `analyze()` architecture.\n- Ship it separately as `nocontext-mcp`.\n- Test it unchanged in at least two MCP clients.\n- Publish it to the official MCP registry.\n\nOne caveat: parts of the README still say Phase 4 is “not started,” but [PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-m5nwkD/repo/PLANNER.md:496) records Phase 4b as completed, so those roadmap summaries are stale.",
       "cost": null,
       "session_id": null
     },
@@ -360,7 +360,7 @@
     "ok": true,
     "latency_ms": 23345,
     "metrics": {
-      "result_text": "No. The repository currently ships only the CLI/library surface; `src/surfaces/` contains only `cli.ts`, and the roadmap marks `src/surfaces/mcp.ts` as not started.\n\nThe MCP server was gated on Phase 4 proving whether improved navigation actually affects agent behavior—not merely retrieval scores. Phase 4 is now complete, with a narrower finding: missing pointers improved grounding under a three-read budget, while wording changes did not in two already-linked repos.\n\nSo it is now waiting on Phase 5 implementation and release work:\n\n- Build the thin MCP adapter over `analyze(source, options)`.\n- Publish it separately as `nocontext-mcp`.\n- Test it unchanged in at least two supported MCP clients.\n- Publish and verify it in the official MCP registry.\n\nThe roadmap also notes that behavior under an actual MCP resource-picker remains untested. See [PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-gMPhcv/repo/PLANNER.md:593) and [ARCHITECTURE.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-gMPhcv/repo/docs/ARCHITECTURE.md:21).",
+      "result_text": "No. The repository currently ships only the CLI/library surface; `src/surfaces/` contains only `cli.ts`, and the roadmap marks `src/surfaces/mcp.ts` as not started.\n\nThe MCP server was gated on Phase 4 proving whether improved navigation actually affects agent behavior—not merely retrieval scores. Phase 4 is now complete, with a narrower finding: missing pointers improved grounding under a three-read budget, while wording changes did not in two already-linked repos.\n\nSo it is now waiting on Phase 5 implementation and release work:\n\n- Build the thin MCP adapter over `analyze(source, options)`.\n- Publish it separately as `nocontext-mcp`.\n- Test it unchanged in at least two supported MCP clients.\n- Publish and verify it in the official MCP registry.\n\nThe roadmap also notes that behavior under an actual MCP resource-picker remains untested. See [PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-gMPhcv/repo/PLANNER.md:593) and [ARCHITECTURE.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-gMPhcv/repo/docs/ARCHITECTURE.md:21).",
       "cost": null,
       "session_id": null
     },
@@ -376,7 +376,7 @@
     "ok": true,
     "latency_ms": 28374,
     "metrics": {
-      "result_text": "No. The repository currently ships only a CLI surface; there is no `src/surfaces/mcp.ts`, and the in-memory source intended for MCP use remains explicitly unimplemented ([memory.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-DrBZjF/repo/src/sources/memory.ts:1)). The README also labels the MCP server “not started” ([README.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-DrBZjF/repo/README.md:185)).\n\nAccording to the roadmap, it was waiting on Phase 4 evidence that improved navigation scores translate into better agent grounding—not engineering work. Phase 4 produced only a narrower result: missing pointers improved grounding, while rewording existing pointers did not in the tested repositories. Ranked retrieval and MCP resource-picker behavior remain untested ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-DrBZjF/repo/PLANNER.md:529)).\n\nThe planned next steps are Phase 5:\n\n- Build a thin MCP adapter over `analyze()` ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-DrBZjF/repo/PLANNER.md:590)).\n- Ship it separately as `nocontext-mcp`.\n- Test it unchanged in at least two supported clients.\n- Publish it to the official MCP registry and verify the listing directly.",
+      "result_text": "No. The repository currently ships only a CLI surface; there is no `src/surfaces/mcp.ts`, and the in-memory source intended for MCP use remains explicitly unimplemented ([memory.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-DrBZjF/repo/src/sources/memory.ts:1)). The README also labels the MCP server “not started” ([README.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-DrBZjF/repo/README.md:185)).\n\nAccording to the roadmap, it was waiting on Phase 4 evidence that improved navigation scores translate into better agent grounding—not engineering work. Phase 4 produced only a narrower result: missing pointers improved grounding, while rewording existing pointers did not in the tested repositories. Ranked retrieval and MCP resource-picker behavior remain untested ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-DrBZjF/repo/PLANNER.md:529)).\n\nThe planned next steps are Phase 5:\n\n- Build a thin MCP adapter over `analyze()` ([PLANNER.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-DrBZjF/repo/PLANNER.md:590)).\n- Ship it separately as `nocontext-mcp`.\n- Test it unchanged in at least two supported clients.\n- Publish it to the official MCP registry and verify the listing directly.",
       "cost": null,
       "session_id": null
     },
@@ -488,7 +488,7 @@
     "ok": true,
     "latency_ms": 18948,
     "metrics": {
-      "result_text": "Semantic scoring requires the optional peer dependency `@huggingface/transformers@4.2.0`.\n\nIt is opt-in because its transitive dependencies currently include versions with published security advisories involving `onnxruntime-node`/`adm-zip` and `sharp`/libvips. npm does not propagate this project’s security `overrides` to consumers, so including it by default would give users a vulnerable dependency tree. Without it, the tool safely falls back to lexical-only scoring.\n\nInstall it with:\n\n```bash\nnpm install @huggingface/transformers\n```\n\nSee [CONTRIBUTING.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-zYnQ89/repo/CONTRIBUTING.md:29) and [semantic.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-zYnQ89/repo/src/retrievers/semantic.ts:5).",
+      "result_text": "Semantic scoring requires the optional peer dependency `@huggingface/transformers@4.2.0`.\n\nIt is opt-in because its transitive dependencies currently include versions with published security advisories involving `onnxruntime-node`/`adm-zip` and `sharp`/libvips. npm does not propagate this project’s security `overrides` to consumers, so including it by default would give users a vulnerable dependency tree. Without it, the tool safely falls back to lexical-only scoring.\n\nInstall it with:\n\n```bash\nnpm install @huggingface/transformers\n```\n\nSee [CONTRIBUTING.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-zYnQ89/repo/CONTRIBUTING.md:29) and [semantic.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-zYnQ89/repo/src/retrievers/semantic.ts:5).",
       "cost": null,
       "session_id": null
     },
@@ -504,7 +504,7 @@
     "ok": true,
     "latency_ms": 20826,
     "metrics": {
-      "result_text": "Semantic scoring requires the optional peer dependency `@huggingface/transformers@4.2.0`.\n\nIt’s optional because its transitive dependencies—particularly `onnxruntime-node`, `adm-zip`, and `sharp`/libvips—have published security advisories. npm does not propagate this project’s protective `overrides` to consumers, so including Transformers by default would give `npm install nocontext` a vulnerable dependency tree.\n\nInstead, users explicitly opt in with:\n\n```bash\nnpm install @huggingface/transformers\n```\n\nWithout it, `nocontext` continues with lexical-only scoring and emits a warning. See [semantic.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-aeYidR/repo/src/retrievers/semantic.ts:5) and [CONTRIBUTING.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-aeYidR/repo/CONTRIBUTING.md:29).",
+      "result_text": "Semantic scoring requires the optional peer dependency `@huggingface/transformers@4.2.0`.\n\nIt’s optional because its transitive dependencies—particularly `onnxruntime-node`, `adm-zip`, and `sharp`/libvips—have published security advisories. npm does not propagate this project’s protective `overrides` to consumers, so including Transformers by default would give `npm install nocontext` a vulnerable dependency tree.\n\nInstead, users explicitly opt in with:\n\n```bash\nnpm install @huggingface/transformers\n```\n\nWithout it, `nocontext` continues with lexical-only scoring and emits a warning. See [semantic.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-aeYidR/repo/src/retrievers/semantic.ts:5) and [CONTRIBUTING.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-aeYidR/repo/CONTRIBUTING.md:29).",
       "cost": null,
       "session_id": null
     },
@@ -616,7 +616,7 @@
     "ok": true,
     "latency_ms": 14040,
     "metrics": {
-      "result_text": "The directory is [`examples/stuffed-index`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-hu7fQ9/repo/examples/stuffed-index).",
+      "result_text": "The directory is [`examples/stuffed-index`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-hu7fQ9/repo/examples/stuffed-index).",
       "cost": null,
       "session_id": null
     },
@@ -632,7 +632,7 @@
     "ok": true,
     "latency_ms": 22984,
     "metrics": {
-      "result_text": "The directory is [`examples/stuffed-index`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-WiPw1P/repo/examples/stuffed-index).",
+      "result_text": "The directory is [`examples/stuffed-index`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-WiPw1P/repo/examples/stuffed-index).",
       "cost": null,
       "session_id": null
     },
@@ -648,7 +648,7 @@
     "ok": true,
     "latency_ms": 14678,
     "metrics": {
-      "result_text": "The directory is [`examples/stuffed-index`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-i7WfC2/repo/examples/stuffed-index).",
+      "result_text": "The directory is [`examples/stuffed-index`](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-i7WfC2/repo/examples/stuffed-index).",
       "cost": null,
       "session_id": null
     },
@@ -698,7 +698,7 @@
     "ok": true,
     "latency_ms": 13429,
     "metrics": {
-      "result_text": "The two benchmarks are **ContextBench** and **Agent Retrieval Bench (ARB)**. Both hold the repository fixed and compare retrievers or agents, whereas this project holds the retriever fixed and varies the documentation’s navigation surface. ([docs/METHOD.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-Ka1S3j/repo/docs/METHOD.md))",
+      "result_text": "The two benchmarks are **ContextBench** and **Agent Retrieval Bench (ARB)**. Both hold the repository fixed and compare retrievers or agents, whereas this project holds the retriever fixed and varies the documentation’s navigation surface. ([docs/METHOD.md](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-Ka1S3j/repo/docs/METHOD.md))",
       "cost": null,
       "session_id": null
     },

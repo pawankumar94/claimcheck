@@ -25,12 +25,12 @@ const tasksDoc: TasksDoc = {
 let home: string;
 
 beforeEach(async () => {
-  home = await mkdtemp(join(tmpdir(), "claimcheck-home-"));
-  process.env.CLAIMCHECK_HOME = home;
+  home = await mkdtemp(join(tmpdir(), "diedinchat-home-"));
+  process.env.DIEDINCHAT_HOME = home;
 });
 
 afterAll(async () => {
-  delete process.env.CLAIMCHECK_HOME;
+  delete process.env.DIEDINCHAT_HOME;
   await rm(home, { recursive: true, force: true });
 });
 

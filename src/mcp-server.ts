@@ -14,12 +14,13 @@ import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { loadRun, sessionToRecords, startRun, submitAnswers } from "./core/session.js";
+import { checkClaim, pinClaim, statusClaims } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
 
 const VERSION = "0.1.0";
 
 /**
- * Exposes claimcheck's pipeline as MCP tools so any MCP-capable coding agent
+ * Exposes diedinchat's pipeline as MCP tools so any MCP-capable coding agent
  * (Claude Code, Cursor, Codex, Windsurf, Zed, ...) can install it as a plugin
  * and run an evaluation itself -- including pointing it at its own agent
  * profile to measure its own configuration.
@@ -29,14 +30,14 @@ const VERSION = "0.1.0";
  * npm installed the package, so `list_agent_profiles` exists for discovery.
  */
 export function createServer(): McpServer {
-  const server = new McpServer({ name: "claimcheck", version: VERSION });
+  const server = new McpServer({ name: "diedinchat", version: VERSION });
 
   server.registerTool(
     "list_agent_profiles",
     {
       title: "List available agent profiles and example task sets",
       description:
-        "Discovery entry point -- call this first. Lists the agent profiles bundled with claimcheck " +
+        "Discovery entry point -- call this first. Lists the agent profiles bundled with diedinchat " +
         "(each with the policy names it supports and whether its CLI flags have been verified against " +
         "a live install), plus the example task sets shipped with the package. Use the returned names " +
         "directly as `agents` and `example` arguments to run_evaluation.",
@@ -55,10 +56,117 @@ export function createServer(): McpServer {
     }
   );
 
+  server.registerTool(
+    "pin_claim",
+    {
+      title: "Pin an assertion to files",
+      description:
+        "Writes a ticket to .diedinchat/<id>.json bound to the given files. Use this whenever you assert " +
+        "something about the repo that the next session or a different agent will need. Do not leave " +
+        "that sentence only in chat.",
+      inputSchema: {
+        text: z.string().describe("The assertion"),
+        files: z.array(z.string()).min(1).describe("File or directory paths relative to the project root"),
+        id: z.string().optional().describe("Ticket id; default is a slug of text"),
+        evidence: z
+          .array(z.string())
+          .optional()
+          .describe("Frozen phrases that must remain in the files for the ticket to stay supported"),
+        agent: z.string().optional(),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ text, files, id, evidence, agent, root }) => {
+      const { claim, path, action } = await pinClaim({
+        root: root ?? process.cwd(),
+        text,
+        files,
+        ...(id ? { id } : {}),
+        ...(agent ? { agent } : {}),
+        ...(evidence && evidence.length > 0 ? { evidence } : {}),
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify({ action, path, claim }, null, 2) }],
+      };
+    }
+  );
+
+  server.registerTool(
+    "list_claims_for_file",
+    {
+      title: "List tickets on a file",
+      description:
+        "Call this before editing a path. Returns tickets whose files cover that path, with live status " +
+        "(open / supported / contradicted / stale). Omit path to list every ticket in the repo.",
+      inputSchema: {
+        path: z.string().optional().describe("File or directory to filter by"),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ path, root }) => {
+      const evals = await statusClaims(root ?? process.cwd(), path);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              evals.map((e) => ({
+                id: e.claim.id,
+                text: e.claim.text,
+                files: e.claim.files,
+                status: e.status,
+                changed: e.changed,
+                missingEvidence: e.missingEvidence,
+              })),
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+  );
+
+  server.registerTool(
+    "check_claim",
+    {
+      title: "Re-evaluate a ticket against current files",
+      description:
+        "Compares frozen hashes (stale if a cited file moved) and frozen evidence (contradicted if " +
+        "phrases are gone). No LLM. Pass an id, or omit to check every ticket.",
+      inputSchema: {
+        id: z.string().optional(),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ id, root }) => {
+      const cwd = root ?? process.cwd();
+      const evals = id ? [await checkClaim(cwd, id)] : await statusClaims(cwd);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              evals.map((e) => ({
+                id: e.claim.id,
+                status: e.status,
+                evidenceVerdict: e.evidenceVerdict,
+                changed: e.changed,
+                missingEvidence: e.missingEvidence,
+                text: e.claim.text,
+                files: e.claim.files,
+              })),
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+  );
+
   // ---------------------------------------------------------------------
-  // In-agent evaluation. The calling agent answers the tasks itself, so this
-  // path needs no target CLI, no credentials, and no per-agent output
-  // parsing -- it behaves identically in every MCP client.
+  // In-agent evaluation (lab). The calling agent answers the tasks itself.
   // ---------------------------------------------------------------------
 
   server.registerTool(
@@ -69,7 +177,7 @@ export function createServer(): McpServer {
         "Begins a run in which YOU (the calling agent) answer the tasks yourself, and returns the task " +
         "list. No subprocess is spawned and no credentials are needed. Do one run under your current " +
         "configuration, then have the user change their setup (drop MCP servers, restrict tools) and do " +
-        "a second run, then call compare_runs. claimcheck does NOT enforce the restriction -- the user's " +
+        "a second run, then call compare_runs. diedinchat does NOT enforce the restriction -- the user's " +
         "real configuration does -- so configNote must honestly describe what was in effect.",
       inputSchema: {
         label: z.string().describe('Short name for this condition, e.g. "all-tools" or "read-only"'),
@@ -189,7 +297,7 @@ export function createServer(): McpServer {
         baselinePolicy: a.label,
         candidatePolicy: b.label,
         preamble: [
-          `Configurations compared (as reported by the client, not verified by claimcheck):`,
+          `Configurations compared (as reported by the client, not verified by diedinchat):`,
           `- **${a.label}** - ${a.configNote}`,
           `- **${b.label}** - ${b.configNote}`,
         ],
@@ -205,7 +313,7 @@ export function createServer(): McpServer {
   server.registerTool(
     "run_evaluation",
     {
-      title: "Run a claimcheck evaluation",
+      title: "Run a diedinchat evaluation",
       description:
         "Runs every task in a task set against one or more agents under one or more tool policies, " +
         "writing raw JSON results to outDir. Each invocation gets a fresh checkout of the task set's " +
@@ -272,7 +380,7 @@ export function createServer(): McpServer {
   server.registerTool(
     "score_results",
     {
-      title: "Score claimcheck raw results",
+      title: "Score diedinchat raw results",
       description:
         "Keyword-matches each raw result against its task's pre-registered answer key, producing " +
         "PASS/PARTIAL/FAIL per record. Answer keys must be written from the source before a run -- " +
@@ -317,7 +425,7 @@ export function createServer(): McpServer {
   server.registerTool(
     "generate_report",
     {
-      title: "Generate a claimcheck markdown report",
+      title: "Generate a diedinchat markdown report",
       description:
         "Aggregates scored results into a markdown report: per-task detail plus pass rate, mean cost, " +
         "and mean latency per agent x policy. The report includes the caveats that bound its own " +

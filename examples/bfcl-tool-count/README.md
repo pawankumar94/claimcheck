@@ -32,7 +32,7 @@ so the wide arm can never change what the right answer is.
 curl -sfLO https://raw.githubusercontent.com/ShishirPatil/gorilla/main/berkeley-function-call-leaderboard/bfcl_eval/data/BFCL_v4_multiple.json
 curl -sfL -o gt.json https://raw.githubusercontent.com/ShishirPatil/gorilla/main/berkeley-function-call-leaderboard/bfcl_eval/data/possible_answer/BFCL_v4_multiple.json
 
-claimcheck import-bfcl --entries BFCL_v4_multiple.json --ground-truth gt.json \
+diedinchat import-bfcl --entries BFCL_v4_multiple.json --ground-truth gt.json \
   --few 0 --many 40 --limit 30 --seed 1 --output tasks.json
 ```
 
@@ -41,10 +41,10 @@ The import is deterministic for a given seed, so it reproduces byte-identically.
 ## Running
 
 ```bash
-claimcheck run --tasks examples/bfcl-tool-count/tasks.json \
+diedinchat run --tasks examples/bfcl-tool-count/tasks.json \
   --agent codex --policy few-tools --policy many-tools --trials 3
-claimcheck score --tasks examples/bfcl-tool-count/tasks.json
-claimcheck report && claimcheck chart
+diedinchat score --tasks examples/bfcl-tool-count/tasks.json
+diedinchat report && diedinchat chart
 ```
 
 No repository is cloned, since each prompt carries its own function specs, and the

@@ -79,7 +79,7 @@ export function buildReport(records: ScoredRecord[], opts: ReportOptions = {}): 
   }
 
   const lines: string[] = [
-    "# claimcheck: report",
+    "# diedinchat: report",
     "",
     ...buildVerdictSection(records, opts),
     "## Per-task detail",

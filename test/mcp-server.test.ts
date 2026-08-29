@@ -25,17 +25,20 @@ describe("MCP server", () => {
   it("advertises the discovery and pipeline tools", async () => {
     const c = await connect();
     const { tools } = await c.listTools();
-    expect(tools.map((t) => t.name).sort()).toEqual([
-      // in-agent path: no subprocess, no credentials, works in any MCP client
-      "compare_runs",
-      "start_run",
-      "submit_answers",
-      // subprocess path: drives an external agent CLI via a profile
-      "generate_report",
-      "list_agent_profiles",
-      "run_evaluation",
-      "score_results",
-    ].sort());
+    expect(tools.map((t) => t.name).sort()).toEqual(
+      [
+        "check_claim",
+        "list_claims_for_file",
+        "pin_claim",
+        "compare_runs",
+        "start_run",
+        "submit_answers",
+        "generate_report",
+        "list_agent_profiles",
+        "run_evaluation",
+        "score_results",
+      ].sort()
+    );
   }, 15000);
 
   it("list_agent_profiles returns built-in profiles and examples by name", async () => {

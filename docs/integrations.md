@@ -1,25 +1,25 @@
-# Using claimcheck as a plugin
+# Using diedinchat as a plugin
 
-claimcheck ships as an **MCP server**, which is the one integration path that
+diedinchat ships as an **MCP server**, which is the one integration path that
 works across essentially every current coding agent. Install it once and any
 MCP-capable client can drive evaluations directly, with no per-agent adapter and no
 wrapper script.
 
-> **Not yet on npm.** The configs below use `npx @pawankumar94/claimcheck`,
+> **Not yet on npm.** The configs below use `npx @pawankumar94/diedinchat`,
 > which will work once the package is published. Until then, clone the repo,
-> run `npm install && npm run build && npm link`, and use `claimcheck` as the
+> run `npm install && npm run build && npm link`, and use `diedinchat` as the
 > `command` with `["mcp"]` as the args.
 
 ```bash
-npx -y @pawankumar94/claimcheck mcp
+npx -y @pawankumar94/diedinchat mcp
 ```
 
 That command is the whole integration. Everything below is just where each
 client wants that line written down.
 
 > **Two different things called "agents" here.** The *client* is the agent you
-> configure claimcheck into (it calls the MCP tools). The *subject* is the
-> agent claimcheck runs and measures, chosen per-run via an agent profile.
+> configure diedinchat into (it calls the MCP tools). The *subject* is the
+> agent diedinchat runs and measures, chosen per-run via an agent profile.
 > They can be the same agent, which is how you have an agent measure its own
 > configuration.
 
@@ -40,7 +40,7 @@ has to know where npm installed the package.
 ### Claude Code
 
 ```bash
-claude mcp add claimcheck -- npx -y @pawankumar94/claimcheck mcp
+claude mcp add diedinchat -- npx -y @pawankumar94/diedinchat mcp
 ```
 
 Add `-s user` to make it available in every project rather than just the
@@ -53,9 +53,9 @@ current one.
 ```json
 {
   "mcpServers": {
-    "claimcheck": {
+    "diedinchat": {
       "command": "npx",
-      "args": ["-y", "@pawankumar94/claimcheck", "mcp"]
+      "args": ["-y", "@pawankumar94/diedinchat", "mcp"]
     }
   }
 }
@@ -68,10 +68,10 @@ current one.
 ```json
 {
   "servers": {
-    "claimcheck": {
+    "diedinchat": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@pawankumar94/claimcheck", "mcp"]
+      "args": ["-y", "@pawankumar94/diedinchat", "mcp"]
     }
   }
 }
@@ -84,9 +84,9 @@ current one.
 ```json
 {
   "mcpServers": {
-    "claimcheck": {
+    "diedinchat": {
       "command": "npx",
-      "args": ["-y", "@pawankumar94/claimcheck", "mcp"]
+      "args": ["-y", "@pawankumar94/diedinchat", "mcp"]
     }
   }
 }
@@ -97,17 +97,17 @@ current one.
 `~/.codex/config.toml`:
 
 ```toml
-[mcp_servers.claimcheck]
+[mcp_servers.diedinchat]
 command = "npx"
-args = ["-y", "@pawankumar94/claimcheck", "mcp"]
+args = ["-y", "@pawankumar94/diedinchat", "mcp"]
 ```
 
 ### Anything else (Smithery / Windsurf / Zed / Claude Desktop)
 
-To install automatically via [Smithery](https://smithery.ai/server/@pawankumar94/claimcheck):
+To install automatically via [Smithery](https://smithery.ai/server/@pawankumar94/diedinchat):
 
 ```bash
-npx -y @smithery/cli install @pawankumar94/claimcheck --client claude
+npx -y @smithery/cli install @pawankumar94/diedinchat --client claude
 ```
 
 Or configure manually: most other MCP clients (Windsurf, Zed, Claude Desktop, Continue, and the rest)
@@ -119,7 +119,7 @@ your client's current MCP docs if a block here doesn't take.
 
 Once connected, ask the client in plain language and it picks the tools:
 
-> Use claimcheck to test whether restricting my agent's tools changes task
+> Use diedinchat to test whether restricting my agent's tools changes task
 > success. Run the bundled example against gemini-cli with 3 trials, then
 > show me the report.
 
@@ -133,7 +133,7 @@ and `generate_report`.
 scaling with tasks × agents × policies × trials. The bundled example at 3
 trials is 48 invocations. Subject agents need their own CLI installed and
 authenticated (`GEMINI_API_KEY` for `gemini-cli`, `ANTHROPIC_API_KEY` for
-`claude-code` in `--bare` mode); claimcheck never handles those credentials
+`claude-code` in `--bare` mode); diedinchat never handles those credentials
 itself, it just inherits the environment.
 
 Each run also clones the task set's pinned repository into a fresh temporary
@@ -145,7 +145,7 @@ another trial.
 The same pipeline is importable if you'd rather script it:
 
 ```ts
-import { resolveAgentProfile, runEvaluation, scoreRecords, buildReport, loadTasksDoc } from "@pawankumar94/claimcheck";
+import { resolveAgentProfile, runEvaluation, scoreRecords, buildReport, loadTasksDoc } from "@pawankumar94/diedinchat";
 
 const tasksDoc = await loadTasksDoc("./tasks.json");
 const agent = await resolveAgentProfile("gemini-cli");

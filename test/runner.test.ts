@@ -14,7 +14,7 @@ describe("runEvaluation (end to end, no network)", () => {
   let workDir: string;
 
   beforeAll(async () => {
-    workDir = await mkdtemp(join(tmpdir(), "claimcheck-test-"));
+    workDir = await mkdtemp(join(tmpdir(), "diedinchat-test-"));
     localRepo = join(workDir, "fixture-repo");
     await execFileAsync("git", ["init", "--quiet", localRepo]);
     await writeFile(join(localRepo, "LICENSE"), "MIT License\n");

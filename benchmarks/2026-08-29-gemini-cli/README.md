@@ -1,6 +1,6 @@
 # Run: 2026-08-29. Gemini CLI, claim-001 (tool count)
 
-First real end-to-end result produced by claimcheck.
+First real end-to-end result produced by diedinchat.
 
 ## Setup
 
@@ -66,11 +66,11 @@ applied to this one.
 ## Reproducing
 
 ```bash
-GEMINI_API_KEY=... claimcheck run \
+GEMINI_API_KEY=... diedinchat run \
   --tasks examples/claim-001-tool-count/tasks.json \
   --agent gemini-cli --policy curated --policy full --trials 3
-claimcheck score --tasks examples/claim-001-tool-count/tasks.json
-claimcheck report
+diedinchat score --tasks examples/claim-001-tool-count/tasks.json
+diedinchat report
 ```
 
 Model sampling varies, so exact numbers will differ; the null result should not

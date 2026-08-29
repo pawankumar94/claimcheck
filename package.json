@@ -1,10 +1,10 @@
 {
-  "name": "@pawankumar94/claimcheck",
+  "name": "@pawankumar94/diedinchat",
   "version": "0.1.0",
-  "description": "A/B test your coding agent's configuration. Runs the same tasks under different tool policies against any CLI-based coding agent (Claude Code, Gemini CLI, Codex, Cursor) and reports pass rates. Ships as a CLI and an MCP server.",
+  "description": "Pin what a coding agent asserted to the files it was about. Tickets live in the repo, survive sessions and tool switches, and go stale when those files change. Also ships a lab CLI/MCP to measure agent-config claims without anecdotes.",
   "type": "module",
   "bin": {
-    "claimcheck": "./dist/cli.js"
+    "diedinchat": "./dist/cli.js"
   },
   "main": "./dist/index.js",
   "exports": {
@@ -31,29 +31,27 @@
     "prepublishOnly": "npm run typecheck && npm run test && npm run build"
   },
   "keywords": [
+    "coding-agent",
+    "agent-memory",
+    "context",
     "mcp",
     "mcp-server",
-    "coding-agent",
-    "agent-evaluation",
-    "eval",
-    "benchmark",
-    "ab-testing",
     "claude-code",
-    "gemini-cli",
-    "codex",
     "cursor",
-    "llm"
+    "codex",
+    "gemini-cli",
+    "agent-evaluation"
   ],
   "license": "MIT",
   "author": "Pawan Kumar",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pawankumar94/claimcheck.git"
+    "url": "git+https://github.com/pawankumar94/diedinchat.git"
   },
   "bugs": {
-    "url": "https://github.com/pawankumar94/claimcheck/issues"
+    "url": "https://github.com/pawankumar94/diedinchat/issues"
   },
-  "homepage": "https://github.com/pawankumar94/claimcheck#readme",
+  "homepage": "https://github.com/pawankumar94/diedinchat#readme",
   "publishConfig": {
     "access": "public"
   },

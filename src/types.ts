@@ -146,3 +146,25 @@ export interface ScoredRecord extends RawRecord {
   score: string;
   missing_keywords: string[] | null;
 }
+
+export type ClaimStatus = "open" | "supported" | "contradicted" | "stale";
+
+/**
+ * An assertion pinned to paths in this repo. Lives in `.diedinchat/<id>.json` so
+ * it survives session end and agent-switch. `status` is derived from file
+ * hashes (stale) and frozen evidence (supported / contradicted); `open` means
+ * the files have not moved and no evidence was registered to check.
+ */
+export interface FileClaim {
+  id: string;
+  text: string;
+  files: string[];
+  evidence: AcceptanceCriterion[];
+  status: ClaimStatus;
+  /** sha256 of each file under `files` at pin time. Directory paths expand. */
+  hashes: Record<string, string>;
+  agent?: string;
+  created_at: string;
+  updated_at: string;
+}
+

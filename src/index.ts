@@ -30,4 +30,15 @@ export {
   type InstallOutcome,
 } from "./core/install.js";
 export { startRun, submitAnswers, loadRun, sessionToRecords } from "./core/session.js";
+export {
+  CLAIMS_DIR,
+  pinClaim,
+  listClaims,
+  loadClaim,
+  statusClaims,
+  checkClaim,
+  evaluateClaim,
+  makeClaimId,
+  ticketCoversPath,
+} from "./core/claims.js";
 export { importBfcl, importBfclFromFiles } from "./core/import-bfcl.js";

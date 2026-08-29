@@ -38,7 +38,7 @@ export async function runEvaluation(opts: RunOptions): Promise<RawRecord[]> {
     for (const policyName of opts.policyNames) {
       for (const task of opts.tasksDoc.tasks) {
         for (let trial = 0; trial < trials; trial++) {
-          const tmpRoot = await mkdtemp(join(tmpdir(), "claimcheck-"));
+          const tmpRoot = await mkdtemp(join(tmpdir(), "diedinchat-"));
           let record: RawRecord;
           try {
             // A task set with no repo is self-contained in its prompts; it

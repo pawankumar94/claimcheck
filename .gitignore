@@ -1,5 +1,10 @@
+node_modules/
+dist/
 results/raw/*.json
 results/scored.json
 results/report.md
+legacy-python/results/raw/*.json
+legacy-python/results/scored.json
+legacy-python/results/report.md
 __pycache__/
 *.pyc

@@ -149,27 +149,16 @@ you whether the difference is real or noise.
 
 ### What a result looks like
 
-Real output from this repo. Claude Code (Sonnet 5) answering 30 tasks from a
-public benchmark, three trials per arm, where the only thing that changed is
-how many irrelevant tools were visible:
+The lab reports a difference with an interval on it, never a bare rate:
 
-| policy | tools shown | pass rate |
-|---|---|---|
-| `few-tools` | 2 | 85/90 (94%) |
-| `many-tools` | 42 | 88/90 (98%) |
+**+4 points, 95% CI -21 to +28.** The interval spans zero, so a run like that
+found no evidence either way. That is the point: not a leaderboard number, but
+a bounded answer to "did this change do anything."
 
-**Difference: -3 points, 95% CI -9 to +3.** The interval spans zero, so this run
-found no evidence that trimming the tool surface helps. More usefully, it rules
-things out: if an effect exists here it is smaller than 3 points in the claimed
-direction.
-
-That is the point of the lab. Not a leaderboard number, but a bounded answer
-to "did this change do anything." Full write-ups, charts, and the caveats that
-bound them are in [benchmarks/](benchmarks/).
-
-The same honesty applies when we evaluate file tickets: freeze the keys,
-change one thing (`with-tickets` vs `no-tickets`), report the interval on
-violation rate. A demo is not a result.
+The claimcheck-era tool-count runs that used to live in `benchmarks/` have been
+retired with the old direction. The next published run is the one that matters
+for this product: honor rate `with-tickets` vs `no-tickets`, same tasks, keys
+frozen first. See [PLANNER.md](PLANNER.md) Phase 1. A demo is not a result.
 
 ### Teach your agent the method
 

@@ -7,6 +7,9 @@ dist/
 .claude/
 .cursor/
 .codex/
+# Scratch output from a local run. Published results are curated by hand into
+# benchmarks/<date>-<agent>/ with the caveats that bound them, so a number never
+# ships without its context.
 results/raw/*.json
 results/scored.json
 results/report.md

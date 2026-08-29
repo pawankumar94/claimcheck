@@ -1,0 +1,800 @@
+[
+  {
+    "task_id": "t1-license",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "What license does this project use?",
+    "ok": true,
+    "latency_ms": 11490,
+    "metrics": {
+      "result_text": "This project uses the **MIT License**.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t1-license",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "What license does this project use?",
+    "ok": true,
+    "latency_ms": 10667,
+    "metrics": {
+      "result_text": "This project uses the **MIT License**.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t1-license",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "What license does this project use?",
+    "ok": true,
+    "latency_ms": 10766,
+    "metrics": {
+      "result_text": "This project uses the **MIT License**.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t1-license",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "What license does this project use?",
+    "ok": true,
+    "latency_ms": 10214,
+    "metrics": {
+      "result_text": "This project uses the **MIT License**.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t1-license",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "What license does this project use?",
+    "ok": true,
+    "latency_ms": 11164,
+    "metrics": {
+      "result_text": "This project uses the **MIT License**.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t1-license",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "What license does this project use?",
+    "ok": true,
+    "latency_ms": 13110,
+    "metrics": {
+      "result_text": "This project uses the **MIT License**.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t2-precommit",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "According to AGENTS.md, what two npm commands must pass before committing a change?",
+    "ok": true,
+    "latency_ms": 16345,
+    "metrics": {
+      "result_text": "According to `AGENTS.md`, the npm commands that must pass before committing a change are:\n\n1. `npm run typecheck`\n2. `npm test`\n\n*(Note: The document also specifies running `npm ci` beforehand, and `npm run examples` followed by `git diff --exit-code examples/` to ensure no unexpected changes occurred in the examples).*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t2-precommit",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "According to AGENTS.md, what two npm commands must pass before committing a change?",
+    "ok": true,
+    "latency_ms": 15824,
+    "metrics": {
+      "result_text": "According to `AGENTS.md`, the npm commands that must pass before committing a change are:\n\n1. `npm run typecheck`\n2. `npm test`\n\n*(Note: The document also specifies running `npm ci` and `npm run examples` as part of the pre-commit checks).*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t2-precommit",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "According to AGENTS.md, what two npm commands must pass before committing a change?",
+    "ok": true,
+    "latency_ms": 17910,
+    "metrics": {
+      "result_text": "According to `AGENTS.md`, the `npm` commands that must pass before committing a change (listed under the \"Before you commit\" section) are:\n\n1. `npm run typecheck`\n2. `npm test`\n\n*(Note: The document also specifies running `npm ci` beforehand, and `npm run examples` followed by `git diff --exit-code examples/` to ensure examples are up to date).*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t2-precommit",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "According to AGENTS.md, what two npm commands must pass before committing a change?",
+    "ok": true,
+    "latency_ms": 16183,
+    "metrics": {
+      "result_text": "According to `AGENTS.md`, the `npm` commands that must pass before committing a change are:\n\n1. `npm run typecheck`\n2. `npm test`\n\n*(Note: The document also specifies running `npm ci` to install dependencies cleanly, and `npm run examples` followed by `git diff --exit-code examples/` to ensure the examples are up to date.)*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t2-precommit",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "According to AGENTS.md, what two npm commands must pass before committing a change?",
+    "ok": true,
+    "latency_ms": 17786,
+    "metrics": {
+      "result_text": "According to `AGENTS.md`, the `npm` commands that must pass before committing a change are:\n\n1. `npm run typecheck`\n2. `npm test`\n\n*(Note: The document also specifies running `npm run examples` followed by `git diff --exit-code examples/` to ensure no unexpected changes occur in the examples).*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t2-precommit",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "According to AGENTS.md, what two npm commands must pass before committing a change?",
+    "ok": true,
+    "latency_ms": 15719,
+    "metrics": {
+      "result_text": "According to `AGENTS.md`, the `npm` commands that must pass before committing a change are:\n\n1. `npm run typecheck`\n2. `npm test`\n\n*(Note: The document also specifies running `npm ci` beforehand, and `npm run examples` followed by `git diff --exit-code examples/` to ensure no unexpected changes occurred in the examples).*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t3-p1-improvement",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "According to the README, by how many percentage points did lexical P@1 improve on held-out questions after navigation surfaces were rewritten, and is that number used as evidence that agent grounding improved?",
+    "ok": true,
+    "latency_ms": 24539,
+    "metrics": {
+      "result_text": "According to the README, lexical P@1 improved by **+33 to +83 points** on held-out questions. \n\nThe README explicitly states that this number is **not** used as evidence that agent grounding improved. Instead, it is used as evidence that the *metric itself* is sensitive to real edits. The document notes that actual agent grounding improvements were observed separately (going from 0% to 100%) only when a document with no pointer anywhere was linked.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t3-p1-improvement",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "According to the README, by how many percentage points did lexical P@1 improve on held-out questions after navigation surfaces were rewritten, and is that number used as evidence that agent grounding improved?",
+    "ok": true,
+    "latency_ms": 26771,
+    "metrics": {
+      "result_text": "Based on the `README.md` file:\n\n1. **Improvement:** Lexical P@1 improved by **+33 to +83 points** on held-out questions after navigation surfaces were rewritten.\n2. **Evidence of agent grounding:** **No**. The README explicitly states that this improvement is evidence that the *metric* is sensitive to real edits, but it is *\"not evidence that an agent grounds more answers because of them.\"*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t3-p1-improvement",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "According to the README, by how many percentage points did lexical P@1 improve on held-out questions after navigation surfaces were rewritten, and is that number used as evidence that agent grounding improved?",
+    "ok": true,
+    "latency_ms": 17416,
+    "metrics": {
+      "result_text": "Based on the `README.md`, here are the answers to your questions:\n\n1. **Improvement:** Lexical P@1 improved by **+33 to +83 points** on held-out questions after navigation surfaces were rewritten. *(Note: Your prompt contained a typo with a file path, but the README refers to \"lexical P@1\")*.\n2. **Evidence of agent grounding?** **No.** The README explicitly states that this improvement is *\"evidence the metric is sensitive to real edits, not evidence that an agent grounds more answers because of them.\"* The actual evidence for agent grounding improvement came from fixing documents that had no pointers anywhere in the surface.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t3-p1-improvement",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "According to the README, by how many percentage points did lexical P@1 improve on held-out questions after navigation surfaces were rewritten, and is that number used as evidence that agent grounding improved?",
+    "ok": true,
+    "latency_ms": 16317,
+    "metrics": {
+      "result_text": "According to the README:\n\n1. Lexical P@1 improved by **+33 to +83 points** on held-out questions after navigation surfaces were rewritten. \n2. **No**, the README explicitly states this is *not* evidence that agent grounding improved. It is only used as evidence that the *metric* is sensitive to real edits. The README notes that you have to look at the actual agent behavior (which showed that fixing a document with no pointer took grounding from 0% to 100%, while fixing wording changed nothing) to see what actually moved agent grounding.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t3-p1-improvement",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "According to the README, by how many percentage points did lexical P@1 improve on held-out questions after navigation surfaces were rewritten, and is that number used as evidence that agent grounding improved?",
+    "ok": true,
+    "latency_ms": 17674,
+    "metrics": {
+      "result_text": "According to the README:\n\n1. Lexical P@1 (which appears to have been replaced by an image path in your prompt) improved by **+33 to +83 points** on held-out questions.\n2. **No**, this number is explicitly *not* used as evidence that agent grounding improved. The README states: \"This is evidence the *metric* is sensitive to real edits, not evidence that an agent grounds more answers because of them.\"",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t3-p1-improvement",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "According to the README, by how many percentage points did lexical P@1 improve on held-out questions after navigation surfaces were rewritten, and is that number used as evidence that agent grounding improved?",
+    "ok": true,
+    "latency_ms": 17886,
+    "metrics": {
+      "result_text": "According to the README:\n\n1. Lexical P@1 (which appears as `lexical P @docs/assets/favicon-16.png` in your prompt) improved by **+33 to +83 points** on held-out questions.\n2. **No**, that number is explicitly *not* used as evidence that agent grounding improved. The README states: \"This is evidence the *metric* is sensitive to real edits, not evidence that an agent grounds more answers because of them\".",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t4-mcp-status",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "Does this repository currently ship an MCP server? If not, what is it waiting on according to the roadmap?",
+    "ok": true,
+    "latency_ms": 34461,
+    "metrics": {
+      "result_text": "No, this repository does not currently ship an MCP server. \n\nAccording to the roadmap (found in `README.md` and `PLANNER.md`), the MCP server is planned for **Phase 5**. \n\nPhase 5 is explicitly gated on **Phase 4**, which is an empirical study designed to prove whether a better score actually changes agent grounding or exploration cost on real tasks. The project's documentation notes that Phase 5 is waiting on the results of Phase 4 to determine what claims the tool is allowed to make before distributing it via an MCP server, GitHub Action, or npm package.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "not started"
+    ]
+  },
+  {
+    "task_id": "t4-mcp-status",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "Does this repository currently ship an MCP server? If not, what is it waiting on according to the roadmap?",
+    "ok": true,
+    "latency_ms": 26194,
+    "metrics": {
+      "result_text": "No, this repository does not currently ship an MCP server. It is currently a CLI-only tool.\n\nAccording to the roadmap (`README.md` and `PLANNER.md`), the MCP server is part of **Phase 5**. Phase 5 is explicitly gated on **Phase 4** passing, which requires proving that a better score actually changes agent grounding or exploration cost on real tasks. \n\nThe roadmap strictly gates the MCP server (and other distribution methods like a GitHub Action or npm package) behind Phase 4 because distributing the tool at scale with an unproven claim could do \"real damage if wrong.\" While the Phase 4 experiments were recently completed (yielding a narrower finding that coverage gaps matter more than vocabulary gaps for agent grounding), the Phase 5 MCP server implementation remains unstarted.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "not started"
+    ]
+  },
+  {
+    "task_id": "t4-mcp-status",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "Does this repository currently ship an MCP server? If not, what is it waiting on according to the roadmap?",
+    "ok": true,
+    "latency_ms": 62151,
+    "metrics": {
+      "result_text": "No, this repository does not currently ship an MCP server. \n\nAccording to the roadmap in `README.md` and `PLANNER.md`, the MCP server is part of **Phase 5**. Phase 5 is explicitly gated on the completion and success of **Phase 4**, which is an empirical study designed to prove whether a better score actually changes agent grounding or exploration cost on real tasks. \n\nThe documentation emphasizes that they will not ship distribution channels like the MCP server, GitHub Action, or npm package until Phase 4 validates what claims the tool is allowed to make. *(Note: While `README.md` lists Phase 4 as not started, `PLANNER.md` indicates Phase 4b was just completed today, August 28, 2026, meaning Phase 5 distribution is up next).*",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t4-mcp-status",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "Does this repository currently ship an MCP server? If not, what is it waiting on according to the roadmap?",
+    "ok": true,
+    "latency_ms": 60171,
+    "metrics": {
+      "result_text": "No, this repository does not currently ship an MCP server. \n\nAccording to the roadmap (found in `README.md` and `PLANNER.md`), the MCP server is part of **Phase 5**, which is strictly gated on **Phase 4**. \n\nPhase 4 is an empirical study designed to prove whether a better score actually changes agent grounding or exploration cost on real tasks. The roadmap explicitly states that shipping the MCP server (or other distribution methods like a GitHub Action or npm package) before Phase 4 proves this claim would mean \"distributing an unproven claim into tools people trust for real work.\"\n\nWhile `PLANNER.md` notes that Phase 4a and 4b were recently run (yielding a narrower-than-hoped finding where only coverage gaps, not vocabulary gaps, changed agent grounding under a flat call budget), Phase 5 distribution remains unstarted. When it is built, the roadmap specifies it will be shipped as a separate package (`nocontext-mcp`) to keep the base package dependency-light.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "not started"
+    ]
+  },
+  {
+    "task_id": "t4-mcp-status",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "Does this repository currently ship an MCP server? If not, what is it waiting on according to the roadmap?",
+    "ok": true,
+    "latency_ms": 77247,
+    "metrics": {
+      "result_text": "No, this repository does not currently ship an MCP server. \n\nAccording to the roadmap in `README.md` and `PLANNER.md`:\n1. **It is part of Phase 5:** The MCP server is planned for Phase 5, where it will be shipped as a separate package (`nocontext-mcp`) and published to the official MCP registry.\n2. **It is gated on Phase 4:** Phase 5 is explicitly gated on the completion and success of Phase 4, which exists to prove that a better findability score actually changes an agent's grounding behavior (not just its routing). While `PLANNER.md` notes that the Phase 4b study recently concluded (on 2026-08-28), Phase 5 distribution remains unstarted.\n3. **It is blocked by Phase 3:** Because the MCP server will be distributed via npm, it is also waiting on Phase 3's open human blind review and a \"clean-consumer audit\" before any npm publishing can occur.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "not started"
+    ]
+  },
+  {
+    "task_id": "t4-mcp-status",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "Does this repository currently ship an MCP server? If not, what is it waiting on according to the roadmap?",
+    "ok": true,
+    "latency_ms": 19555,
+    "metrics": {
+      "result_text": "No, this repository does not currently ship an MCP server. \n\nAccording to the roadmap in the `README.md`, the MCP server is planned for **Phase 5**. It is currently waiting on the completion of **Phase 4**, which is an empirical study designed to \"prove a better score changes agent grounding or exploration cost on real tasks.\" \n\nPhase 4 is a critical step that decides what claims the v1 release is allowed to make, and the MCP server (along with the GitHub Action and npm publish) is explicitly gated on its outcome rather than engineering effort.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "not started"
+    ]
+  },
+  {
+    "task_id": "t5-fixture-drift",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "According to PLANNER.md section 9, what directory does CI regenerate and fail the build on if the committed tree has moved, and what is the one-word term for that failure?",
+    "ok": true,
+    "latency_ms": 19249,
+    "metrics": {
+      "result_text": "According to section 9 of `PLANNER.md`:\n\n1. The directory CI regenerates is **`examples/`**.\n2. The one-word term for that failure is **drift** (specifically, \"fixture drift\").",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t5-fixture-drift",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "According to PLANNER.md section 9, what directory does CI regenerate and fail the build on if the committed tree has moved, and what is the one-word term for that failure?",
+    "ok": true,
+    "latency_ms": 18324,
+    "metrics": {
+      "result_text": "Based on section 9 of `PLANNER.md`:\n\n* **Directory:** `examples/`\n* **One-word term for the failure:** drift (specifically, \"fixture drift\")",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t5-fixture-drift",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "According to PLANNER.md section 9, what directory does CI regenerate and fail the build on if the committed tree has moved, and what is the one-word term for that failure?",
+    "ok": true,
+    "latency_ms": 27119,
+    "metrics": {
+      "result_text": "According to section 9 of PLANNER.md, CI regenerates the `examples/` directory. The one-word term for the failure when the committed tree has moved is \"drift\" (specifically, \"fixture drift\").",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t5-fixture-drift",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "According to PLANNER.md section 9, what directory does CI regenerate and fail the build on if the committed tree has moved, and what is the one-word term for that failure?",
+    "ok": true,
+    "latency_ms": 13128,
+    "metrics": {
+      "result_text": "According to section 9 of `PLANNER.md`:\n\n1. The directory CI regenerates is **`examples/`**.\n2. The one-word term for that failure is **drift** (specifically, \"fixture drift\").",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t5-fixture-drift",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "According to PLANNER.md section 9, what directory does CI regenerate and fail the build on if the committed tree has moved, and what is the one-word term for that failure?",
+    "ok": true,
+    "latency_ms": 16214,
+    "metrics": {
+      "result_text": "According to section 9 of `PLANNER.md`:\n\n1. CI regenerates the **`examples/`** directory.\n2. The one-word term for that failure is **drift** (specifically, \"fixture drift\").",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t5-fixture-drift",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "According to PLANNER.md section 9, what directory does CI regenerate and fail the build on if the committed tree has moved, and what is the one-word term for that failure?",
+    "ok": true,
+    "latency_ms": 13464,
+    "metrics": {
+      "result_text": "According to section 9 of `PLANNER.md`:\n\n1. The directory CI regenerates and fails the build on if the committed tree has moved is **`examples/`**.\n2. The one-word term for that failure is **drift** (specifically, \"fixture drift\").",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t6-optional-dependency",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
+    "ok": true,
+    "latency_ms": 20329,
+    "metrics": {
+      "result_text": "The optional npm package required for semantic scoring is **`@huggingface/transformers`**.\n\nIt is configured as an optional peer dependency rather than a default dependency for security reasons. Specifically:\n\n1. **Vulnerable Transitive Dependencies:** The current release of `@huggingface/transformers` pulls in versions of `onnxruntime-node` and `sharp` that have known, published security advisories (an `adm-zip` DoS vulnerability via `onnxruntime-node`, and `libvips` CVEs via `sharp`).\n2. **NPM Override Limitations:** While this project patches those vulnerabilities for local development using `overrides` in its `package.json`, npm does not propagate a package's overrides to the end users who install it. \n3. **Clean Base Install:** By making it optional and loading it dynamically, a standard `npm install nocontext` avoids pulling in these vulnerable subtrees by default. Installing it is a deliberate opt-in by the user.\n\nIf the package is not installed, the tool gracefully degrades to lexical-only scoring and issues a clear warning instead of crashing.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t6-optional-dependency",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
+    "ok": true,
+    "latency_ms": 18095,
+    "metrics": {
+      "result_text": "The optional npm package required for semantic scoring is **`@huggingface/transformers`**.\n\nIt is an optional peer dependency rather than a default dependency for security reasons. The current release of `@huggingface/transformers` pulls in versions of `onnxruntime-node` and `sharp` that have known, published vulnerabilities (specifically, an `adm-zip` DoS vulnerability via `onnxruntime-node` and `libvips` CVEs via `sharp`). \n\nWhile the project patches these locally using npm `overrides`, npm does not propagate overrides to end users who install the package. Making it an optional dependency ensures that a standard installation does not automatically pull in these vulnerable transitive dependencies, requiring users to deliberately opt-in if they want to use semantic scoring.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "advisor*"
+    ]
+  },
+  {
+    "task_id": "t6-optional-dependency",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
+    "ok": true,
+    "latency_ms": 18660,
+    "metrics": {
+      "result_text": "The optional npm package required for semantic scoring is **`@huggingface/transformers`**.\n\nIt is configured as an optional peer dependency rather than a default dependency for security reasons:\n\n1. **Transitive Vulnerabilities:** The current release of `@huggingface/transformers` pulls in specific versions of `onnxruntime-node` and `sharp` that have known, published security advisories (e.g., an `adm-zip` DoS vulnerability via `onnxruntime-node`, and `libvips` CVEs via `sharp`).\n2. **NPM Override Limitations:** While this project patches those vulnerabilities for local development using `overrides` in its `package.json`, npm does not propagate a package's overrides to the end users who install it. \n3. **Clean Base Install:** If it were a default dependency, anyone running `npm install nocontext` would automatically pull in those vulnerable transitive dependencies. Making it optional ensures the base installation stays clean and secure, requiring users to deliberately opt-in to install the package if they want semantic scoring capabilities.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t6-optional-dependency",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
+    "ok": true,
+    "latency_ms": 46906,
+    "metrics": {
+      "result_text": "The optional npm package required for semantic scoring is **`@huggingface/transformers`**.\n\nIt is made optional (specifically, an optional `peerDependency`) rather than a default dependency due to a **security and packaging issue** discovered during a clean consumer install test:\n\n1. **Vulnerable Sub-dependencies:** `@huggingface/transformers@4.2.0` pulls in versions of `onnxruntime-node`, `adm-zip`, and `sharp` that contain high-severity vulnerabilities (including a real `adm-zip` DoS and inherited `libvips` CVEs).\n2. **NPM Overrides Don't Propagate:** While the `nocontext` repository uses `overrides` in its own `package.json` to force secure versions of these sub-dependencies (making its local `npm audit` pass), **npm does not propagate `overrides` to consumers** who install the package. \n3. **Consumer Safety:** If it were a default dependency, anyone running `npm install nocontext` would receive the vulnerable packages and fail their own security audits. \n\nBy making it an optional peer dependency and importing it dynamically, the base `nocontext` package installs cleanly and securely. Users who want semantic scoring can run `npm install @huggingface/transformers` themselves, at which point their own project's root `package.json` takes responsibility for any necessary dependency overrides.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "advisor*"
+    ]
+  },
+  {
+    "task_id": "t6-optional-dependency",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
+    "ok": true,
+    "latency_ms": 18906,
+    "metrics": {
+      "result_text": "The optional npm package required for semantic scoring is **`@huggingface/transformers`**.\n\nIt is an optional peer dependency rather than a default dependency because its current release pulls in transitive dependencies (`onnxruntime-node` and `sharp`) that have known, published security advisories (specifically, an `adm-zip` DoS vulnerability via `onnxruntime-node`, and `libvips` CVEs via `sharp`). \n\nWhile the project uses `overrides` in its `package.json` to patch these vulnerabilities for local development, npm does not propagate a package's overrides to the end users who install it. Therefore, making it a default dependency would automatically expose users to these vulnerabilities. By making it optional, installing it becomes a deliberate opt-in choice by the user.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t6-optional-dependency",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
+    "ok": true,
+    "latency_ms": 20478,
+    "metrics": {
+      "result_text": "The optional npm package required for semantic scoring is **`@huggingface/transformers`**.\n\nIt is configured as an optional peer dependency rather than a default dependency for security reasons. Specifically:\n\n1. **Transitive Vulnerabilities:** The current release of `@huggingface/transformers` pulls in dependencies (`onnxruntime-node` and `sharp`) that have known, published security advisories (such as an `adm-zip` DoS vulnerability and `libvips` CVEs).\n2. **NPM Override Limitations:** While this project patches those vulnerabilities locally using `overrides` in its `package.json`, npm does not propagate a package's overrides to the end users who install it. \n3. **Clean Base Install:** By making it optional and loading it dynamically, a standard `npm install nocontext` remains clean and secure by default. Users must deliberately opt-in to install the package (and accept the transitive dependencies) if they want to use the semantic scoring features.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t7-adversarial-example",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "Which example directory is described as the committed adversarial test case for keyword-stuffed indexes?",
+    "ok": true,
+    "latency_ms": 14044,
+    "metrics": {
+      "result_text": "The `stuffed-index` directory is described as the adversarial test case. According to `examples/README.md`, it is the \"adversary\" that copies probe questions directly into the entries (keyword stuffing) and must emit a direct probe-leakage warning.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t7-adversarial-example",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "Which example directory is described as the committed adversarial test case for keyword-stuffed indexes?",
+    "ok": true,
+    "latency_ms": 13862,
+    "metrics": {
+      "result_text": "The example directory described as the adversarial test case is **`stuffed-index`**. \n\nAccording to the `examples/README.md` file, it is designed as the adversary that copies probe questions directly into the entries (keyword stuffing) and must emit a direct probe-leakage warning.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t7-adversarial-example",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "Which example directory is described as the committed adversarial test case for keyword-stuffed indexes?",
+    "ok": true,
+    "latency_ms": 13046,
+    "metrics": {
+      "result_text": "The `stuffed-index` directory is described as the adversarial test case. According to `examples/README.md`, it is \"the adversary\" that copies probe questions directly into the entries (keyword stuffing) and must emit a direct probe-leakage warning.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t7-adversarial-example",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "Which example directory is described as the committed adversarial test case for keyword-stuffed indexes?",
+    "ok": true,
+    "latency_ms": 20206,
+    "metrics": {
+      "result_text": "Based on the documentation in `examples/README.md`, the **`stuffed-index`** directory is described as the adversary. It is designed to game the system by dumping probe vocabulary directly into the index, serving as a test case that must trigger a probe-leakage warning to ensure the tool correctly identifies keyword-stuffed indexes.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t7-adversarial-example",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "Which example directory is described as the committed adversarial test case for keyword-stuffed indexes?",
+    "ok": true,
+    "latency_ms": 11533,
+    "metrics": {
+      "result_text": "The example directory described as the adversarial test case for keyword-stuffed indexes is **`stuffed-index`**. \n\nAccording to the `examples/README.md` file, it is described as:\n> \"`stuffed-index` is the adversary. It copies probe questions into their expected entries and must emit a direct probe-leakage warning. If a change ever lets this corpus pass clean, the change is wrong.\"",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t7-adversarial-example",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "Which example directory is described as the committed adversarial test case for keyword-stuffed indexes?",
+    "ok": true,
+    "latency_ms": 11449,
+    "metrics": {
+      "result_text": "The `stuffed-index` directory is described as the committed adversarial test case. According to `examples/README.md`, it is \"the adversary\" that copies probe questions directly into their expected entries (keyword stuffing) and must emit a direct probe-leakage warning.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "t8-benchmark-comparison",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 0,
+    "prompt": "Name the two published benchmarks this project's scoring methodology aligns its metrics with, and explain in one sentence how this project's evaluation differs from what those two benchmarks measure.",
+    "ok": true,
+    "latency_ms": 18381,
+    "metrics": {
+      "result_text": "The two published benchmarks are **ContextBench** and **Agent Retrieval Bench**. \n\nThis project's evaluation differs from them because it holds the retriever fixed and varies the navigation surface to measure how documentation structure and vocabulary affect retrieval, whereas those two benchmarks hold the repository fixed and vary the retriever or agent.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "fixes the retriever"
+    ]
+  },
+  {
+    "task_id": "t8-benchmark-comparison",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 1,
+    "prompt": "Name the two published benchmarks this project's scoring methodology aligns its metrics with, and explain in one sentence how this project's evaluation differs from what those two benchmarks measure.",
+    "ok": true,
+    "latency_ms": 13806,
+    "metrics": {
+      "result_text": "}",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "FAIL",
+    "missing_keywords": [
+      "ContextBench",
+      "Retrieval Bench",
+      "fixes the retriever"
+    ]
+  },
+  {
+    "task_id": "t8-benchmark-comparison",
+    "agent_name": "gemini-cli",
+    "policy_name": "curated",
+    "trial": 2,
+    "prompt": "Name the two published benchmarks this project's scoring methodology aligns its metrics with, and explain in one sentence how this project's evaluation differs from what those two benchmarks measure.",
+    "ok": true,
+    "latency_ms": 25560,
+    "metrics": {
+      "result_text": "The two published benchmarks are **ContextBench** and **Agent Retrieval Bench (ARB)**. \n\nWhile those benchmarks hold the repository fixed and vary the retriever or agent, this project's evaluation does the opposite by holding the retriever fixed and varying the navigation surface.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "fixes the retriever"
+    ]
+  },
+  {
+    "task_id": "t8-benchmark-comparison",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 0,
+    "prompt": "Name the two published benchmarks this project's scoring methodology aligns its metrics with, and explain in one sentence how this project's evaluation differs from what those two benchmarks measure.",
+    "ok": true,
+    "latency_ms": 18728,
+    "metrics": {
+      "result_text": "The two published benchmarks are **ContextBench** and **Agent Retrieval Bench**. \n\nWhile those benchmarks hold the repository fixed and vary the retriever or agent to measure retrieval performance, this project holds the retriever fixed and varies the navigation surface to measure how documentation structure affects retrieval.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "fixes the retriever"
+    ]
+  },
+  {
+    "task_id": "t8-benchmark-comparison",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 1,
+    "prompt": "Name the two published benchmarks this project's scoring methodology aligns its metrics with, and explain in one sentence how this project's evaluation differs from what those two benchmarks measure.",
+    "ok": true,
+    "latency_ms": 14473,
+    "metrics": {
+      "result_text": "\n\n--- /private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/claimcheck-ysyXTr/repo/docs/ARCHITECTURE.md ---\n\n# Architecture\n\nThe tool has to reach a lot of places: a terminal, CI, an MCP server, an agent\nskill, a hosted runner, eventually an editor. The shape below exists so each of\nthose is an adapter of a few dozen lines rather than a fork.\n\n```\nsrc/\n├── core/          pure. no filesystem, no printing, no process, no network\n│   ├── types.ts       contracts, including CorpusSource and Retriever\n│   ├── analyze.ts     the one entry point every surface calls\n│   ├── corpus/        documents and navigation surface\n│   ├── probes/        question validation\n│   ├── retrievers/    one file per implementation, one contract\n│   └── scoring/       floor, observed, full-text reference\n├── retrievers/    I/O-backed implementations such as the local model loader\n├── sources/       where documents come from. filesystem is one of several\n├── report/        formatting. text, json\n├── surfaces/      thin adapters. cli today, mcp and action next\n└── index.ts       library API\n```\n\n## Three rules\n\n**Core never does I/O.** It receives a `CorpusSource` and returns a `Run`. It\ndoes not read files, print, exit, or throw for control flow. A surface decides\nwhat to do with the result, including whether a bad score should fail a build.\n\n**Documents arrive through an interface.** `CorpusSource` has `list`, `read`,\nand an optional `indexPath`. A CLI walks a directory, an MCP server is handed\ndocuments it already holds, a hosted runner pulls from a git provider, and a\nbrowser has no filesystem at all. Binding core to `node:fs` would make each of\nthose a rewrite.\n\n**One entry point.** Every surface calls `analyze(source, options)`. If a\nsurface ever needs to assemble the pipeline itself, that is a bug in the\nsignature, not a licence to duplicate it.\n\n## Adding a surface\n\nA surface builds a `CorpusSource`, calls `analyze`, and formats the `Run`. It\nholds no measurement logic, because two surfaces that each compute a score will\neventually disagree, and the resulting bug is invisible: both numbers look\nplausible.\n\n`Run` is plain serializable data for the same reason. It crosses a process\nboundary to an MCP client, a CI annotation, or a JSON file without conversion.\n\n## Adding a retriever\n\nPure retrievers live in `core/retrievers/`. A retriever that loads a model,\ncalls a service, or touches a cache lives outside core and is injected through\n`AnalyzeOptions`. `version` is on the interface so that a published score stays\ninterpretable after the retriever changes: results carry the version that\nproduced them. The CLI injects both BM25 and the pinned local semantic model.\n\nRetrievers are reported side by side and never averaged. See `METHOD.md`, and\n`CONTRIBUTING.md` for why a change that lets `examples/stuffed-index` pass clean\nis wrong regardless of what else it improves.\n\n\n\n--- End of content ---\n",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "FAIL",
+    "missing_keywords": [
+      "ContextBench",
+      "Retrieval Bench",
+      "fixes the retriever"
+    ]
+  },
+  {
+    "task_id": "t8-benchmark-comparison",
+    "agent_name": "gemini-cli",
+    "policy_name": "full",
+    "trial": 2,
+    "prompt": "Name the two published benchmarks this project's scoring methodology aligns its metrics with, and explain in one sentence how this project's evaluation differs from what those two benchmarks measure.",
+    "ok": true,
+    "latency_ms": 17822,
+    "metrics": {
+      "result_text": "The two published benchmarks are **ContextBench** and **Agent Retrieval Bench**. \n\nWhile those benchmarks hold the repository fixed and vary the retriever or agent to measure performance, this project holds the retriever fixed and varies the navigation surface (like an index or file tree) to measure how documentation structure affects retrieval.",
+      "cost": null,
+      "session_id": null
+    },
+    "score": "PARTIAL",
+    "missing_keywords": [
+      "fixes the retriever"
+    ]
+  }
+]

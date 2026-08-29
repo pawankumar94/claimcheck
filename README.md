@@ -44,17 +44,28 @@ claimcheck report && cat results/report.md
 ```
 
 Each task pairs a question with an answer key written from the source before
-any run happens, so results can't be graded to taste after the fact.
-`t1-license` asks *"What license does this project use?"* against key
-`["MIT"]`. Real output from that command against Gemini CLI:
+any run happens, so results can't be graded to taste after the fact. The
+report opens with a verdict rather than a grid:
 
-| task | agent | policy | score | latency (ms) |
-|---|---|---|---|---|
-| t1-license | gemini-cli | curated (narrow tools) | PASS | 10864 |
-| t1-license | gemini-cli | full (broad tools) | PASS | 12483 |
+```
+## Verdict
 
-Scale that to a full task set and `claimcheck report` gives you a pass rate
-per configuration — an answer, not an impression.
+gemini-cli — Not distinguishable. The interval spans zero, so this run
+provides no evidence that "curated" and "full" differ in task success.
+
+| policy  | pass rate   |
+|---------|-------------|
+| curated | 18/24 (75%) |
+| full    | 17/24 (71%) |
+
+Difference: +4 points (95% CI -21 to +28, Agresti-Caffo).
+```
+
+That's a real result from this repo — 8 tasks × 2 policies × 3 trials against
+Gemini CLI, 48 invocations. The most-repeated claim in agent tooling showed
+**no detectable effect** at this sample size. Full write-up, including why the
+scorer turned out to matter more than the tool policy:
+**[benchmarks/2026-08-29-gemini-cli/](benchmarks/2026-08-29-gemini-cli/)**.
 
 > Requires the target agent's CLI installed and authenticated. The example
 > above needs `gemini` and `GEMINI_API_KEY`; substitute `--agent claude-code`
@@ -128,6 +139,16 @@ claimcheck is also an MCP server, which is the one integration path that works
 across essentially every current coding agent — Claude Code, Cursor, VS Code,
 Gemini CLI, Codex, Windsurf, Zed. Install it once and the client drives
 evaluations itself.
+
+**Claude Code** — installs the MCP server and the slash commands together:
+
+```
+/plugin marketplace add pawankumar94/claimcheck
+/plugin install claimcheck@claimcheck
+```
+
+Then `/claimcheck-agents` lists what it can measure and `/claimcheck-run`
+runs an evaluation. Or wire up just the MCP server:
 
 ```bash
 claude mcp add claimcheck -- npx -y claimcheck mcp

@@ -1,0 +1,30 @@
+{
+  "name": "claude-code",
+  "description": "Claude Code CLI in --bare mode (skips project hooks/CLAUDE.md/auto-MCP for a reproducible baseline).",
+  "command": "claude",
+  "baseArgs": ["--bare", "-p"],
+  "promptPlacement": "after-base",
+  "policyArgs": {
+    "curated": [
+      "--allowedTools",
+      "Read,Bash(grep *),Bash(find *),Bash(cat *),Bash(ls *),Bash(sed -n *)",
+      "--permission-mode",
+      "dontAsk"
+    ],
+    "full": [
+      "--allowedTools",
+      "Bash,Read,Edit",
+      "--permission-mode",
+      "dontAsk"
+    ]
+  },
+  "extraArgs": ["--output-format", "json"],
+  "output": {
+    "type": "json",
+    "resultField": "result",
+    "costField": "total_cost_usd",
+    "sessionIdField": "session_id"
+  },
+  "verified": true,
+  "verificationNote": "Flags and output schema confirmed against a live install (claude 2.1.220): `claude --help` matches baseArgs/policyArgs/extraArgs above, and `claude --bare -p ... --allowedTools ... --permission-mode dontAsk --output-format json` was actually run and returned a payload with top-level result/total_cost_usd/session_id, matching output above. NOT verified: real task-answering behavior -- the environment this was checked in has no ANTHROPIC_API_KEY, so every real invocation failed at auth (`result: \"Not logged in \\u00b7 Please run /login\"`, exit code 1) before reaching the model. Confirm at least one real, authenticated run produces a sensible answer before trusting pass/fail numbers from this profile. Re-verify after any Claude Code CLI upgrade -- flags and field names can shift between releases."
+}

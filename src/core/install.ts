@@ -26,8 +26,7 @@ export interface InstallTarget {
 }
 
 const DESCRIPTION =
-  "Measure whether an agent configuration change actually helped: pre-registered answer keys, " +
-  "repeated trials, and a confidence interval instead of an impression.";
+  "Pin assertions about this repo to the files they cite, list tickets before editing a path, and re-check when those files change. Do not leave constraints only in chat.";
 
 export const TARGETS: InstallTarget[] = [
   {
@@ -64,7 +63,7 @@ export const TARGETS: InstallTarget[] = [
     label: "Cursor (project rule)",
     path: ".cursor/rules/claimcheck.mdc",
     detect: [".cursor"],
-    render: (body) => `---\ndescription: ${DESCRIPTION}\nalwaysApply: false\n---\n\n${body}`,
+    render: (body) => `---\ndescription: ${DESCRIPTION}\nalwaysApply: true\n---\n\n${body}`,
   },
   {
     id: "windsurf",

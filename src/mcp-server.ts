@@ -14,6 +14,7 @@ import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { loadRun, sessionToRecords, startRun, submitAnswers } from "./core/session.js";
+import { checkClaim, pinClaim, statusClaims } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
 
 const VERSION = "0.1.0";
@@ -55,10 +56,117 @@ export function createServer(): McpServer {
     }
   );
 
+  server.registerTool(
+    "pin_claim",
+    {
+      title: "Pin an assertion to files",
+      description:
+        "Writes a ticket to .claims/<id>.json bound to the given files. Use this whenever you assert " +
+        "something about the repo that the next session or a different agent will need. Do not leave " +
+        "that sentence only in chat.",
+      inputSchema: {
+        text: z.string().describe("The assertion"),
+        files: z.array(z.string()).min(1).describe("File or directory paths relative to the project root"),
+        id: z.string().optional().describe("Ticket id; default is a slug of text"),
+        evidence: z
+          .array(z.string())
+          .optional()
+          .describe("Frozen phrases that must remain in the files for the ticket to stay supported"),
+        agent: z.string().optional(),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ text, files, id, evidence, agent, root }) => {
+      const { claim, path, action } = await pinClaim({
+        root: root ?? process.cwd(),
+        text,
+        files,
+        ...(id ? { id } : {}),
+        ...(agent ? { agent } : {}),
+        ...(evidence && evidence.length > 0 ? { evidence } : {}),
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify({ action, path, claim }, null, 2) }],
+      };
+    }
+  );
+
+  server.registerTool(
+    "list_claims_for_file",
+    {
+      title: "List tickets on a file",
+      description:
+        "Call this before editing a path. Returns tickets whose files cover that path, with live status " +
+        "(open / supported / contradicted / stale). Omit path to list every ticket in the repo.",
+      inputSchema: {
+        path: z.string().optional().describe("File or directory to filter by"),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ path, root }) => {
+      const evals = await statusClaims(root ?? process.cwd(), path);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              evals.map((e) => ({
+                id: e.claim.id,
+                text: e.claim.text,
+                files: e.claim.files,
+                status: e.status,
+                changed: e.changed,
+                missingEvidence: e.missingEvidence,
+              })),
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+  );
+
+  server.registerTool(
+    "check_claim",
+    {
+      title: "Re-evaluate a ticket against current files",
+      description:
+        "Compares frozen hashes (stale if a cited file moved) and frozen evidence (contradicted if " +
+        "phrases are gone). No LLM. Pass an id, or omit to check every ticket.",
+      inputSchema: {
+        id: z.string().optional(),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ id, root }) => {
+      const cwd = root ?? process.cwd();
+      const evals = id ? [await checkClaim(cwd, id)] : await statusClaims(cwd);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              evals.map((e) => ({
+                id: e.claim.id,
+                status: e.status,
+                evidenceVerdict: e.evidenceVerdict,
+                changed: e.changed,
+                missingEvidence: e.missingEvidence,
+                text: e.claim.text,
+                files: e.claim.files,
+              })),
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+  );
+
   // ---------------------------------------------------------------------
-  // In-agent evaluation. The calling agent answers the tasks itself, so this
-  // path needs no target CLI, no credentials, and no per-agent output
-  // parsing -- it behaves identically in every MCP client.
+  // In-agent evaluation (lab). The calling agent answers the tasks itself.
   // ---------------------------------------------------------------------
 
   server.registerTool(

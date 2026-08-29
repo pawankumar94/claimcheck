@@ -20,10 +20,10 @@ describe("template", () => {
   it("ships with the package and carries the core discipline", async () => {
     // Collapse wrapping so assertions test the prose, not the line breaks.
     const flat = body.replace(/\s+/g, " ");
-    expect(flat).toMatch(/Freeze the keys/);
-    expect(flat).toMatch(/not \*?distinguishable/i);
-    expect(flat).toMatch(/Underpowered is not equivalent/);
-    expect(flat).toMatch(/Do not compare across agents/);
+    expect(flat).toMatch(/Pin assertions to files/);
+    expect(flat).toMatch(/Look before you edit/);
+    expect(flat).toMatch(/Freeze evidence/);
+    expect(flat).toMatch(/Stale is not contradicted/);
   });
 });
 
@@ -46,7 +46,7 @@ describe("installTarget", () => {
       const outcome = await installTarget(target, root, body);
       expect(outcome.action).toBe("created");
       const written = await readFile(join(root, target.path), "utf-8");
-      expect(written).toContain("claimcheck: measuring agent configuration changes");
+      expect(written).toContain("claimcheck: file-bound tickets");
     }
   });
 
@@ -57,7 +57,7 @@ describe("installTarget", () => {
     const cursor = await readFile(join(root, ".cursor/rules/claimcheck.mdc"), "utf-8");
     const skill = await readFile(join(root, "skills/claimcheck/SKILL.md"), "utf-8");
 
-    expect(cursor).toMatch(/^---\ndescription: .*\nalwaysApply: false\n---/);
+    expect(cursor).toMatch(/^---\ndescription: .*\nalwaysApply: true\n---/);
     expect(skill).toMatch(/^---\nname: claimcheck\n/);
     // Guidance must not drift between frameworks.
     expect(cursor.split("---\n\n")[1]).toBe(skill.split("---\n\n")[1]);
@@ -121,6 +121,6 @@ describe("skill-host targets", () => {
   it("supports the generic cross-agent .agents/skills location", async () => {
     const outcome = await installTarget(findTarget("agents-skills"), root, body);
     expect(outcome.action).toBe("created");
-    expect(await readFile(join(root, ".agents/skills/claimcheck/SKILL.md"), "utf-8")).toContain("Freeze the keys");
+    expect(await readFile(join(root, ".agents/skills/claimcheck/SKILL.md"), "utf-8")).toContain("Pin assertions to files");
   });
 });

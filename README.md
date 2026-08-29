@@ -73,15 +73,26 @@ You:  "add a /admin route"
 Agent: list tickets on src/routes/ → sees the stamp → puts auth in middleware
 ```
 
-`claimcheck install` already writes into those instruction files. The template still teaches the *measurement* method today; that copy is the next change, so every agent is taught to pin and check instead of (only) A/B its config.
+`claimcheck install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
 
 ## Where we are
 
-**Shipping today:** the lab. A CLI + MCP server that A/B-tests a coding-agent config against frozen tasks, plus an installer that already reaches every major agent. We will use that lab to prove tickets work (honor rate with vs without `.claims/`, handoff from agent A’s ticket to agent B).
+**Shipping on this branch:** `pin` / `status` / `check`, a `.claims/` store,
+MCP tools (`pin_claim`, `list_claims_for_file`, `check_claim`), and an
+install template that teaches pinning rather than only evals. Bare
+`claimcheck` is now `status` (local, free), not a budget-spending measure.
 
-**Next, in this repo:** `pin` / `status` / `check`, a `.claims/` store, MCP tools for those verbs, and an install template that describes tickets rather than only evals. The measurement pipeline stays as `claimcheck measure` — a claim whose evidence is an experiment.
+```bash
+claimcheck pin --text "Auth only through middleware." --file src/middleware.ts
+claimcheck status src/middleware.ts
+claimcheck check
+```
 
-If you are here to run what exists right now, skip to [Lab: measuring a config claim](#lab-measuring-a-config-claim).
+**Still the lab:** `claimcheck measure` A/B-tests a coding-agent config
+against frozen tasks. Use it to prove tickets work (honor rate with vs
+without `.claims/`), not as the homepage claim.
+
+If you are here to run the lab, skip to [Lab: measuring a config claim](#lab-measuring-a-config-claim).
 
 ---
 
@@ -249,7 +260,7 @@ Two paths are exposed today. **In-agent** (`start_run`, `submit_answers`,
 itself. **Subprocess** (`list_agent_profiles`, `run_evaluation`,
 `score_results`, `generate_report`) drives an external agent CLI through a
 profile. Ticket verbs (`pin_claim`, `list_claims_for_file`, `check_claim`)
-land next, on this same server.
+are on this same server; the lab tools remain.
 
 Per-client setup for Claude Code, Cursor, VS Code, Gemini CLI, and Codex is in
 [docs/integrations.md](docs/integrations.md).

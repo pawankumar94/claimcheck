@@ -7,9 +7,9 @@ dist/
 .claude/
 .cursor/
 .codex/
-# Scratch output from a local run. Published results are curated by hand into
-# benchmarks/<date>-<agent>/ with the caveats that bound them, so a number never
-# ships without its context.
+# Scratch output from a local lab run. Published results are curated by hand
+# into benchmarks/<date>-<agent>/. File tickets live in .claims/ and ARE
+# committed — that is how they survive agent-switch.
 results/
 __pycache__/
 *.pyc

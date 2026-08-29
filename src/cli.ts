@@ -12,8 +12,9 @@ import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from 
 import { buildCharts } from "./core/chart.js";
 import { detectAgents, explainNoAgent, pickDefaultAgent } from "./core/detect.js";
 import { analyze } from "./core/analysis.js";
-import { runEvaluation as runEval } from "./core/runner.js";
 import { importBfclFromFiles } from "./core/import-bfcl.js";
+import { checkClaim, pinClaim, statusClaims } from "./core/claims.js";
+import type { ClaimEvaluation } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
 
 function collect(value: string, previous: string[]): string[] {
@@ -29,17 +30,89 @@ async function loadRawRecords(dir: string): Promise<RawRecord[]> {
   return records;
 }
 
+function printEvaluations(evals: ClaimEvaluation[]): void {
+  if (evals.length === 0) {
+    console.log("No tickets. Pin one with:  claimcheck pin --text \"...\" --file src/...");
+    return;
+  }
+  for (const e of evals) {
+    const files = e.claim.files.join(", ");
+    console.log(`${e.status.padEnd(13)} ${e.claim.id}`);
+    console.log(`              ${e.claim.text}`);
+    console.log(`              files: ${files}`);
+    if (e.status === "stale" && e.changed.length > 0) {
+      console.log(`              changed: ${e.changed.join(", ")}`);
+    }
+    if (e.missingEvidence.length > 0) {
+      console.log(`              missing evidence: ${e.missingEvidence.join(", ")}`);
+    }
+    console.log();
+  }
+}
+
 const program = new Command();
 program
   .name("claimcheck")
   .description(
-    "Measure whether a coding-agent config change actually helped. Run with no arguments for a zero-setup measurement."
+    "Pin what an agent asserted to the files it was about. Tickets live in .claims/, survive sessions, and go stale when those files change."
   )
   .version("0.1.0");
 
 program
-  .command("measure", { isDefault: true })
-  .description("Measure whether trimming your agent's tool surface changes task success. Needs no files: tasks, answer keys, and agent profiles all ship with claimcheck.")
+  .command("status", { isDefault: true })
+  .description("List tickets in this repo (default). Pass a path to see only tickets on that file or directory.")
+  .argument("[path]", "file or directory to filter by")
+  .option("--dir <path>", "project root", process.cwd())
+  .action(async (path, opts) => {
+    const evals = await statusClaims(opts.dir, path);
+    printEvaluations(evals);
+  });
+
+program
+  .command("pin")
+  .description("Pin an assertion to one or more files. Writes .claims/<id>.json.")
+  .requiredOption("--text <text>", "the assertion")
+  .option("--file <path>", "file or directory the assertion is about (repeatable)", collect, [])
+  .option("--id <id>", "ticket id; default is a slug of --text")
+  .option("--evidence <keyword>", "frozen phrase that must remain in the files (repeatable)", collect, [])
+  .option("--agent <name>", "which agent is pinning this")
+  .option("--dir <path>", "project root", process.cwd())
+  .action(async (opts) => {
+    const files = opts.file as string[];
+    if (files.length === 0) {
+      console.error("Pin requires at least one --file.");
+      process.exitCode = 1;
+      return;
+    }
+    const { claim, path, action } = await pinClaim({
+      root: opts.dir,
+      text: opts.text,
+      files,
+      ...(opts.id ? { id: opts.id } : {}),
+      ...(opts.agent ? { agent: opts.agent } : {}),
+      ...(opts.evidence.length > 0 ? { evidence: opts.evidence } : {}),
+    });
+    console.log(`${action} ${path}`);
+    console.log(`${claim.status}  ${claim.id}`);
+    console.log(claim.text);
+  });
+
+program
+  .command("check")
+  .description("Re-evaluate one ticket (or all) against current file contents and hashes.")
+  .argument("[id]", "ticket id; omit to check every ticket")
+  .option("--dir <path>", "project root", process.cwd())
+  .action(async (id, opts) => {
+    if (id) {
+      printEvaluations([await checkClaim(opts.dir, id)]);
+      return;
+    }
+    printEvaluations(await statusClaims(opts.dir));
+  });
+
+program
+  .command("measure")
+  .description("Lab: measure whether trimming your agent's tool surface changes task success. Needs no files: tasks, answer keys, and agent profiles all ship with claimcheck.")
   .option("--agent <name>", "agent to measure; auto-detected from what is installed if omitted")
   .option("--example <name>", "bundled task set to use", "bfcl-tool-count")
   .option("--trials <n>", "repeats per task per policy", "2")
@@ -118,7 +191,7 @@ program
       return;
     }
 
-    const records = await runEval({
+    const records = await runEvaluation({
       tasksDoc, agents: [profile], policyNames: policies, outDir: opts.outDir, trials,
       onRecord: (r) => process.stdout.write(r.ok ? "." : "x"),
     });
@@ -181,8 +254,8 @@ program
       console.log(`  ${outcome.action.padEnd(9)} ${target.path}   (${target.label})`);
     }
     console.log(
-      `\nDone. Your agent now follows claimcheck's method with no server running.\n` +
-        `For measured runs, add the CLI (claimcheck run --help) or the MCP server (claimcheck mcp).`
+      `\nDone. Your agent now pins assertions to files and checks tickets before editing.\n` +
+        `Tickets: claimcheck pin / status / check. Lab: claimcheck measure. MCP: claimcheck mcp.`
     );
   });
 

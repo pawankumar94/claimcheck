@@ -8,6 +8,7 @@ import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { startMcpServer } from "./mcp-server.js";
 import { describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
+import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "./core/install.js";
 import type { RawRecord } from "./types.js";
 
 function collect(value: string, previous: string[]): string[] {
@@ -30,6 +31,50 @@ program
     "A/B test a coding agent's configuration: run the same tasks under different tool policies and compare pass rates."
   )
   .version("0.1.0");
+
+program
+  .command("install")
+  .description("Install claimcheck's methodology into this project for your coding agent(s). No server, no config edit.")
+  .option("--target <id>", "framework to install for (repeatable); omit to auto-detect", collect, [])
+  .option("--all", "install for every supported framework")
+  .option("--list", "list supported frameworks and where each file goes")
+  .option("--dir <path>", "project root to install into", process.cwd())
+  .option("--force", "overwrite an existing file even if it differs")
+  .action(async (opts) => {
+    if (opts.list) {
+      console.log("Supported targets:\n");
+      for (const t of TARGETS) console.log(`  ${t.id.padEnd(14)} ${t.path.padEnd(48)} ${t.label}`);
+      console.log("\nInstall one:   claimcheck install --target cursor");
+      console.log("Install all:   claimcheck install --all");
+      return;
+    }
+
+    const body = await loadTemplate();
+    let targets =
+      opts.target.length > 0
+        ? (opts.target as string[]).map(findTarget)
+        : opts.all
+          ? TARGETS
+          : detectTargets(opts.dir);
+
+    if (targets.length === 0) {
+      console.log(
+        "No coding-agent framework detected in this project.\n" +
+          "Pick one explicitly (claimcheck install --target cursor), see the list\n" +
+          "(claimcheck install --list), or install everywhere (--all)."
+      );
+      return;
+    }
+
+    for (const target of targets) {
+      const outcome = await installTarget(target, opts.dir, body, { force: opts.force });
+      console.log(`  ${outcome.action.padEnd(9)} ${target.path}   (${target.label})`);
+    }
+    console.log(
+      `\nDone. Your agent now follows claimcheck's method with no server running.\n` +
+        `For measured runs, add the CLI (claimcheck run --help) or the MCP server (claimcheck mcp).`
+    );
+  });
 
 program
   .command("profiles")

@@ -135,12 +135,37 @@ Working examples: [`profiles/gemini-cli.json`](profiles/gemini-cli.json),
 
 ## Use it as a plugin
 
-claimcheck is also an MCP server, which is the one integration path that works
-across essentially every current coding agent — Claude Code, Cursor, VS Code,
-Gemini CLI, Codex, Windsurf, Zed. Install it once and the client drives
-evaluations itself.
+Start here — one command, no server, no config file to edit:
 
-**Claude Code** — installs the MCP server and the slash commands together:
+```bash
+npx claimcheck install
+```
+
+It detects which coding agents your project uses and writes the method into the
+file each one already reads. Your agent then follows it with nothing running:
+
+| Framework | File written |
+|---|---|
+| Cursor | `.cursor/rules/claimcheck.mdc` |
+| Claude Code | `.claude/skills/claimcheck/SKILL.md` |
+| GitHub Copilot | `.github/instructions/claimcheck.instructions.md` |
+| Windsurf | `.windsurf/rules/claimcheck.md` |
+| Cline | `.clinerules/claimcheck.md` |
+| Any agent | `AGENTS.md` (appended in a fenced block) |
+| Portable | `skills/claimcheck/SKILL.md` (Agent Skills) |
+
+`--target cursor` picks one, `--all` installs everywhere, `--list` shows the
+table above. Re-running is idempotent, and the `AGENTS.md` block is fenced by
+markers so it never touches anything else in that file.
+
+That tier costs nothing and needs no runtime, because most of claimcheck's
+value is *method* — freeze answer keys before running, repeat trials, report an
+interval, never compare across agents. The CLI and MCP server below add
+measurement on top; they don't replace it.
+
+### Deeper integration
+
+**Claude Code** — plugin, which bundles the MCP server and slash commands:
 
 ```
 /plugin marketplace add pawankumar94/claimcheck
@@ -172,10 +197,15 @@ Full per-client instructions: [docs/integrations.md](docs/integrations.md).
 
 </details>
 
-Four tools are exposed: `list_agent_profiles` (discovery — returns profile
-and example names, so the client never needs a filesystem path),
-`run_evaluation`, `score_results`, and `generate_report`. Then you can just
-ask:
+The MCP server exposes two paths. **In-agent** (`start_run`, `submit_answers`,
+`compare_runs`) has the agent you're already talking to answer the tasks
+itself — no subprocess, no credentials, no per-agent output parsing, so it
+behaves identically in every client. You run once, change your real setup, run
+again, and it compares the two with the same frozen keys. **Subprocess**
+(`list_agent_profiles`, `run_evaluation`, `score_results`, `generate_report`)
+drives an external agent CLI through a profile, for controlled comparisons.
+
+Then you can just ask:
 
 > *Use claimcheck to test whether restricting my agent's tools changes task
 > success. Run the bundled example against gemini-cli with 3 trials.*

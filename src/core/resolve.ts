@@ -11,7 +11,21 @@ import type { AgentProfile } from "../types.js";
  * claimcheck runs as an MCP server: the calling agent has no idea where npm
  * put the package, so it can only refer to built-ins by name.
  */
-export const PACKAGE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+function findPackageRoot(startDir: string): string {
+  // Walk up to the nearest package.json rather than assuming a fixed depth:
+  // bundled code sits at dist/ (one level down) while source sits at
+  // src/core/ (two), so a hardcoded "../" is correct in only one of them.
+  let dir = startDir;
+  for (let i = 0; i < 10; i++) {
+    if (existsSync(join(dir, "package.json"))) return dir;
+    const parent = resolve(dir, "..");
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return resolve(startDir, "..");
+}
+
+export const PACKAGE_ROOT = findPackageRoot(dirname(fileURLToPath(import.meta.url)));
 
 export const PROFILES_DIR = join(PACKAGE_ROOT, "profiles");
 export const EXAMPLES_DIR = join(PACKAGE_ROOT, "examples");

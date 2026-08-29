@@ -5,6 +5,11 @@ works across essentially every current coding agent. Install it once and any
 MCP-capable client can drive evaluations directly, with no per-agent adapter and no
 wrapper script.
 
+> **Not yet on npm.** The configs below use `npx @pawankumar94/claimcheck`,
+> which will work once the package is published. Until then, clone the repo,
+> run `npm install && npm run build && npm link`, and use `claimcheck` as the
+> `command` with `["mcp"]` as the args.
+
 ```bash
 npx -y @pawankumar94/claimcheck mcp
 ```

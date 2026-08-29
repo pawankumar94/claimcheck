@@ -25,13 +25,18 @@ Not yours. So teams ship agent configs on vibes and never find out.
 claimcheck answers that with one command:
 
 ```bash
-npx @pawankumar94/claimcheck
+git clone https://github.com/pawankumar94/claimcheck.git && cd claimcheck
+npm install && npm run build && npm link
+claimcheck
 ```
 
 It finds whichever agent CLI you already have, runs a public benchmark against
 it twice (once with a lean tool surface, once with a cluttered one), and tells
 you whether the difference is real or noise. You write no config, author no
 tasks, and define no answer keys. Everything it needs ships with it.
+
+> **Not yet on npm.** The clone-and-link above is the working install today.
+> Once published, that becomes `npx @pawankumar94/claimcheck`.
 
 ## What a result looks like
 
@@ -59,7 +64,7 @@ The command above measures. This one installs the *discipline* into whatever
 agent you use, so it stops guessing on your behalf:
 
 ```bash
-npx @pawankumar94/claimcheck install
+claimcheck install
 ```
 
 It detects which coding agents your project uses and writes claimcheck's method
@@ -92,9 +97,9 @@ invocations, a few minutes. It prints what it is about to spend and waits for
 you to say yes.
 
 ```bash
-npx @pawankumar94/claimcheck              # quick look
-npx @pawankumar94/claimcheck --full       # whole task set, 3 trials
-npx @pawankumar94/claimcheck --agent codex --yes
+claimcheck                     # quick look
+claimcheck --full              # whole task set, 3 trials
+claimcheck --agent codex --yes
 ```
 
 Its tasks and ground truth come from the
@@ -178,7 +183,7 @@ looking more solid than it is.
 ## Use it as an MCP server
 
 ```bash
-npx -y @pawankumar94/claimcheck mcp
+claimcheck mcp
 ```
 
 Two paths are exposed. **In-agent** (`start_run`, `submit_answers`,

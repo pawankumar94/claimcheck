@@ -10,7 +10,7 @@ import { startMcpServer } from "./mcp-server.js";
 import { builtinExampleTasksPath, describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
 import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "./core/install.js";
 import { buildCharts } from "./core/chart.js";
-import { explainNoAgent, pickDefaultAgent } from "./core/detect.js";
+import { detectAgents, explainNoAgent, pickDefaultAgent } from "./core/detect.js";
 import { analyze } from "./core/analysis.js";
 import { runEvaluation as runEval } from "./core/runner.js";
 import { importBfclFromFiles } from "./core/import-bfcl.js";
@@ -33,7 +33,7 @@ const program = new Command();
 program
   .name("claimcheck")
   .description(
-    "A/B test a coding agent's configuration: run the same tasks under different tool policies and compare pass rates."
+    "Measure whether a coding-agent config change actually helped. Run with no arguments for a zero-setup measurement."
   )
   .version("0.1.0");
 
@@ -48,14 +48,34 @@ program
   .option("--out-dir <path>", "where to write raw results", "./results/raw")
   .option("--yes", "skip the cost confirmation prompt")
   .action(async (opts) => {
+    const detected = await detectAgents();
     const { chosen, all } = opts.agent
-      ? { chosen: (await (await import("./core/detect.js")).detectAgents()).find((a) => a.name === opts.agent) ?? null, all: [] }
+      ? { chosen: detected.find((a) => a.name === opts.agent) ?? null, all: detected }
       : await pickDefaultAgent();
 
     if (!chosen) {
-      console.error(opts.agent ? `No built-in profile named "${opts.agent}".` : explainNoAgent(all));
+      console.error(
+        opts.agent
+          ? `No built-in profile named "${opts.agent}". Available: ${detected.map((a) => a.name).join(", ")}.`
+          : explainNoAgent(all)
+      );
       process.exitCode = 1;
       return;
+    }
+
+    // An explicitly named agent skips the readiness filter that auto-detection
+    // applies, so check it here too. Otherwise every invocation fails on auth
+    // and the user pays for the round trip to find that out.
+    if (!chosen.installed) {
+      console.error(`"${chosen.name}" needs \`${chosen.command}\` on your PATH, and it is not installed.`);
+      process.exitCode = 1;
+      return;
+    }
+    if (chosen.missingEnv.length > 0) {
+      console.warn(
+        `Warning: ${chosen.name} usually needs ${chosen.missingEnv.join(", ")}, which ${chosen.missingEnv.length === 1 ? "is" : "are"} unset.\n` +
+          `If it is authenticated another way this is fine. If not, every invocation will fail.\n`
+      );
     }
 
     const tasksPath = builtinExampleTasksPath(opts.example);
@@ -65,7 +85,10 @@ program
     // Policies come from the task set itself, so the user never names them.
     const policies = Object.keys(tasksDoc.tasks[0]?.prompt_by_policy ?? {});
     if (policies.length !== 2) {
-      console.error(`Task set "${opts.example}" does not define exactly two policies to compare.`);
+      console.error(
+        `Task set "${opts.example}" defines ${policies.length} prompt-level policies, so there is no ` +
+          `two-way comparison to run automatically. Use \`claimcheck run\` and name the policies yourself.`
+      );
       process.exitCode = 1;
       return;
     }

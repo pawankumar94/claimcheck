@@ -1,0 +1,4 @@
+{
+  "name": "curated",
+  "description": "Narrow, task-appropriate tool surface -- read-only, search-oriented. Agent-neutral: what this looks like in a given agent's own flags is defined by that agent's profile.json under policyArgs.curated."
+}

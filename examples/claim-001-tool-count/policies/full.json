@@ -1,0 +1,4 @@
+{
+  "name": "full",
+  "description": "Broad, unrestricted tool surface -- write/edit available even though no task in this claim requires writing anything. Agent-neutral: see each agent's profile.json under policyArgs.full."
+}

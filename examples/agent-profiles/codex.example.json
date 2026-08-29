@@ -1,0 +1,17 @@
+{
+  "name": "codex",
+  "description": "UNVERIFIED TEMPLATE -- not tested against a live Codex CLI install. Fill in the real flags for your installed version before use.",
+  "command": "codex",
+  "baseArgs": ["exec"],
+  "promptPlacement": "after-base",
+  "policyArgs": {
+    "curated": [],
+    "full": []
+  },
+  "extraArgs": [],
+  "output": {
+    "type": "text"
+  },
+  "verified": false,
+  "verificationNote": "TODO before use: (1) confirm the non-interactive/headless subcommand and its exact prompt-passing convention (arg vs stdin) against `codex --help`; (2) find out whether it exposes any tool/sandbox restriction flag and map it into policyArgs.curated vs policyArgs.full -- if it doesn't expose one, this profile can only ever test one policy meaningfully; (3) check whether it has a structured output mode (JSON) with a cost/token field, and switch output.type to \"json\" with the right resultField/costField if so. Rename this file to codex.json (drop .example) once verified, and flip \"verified\" to true with a note on how you checked."
+}

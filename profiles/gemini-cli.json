@@ -1,0 +1,26 @@
+{
+  "name": "gemini-cli",
+  "description": "Google's Gemini CLI in one-shot mode (-p). Non-interactive: tool calls not covered by --allowed-tools have no TTY to confirm against, so they're effectively denied rather than prompted -- that's what curated relies on for its read-only restriction.",
+  "command": "gemini",
+  "baseArgs": ["-o", "json", "-m", "gemini-3.1-pro-preview", "-p"],
+  "promptPlacement": "after-base",
+  "policyArgs": {
+    "curated": [
+      "--approval-mode",
+      "default",
+      "--allowed-tools",
+      "read_file,read_many_files,list_directory,glob,search_file_content"
+    ],
+    "full": [
+      "--approval-mode",
+      "yolo"
+    ]
+  },
+  "extraArgs": [],
+  "output": {
+    "type": "json",
+    "resultField": "response"
+  },
+  "verified": true,
+  "verificationNote": "Base invocation and output schema confirmed against a live install (gemini-cli 0.10.0) with a real API call: `gemini -o json -m gemini-3.1-pro-preview -p \"Reply with exactly: hello\"` returned {\"response\": \"hello\", \"stats\": {...}}. The default model in older installs (gemini-2.5-pro) returns a 404 for new API keys as of 2026 -- gemini-3.1-pro-preview is required instead; re-check this if the CLI or API changes again. NOT independently re-verified: the exact tool names in policyArgs.curated (read_file/read_many_files/list_directory/glob/search_file_content) match this CLI's documented built-in tools but a live curated-policy run restricting them was not separately isolated from a claimcheck task run -- see the task run's raw output for whether the restriction actually held. No cost field: gemini-cli's JSON output reports token counts (stats.models.<model>.tokens), not a USD figure, so output.costField is intentionally omitted -- cost will show as \"n/a\" in reports for this agent, not comparable to total_cost_usd from other agents without a manual token-price conversion. No session-id field either."
+}

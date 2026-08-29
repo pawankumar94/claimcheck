@@ -156,12 +156,13 @@ file each one already reads. Your agent then follows it with nothing running:
 | Framework | File written |
 |---|---|
 | Cursor | `.cursor/rules/claimcheck.mdc` |
+| Hermes Agent | `.hermes/skills/claimcheck/SKILL.md` |
 | Claude Code | `.claude/skills/claimcheck/SKILL.md` |
 | GitHub Copilot | `.github/instructions/claimcheck.instructions.md` |
 | Windsurf | `.windsurf/rules/claimcheck.md` |
 | Cline | `.clinerules/claimcheck.md` |
 | Any agent | `AGENTS.md` (appended in a fenced block) |
-| Portable | `skills/claimcheck/SKILL.md` (Agent Skills) |
+| Portable | `skills/claimcheck/SKILL.md`, `.agents/skills/…` (Agent Skills) |
 
 `--target cursor` picks one, `--all` installs everywhere, `--list` shows the
 table above. Re-running is idempotent, and the `AGENTS.md` block is fenced by

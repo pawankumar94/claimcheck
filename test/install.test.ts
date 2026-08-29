@@ -103,3 +103,24 @@ describe("installTarget", () => {
     expect(() => findTarget("emacs")).toThrow(/Unknown target/);
   });
 });
+
+describe("skill-host targets", () => {
+  it("emits the version field Hermes requires but other hosts omit", async () => {
+    await installTarget(findTarget("hermes"), root, body);
+    await installTarget(findTarget("claude-code"), root, body);
+
+    const hermes = await readFile(join(root, ".hermes/skills/claimcheck/SKILL.md"), "utf-8");
+    const claude = await readFile(join(root, ".claude/skills/claimcheck/SKILL.md"), "utf-8");
+
+    expect(hermes).toMatch(/^---\nname: claimcheck\ndescription: .*\nversion: 1\.0\.0\n---/);
+    expect(claude).not.toContain("version:");
+    // Guidance itself must still be identical across hosts.
+    expect(hermes.split("---\n\n")[1]).toBe(claude.split("---\n\n")[1]);
+  });
+
+  it("supports the generic cross-agent .agents/skills location", async () => {
+    const outcome = await installTarget(findTarget("agents-skills"), root, body);
+    expect(outcome.action).toBe("created");
+    expect(await readFile(join(root, ".agents/skills/claimcheck/SKILL.md"), "utf-8")).toContain("Freeze the keys");
+  });
+});

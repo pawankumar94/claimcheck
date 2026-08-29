@@ -45,6 +45,21 @@ export const TARGETS: InstallTarget[] = [
     render: (body) => `---\nname: claimcheck\ndescription: ${DESCRIPTION}\n---\n\n${body}`,
   },
   {
+    id: "hermes",
+    label: "Hermes Agent (project skill)",
+    path: ".hermes/skills/claimcheck/SKILL.md",
+    detect: [".hermes"],
+    // Hermes requires a `version` field that the other skill hosts do not.
+    render: (body) => `---\nname: claimcheck\ndescription: ${DESCRIPTION}\nversion: 1.0.0\n---\n\n${body}`,
+  },
+  {
+    id: "agents-skills",
+    label: "Generic .agents/skills (cross-agent)",
+    path: ".agents/skills/claimcheck/SKILL.md",
+    detect: [".agents"],
+    render: (body) => `---\nname: claimcheck\ndescription: ${DESCRIPTION}\nversion: 1.0.0\n---\n\n${body}`,
+  },
+  {
     id: "cursor",
     label: "Cursor (project rule)",
     path: ".cursor/rules/claimcheck.mdc",

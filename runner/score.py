@@ -5,9 +5,19 @@ Keyword-matches each raw result against its task's answer key.
 Deliberately not an LLM-as-judge: with n=8 tasks this is small enough to
 also spot-check by hand (print the full result_text for anything scored
 FAIL or NEEDS_REVIEW and read it yourself before trusting the number).
+
+Known limitation, found during a quality pass on this scaffold: plain
+substring matching false-positives on short/numeric keywords -- "33" would
+match inside "1233" or "3383" just as happily as inside the real "33 to 83
+points" claim. Short alphanumeric keywords (t3's "33"/"83") now match on
+word boundaries instead; longer or punctuated keywords (an npm package name,
+a hyphenated directory name) fall back to plain substring, since \\b behaves
+oddly around characters like "@" and "/". This is still a heuristic, not a
+proof the match is semantically right -- keep spot-checking PARTIAL/FAIL.
 """
 import argparse
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -18,9 +28,16 @@ def load_json(path: Path) -> dict:
         return json.load(f)
 
 
+def keyword_present(keyword: str, text_lower: str) -> bool:
+    kw_lower = keyword.lower()
+    if kw_lower.isalnum():
+        return re.search(rf"\b{re.escape(kw_lower)}\b", text_lower) is not None
+    return kw_lower in text_lower
+
+
 def score_one(result_text: str, expected_keywords: list[str]) -> tuple[str, list[str]]:
     text_lower = result_text.lower()
-    missing = [kw for kw in expected_keywords if kw.lower() not in text_lower]
+    missing = [kw for kw in expected_keywords if not keyword_present(kw, text_lower)]
     if not missing:
         return "PASS", []
     if len(missing) < len(expected_keywords):

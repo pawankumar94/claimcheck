@@ -1,8 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="DiedInChat">
-  <rect width="32" height="32" fill="#0B1220"/>
-  <rect x="4" y="4" width="24" height="24" rx="4" fill="#F3EDE1"/>
-  <circle cx="4" cy="16" r="3" fill="#0B1220"/>
-  <rect x="9" y="9" width="14" height="14" rx="3" fill="#145C60"/>
-  <rect x="11" y="11" width="10" height="10" rx="2" fill="#F3EDE1"/>
-  <path d="M13.2 16.2 L15.2 18.2 L19.2 13.2" fill="none" stroke="#146E70" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="diedinchat">
+  <rect width="64" height="64" rx="12" fill="#F4F0E7"/>
+  <path d="M8 8H42V56H8Z" fill="#11110F"/>
+  <path d="M8 23H42M8 38H42" stroke="#F4F0E7" stroke-width="4"/>
+  <path d="M18 41H58V54H18Z" fill="#C7FF35" stroke="#11110F" stroke-width="3"/>
+  <path d="M23 37H35V42H23Z" fill="#C7FF35" stroke="#11110F" stroke-width="3"/>
+  <path d="M24 47H42" stroke="#11110F" stroke-width="3"/>
+  <circle cx="53" cy="47.5" r="2.5" fill="#11110F"/>
 </svg>

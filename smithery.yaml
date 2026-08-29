@@ -1,0 +1,11 @@
+# Smithery configuration for claimcheck MCP server
+# https://smithery.ai/docs/config
+
+startCommand:
+  type: stdio
+  config:
+    command: npx
+    args:
+      - "-y"
+      - "@pawankumar94/claimcheck"
+      - "mcp"

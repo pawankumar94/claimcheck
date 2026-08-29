@@ -102,9 +102,15 @@ command = "npx"
 args = ["-y", "@pawankumar94/claimcheck", "mcp"]
 ```
 
-### Anything else
+### Anything else (Smithery / Windsurf / Zed / Claude Desktop)
 
-Most other MCP clients (Windsurf, Zed, Claude Desktop, Continue, and the rest)
+To install automatically via [Smithery](https://smithery.ai/server/@pawankumar94/claimcheck):
+
+```bash
+npx -y @smithery/cli install @pawankumar94/claimcheck --client claude
+```
+
+Or configure manually: most other MCP clients (Windsurf, Zed, Claude Desktop, Continue, and the rest)
 accept the same `mcpServers` object shown under Cursor above; only the file
 location differs. Config keys and paths do drift between releases, so check
 your client's current MCP docs if a block here doesn't take.

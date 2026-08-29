@@ -20,3 +20,14 @@ export { analyze, summarizeConditions, differenceInterval } from "./core/analysi
 export { buildCharts } from "./core/chart.js";
 export { scoreOne, scoreRecords, keywordPresent } from "./core/scorer.js";
 export { buildReport } from "./core/reporter.js";
+export {
+  TARGETS,
+  findTarget,
+  detectTargets,
+  loadTemplate,
+  installTarget,
+  type InstallTarget,
+  type InstallOutcome,
+} from "./core/install.js";
+export { startRun, submitAnswers, loadRun, sessionToRecords } from "./core/session.js";
+export { importBfcl, importBfclFromFiles } from "./core/import-bfcl.js";

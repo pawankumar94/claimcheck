@@ -145,10 +145,9 @@ flag for it.
 
 | Agent | Profile | Status |
 |---|---|---|
-| **Claude Code** (Vertex AI) | [`claude-code-vertex.json`](profiles/claude-code-vertex.json) | Verified end to end. 180 invocations, cost captured. Model must be pinned; availability is per-deployment. |
+| **Claude Code** | [`claude-code.json`](profiles/claude-code.json) | Verified end to end. Invokes CLI in `--bare` mode; flags, output parsing, and cost reporting verified. |
 | **Gemini CLI** | [`gemini-cli.json`](profiles/gemini-cli.json) | Verified end to end. Reports tokens rather than USD, so `cost` shows `n/a`. |
 | **Codex CLI** | [`codex.json`](profiles/codex.json) | Verified end to end. Policy axis is `--ignore-user-config`, so the contrast depends on how many MCP servers you have configured. |
-| **Claude Code** (Anthropic API) | [`claude-code.json`](profiles/claude-code.json) | Flags and output schema verified. Task answering unverified, as the check environment had no API key. |
 | Cursor CLI | [`examples/agent-profiles/`](examples/agent-profiles/) | Template only, flags unverified. |
 | Anything else | | Write a profile, see below. |
 

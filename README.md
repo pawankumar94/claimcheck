@@ -72,12 +72,13 @@ into the file each one already reads:
 
 | Agent | File written |
 |---|---|
-| Claude Code | `.claude/skills/claimcheck/SKILL.md` |
-| Cursor | `.cursor/rules/claimcheck.mdc` |
-| GitHub Copilot | `.github/instructions/claimcheck.instructions.md` |
-| Hermes Agent | `.hermes/skills/claimcheck/SKILL.md` |
-| Windsurf | `.windsurf/rules/claimcheck.md` |
-| Cline | `.clinerules/claimcheck.md` |
+| <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> Claude Code | `.claude/skills/claimcheck/SKILL.md` |
+| <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> Cursor | `.cursor/rules/claimcheck.mdc` |
+| <img src="brand/icons/copilot.svg" width="16" height="16" valign="middle" /> GitHub Copilot | `.github/instructions/claimcheck.instructions.md` |
+| <img src="brand/icons/hermes.png" width="16" height="16" valign="middle" /> Hermes Agent | `.hermes/skills/claimcheck/SKILL.md` |
+| <img src="brand/icons/windsurf.svg" width="16" height="16" valign="middle" /> Windsurf | `.windsurf/rules/claimcheck.md` |
+| <img src="brand/icons/cline.svg" width="16" height="16" valign="middle" /> Cline | `.clinerules/claimcheck.md` |
+| <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> Antigravity / Gemini | `skills/…`, `AGENTS.md` |
 | Any agent | `AGENTS.md`, appended in a fenced block |
 | Portable | `skills/…`, `.agents/skills/…` (Agent Skills) |
 
@@ -145,10 +146,10 @@ flag for it.
 
 | Agent | Profile | Status |
 |---|---|---|
-| **Claude Code** | [`claude-code.json`](profiles/claude-code.json) | Verified end to end. Invokes CLI in `--bare` mode; flags, output parsing, and cost reporting verified. |
-| **Gemini CLI** | [`gemini-cli.json`](profiles/gemini-cli.json) | Verified end to end. Reports tokens rather than USD, so `cost` shows `n/a`. |
-| **Codex CLI** | [`codex.json`](profiles/codex.json) | Verified end to end. Policy axis is `--ignore-user-config`, so the contrast depends on how many MCP servers you have configured. |
-| Cursor CLI | [`examples/agent-profiles/`](examples/agent-profiles/) | Template only, flags unverified. |
+| <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> **Claude Code** | [`claude-code.json`](profiles/claude-code.json) | Verified end to end. Invokes CLI in `--bare` mode; flags, output parsing, and cost reporting verified. |
+| <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> **Gemini CLI** | [`gemini-cli.json`](profiles/gemini-cli.json) | Verified end to end. Reports tokens rather than USD, so `cost` shows `n/a`. |
+| <img src="brand/icons/openai.svg" width="16" height="16" valign="middle" /> **Codex CLI** | [`codex.json`](profiles/codex.json) | Verified end to end. Policy axis is `--ignore-user-config`, so the contrast depends on how many MCP servers you have configured. |
+| <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> **Cursor CLI** | [`examples/agent-profiles/`](examples/agent-profiles/) | Template only, flags unverified. |
 | Anything else | | Write a profile, see below. |
 
 Every profile records its own verification status, and `claimcheck run` warns

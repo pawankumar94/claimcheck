@@ -105,12 +105,15 @@ Agent: list tickets on src/routes/ → sees the stamp → puts auth in middlewar
 
 `diedinchat install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
 
+What’s left to build (honor-rate eval, close/unpin, publish) is in
+[`PLANNER.md`](PLANNER.md). Brand/icons are paused.
+
 ## Where we are
 
-**Shipping on this branch:** `pin` / `status` / `check`, a `.diedinchat/` store,
+**On `main`:** `pin` / `status` / `check`, a `.diedinchat/` store,
 MCP tools (`pin_claim`, `list_claims_for_file`, `check_claim`), and an
 install template that teaches pinning rather than only evals. Bare
-`diedinchat` is now `status` (local, free), not a budget-spending measure.
+`diedinchat` is `status` (local, free), not a budget-spending measure.
 
 ```bash
 diedinchat pin --text "Auth only through middleware." --file src/middleware.ts

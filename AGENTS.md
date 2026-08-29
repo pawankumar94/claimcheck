@@ -6,19 +6,15 @@ If you're an agent working in this repo, read [`README.md`](README.md) first
 (run/score/report, agent profiles).
 
 **Product direction (do not reverse this in a drive-by):** diedinchat is
-becoming file-bound tickets — assertions pinned to paths in `.diedinchat/`,
+file-bound tickets — assertions pinned to paths in `.diedinchat/`,
 visible across sessions and agents, flipping `stale` when those files
 change. The existing eval CLI is the *lab* we use to prove that works, not
-the product. Next code: `pin` / `status` / `check`, a `.diedinchat/` store,
-MCP verbs for those, then rewrite `templates/diedinchat.md` so `install`
-teaches pinning rather than only measurement. Do not add a PLANNER.md.
-Do not lead new copy with BFCL or config A/B.
+the product. Phases, what’s shipped, and what to build next:
+[`PLANNER.md`](PLANNER.md). Do not lead new copy with BFCL or config A/B.
 
 Then [`examples/claim-001-tool-count/`](examples/claim-001-tool-count/) for
-the specific *lab* hypothesis, corpus, and what would falsify it. There is
-deliberately no PLANNER.md yet — writing a phased roadmap before a real
-result exists to plan around is exactly the mistake this repo's sibling
-project `nocontext` made. Add one only once real results exist.
+the specific *lab* hypothesis, corpus, and what would falsify it.
+
 
 ## Architecture, in one paragraph
 
@@ -29,8 +25,8 @@ policies (`policies/*.json`) are pure data with no agent's flags in them.
 (profile, policy name, prompt) into a concrete command line -- if you're
 looking for "where does an agent's syntax get resolved," it's there and
 nowhere else. Supporting a new agent is writing a profile JSON file, not
-new code. Ticket storage (when it lands) is repo-local `.diedinchat/`, not
-agent-specific.
+new code. Tickets live in repo-local `.diedinchat/`, not in
+`~/.diedinchat` (lab runs only) and not per-agent.
 
 ## Before you trust a result
 

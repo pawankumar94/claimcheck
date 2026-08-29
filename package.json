@@ -1,0 +1,45 @@
+{
+  "name": "claimcheck",
+  "version": "0.1.0",
+  "description": "Test claims about coding-agent behavior (e.g. \"fewer tools improves task success\") against any CLI-based coding agent -- Claude Code, Codex, Cursor, Aider, or your own -- through a small agent-profile config, no agent-specific rewrite required.",
+  "type": "module",
+  "bin": {
+    "claimcheck": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "profiles"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "coding-agent",
+    "mcp",
+    "eval",
+    "benchmark",
+    "claude-code",
+    "codex",
+    "cursor"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "commander": "^12.1.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

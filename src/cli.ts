@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { readFile, writeFile, readdir } from "node:fs/promises";
+import { readFile, writeFile, readdir, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import { loadTasksDoc } from "./core/tasks.js";
 import { runEvaluation } from "./core/runner.js";
@@ -9,6 +9,7 @@ import { buildReport } from "./core/reporter.js";
 import { startMcpServer } from "./mcp-server.js";
 import { describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
 import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "./core/install.js";
+import { buildCharts } from "./core/chart.js";
 import type { RawRecord } from "./types.js";
 
 function collect(value: string, previous: string[]): string[] {
@@ -170,6 +171,29 @@ program
     const report = buildReport(scored);
     await writeFile(opts.output, report);
     console.log(`Wrote report to ${opts.output}`);
+  });
+
+program
+  .command("chart")
+  .description("Render SVG charts from scored results: pass rate per policy, the confidence interval against zero, and per-task detail.")
+  .option("--input <path>", "path to scored.json", "./results/scored.json")
+  .option("--out-dir <path>", "directory to write SVG files into", "./results")
+  .action(async (opts) => {
+    const scored = JSON.parse(await readFile(opts.input, "utf-8"));
+    const charts = buildCharts(scored);
+    if (charts.length === 0) {
+      console.log("No comparison to chart -- charts need one agent run under two policies.");
+      return;
+    }
+    await mkdir(opts.outDir, { recursive: true });
+    for (const [i, c] of charts.entries()) {
+      const suffix = charts.length > 1 ? `-${i + 1}` : "";
+      const a = join(opts.outDir, `pass-rate${suffix}.svg`);
+      const b = join(opts.outDir, `per-task${suffix}.svg`);
+      await writeFile(a, c.passRate);
+      await writeFile(b, c.perTask);
+      console.log(`Wrote ${a}\nWrote ${b}`);
+    }
   });
 
 program

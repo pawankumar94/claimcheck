@@ -167,9 +167,14 @@ program
   .description("Aggregate scored.json into a markdown report.")
   .option("--input <path>", "path to scored.json", "./results/scored.json")
   .option("--output <path>", "path to write report.md to", "./results/report.md")
+  .option("--baseline <policy>", "policy to treat as the baseline to beat")
+  .option("--candidate <policy>", "policy to compare against the baseline")
   .action(async (opts) => {
     const scored = JSON.parse(await readFile(opts.input, "utf-8"));
-    const report = buildReport(scored);
+    const report = buildReport(scored, {
+      ...(opts.baseline ? { baselinePolicy: opts.baseline } : {}),
+      ...(opts.candidate ? { candidatePolicy: opts.candidate } : {}),
+    });
     await writeFile(opts.output, report);
     console.log(`Wrote report to ${opts.output}`);
   });
@@ -203,9 +208,14 @@ program
   .description("Render SVG charts from scored results: pass rate per policy, the confidence interval against zero, and per-task detail.")
   .option("--input <path>", "path to scored.json", "./results/scored.json")
   .option("--out-dir <path>", "directory to write SVG files into", "./results")
+  .option("--baseline <policy>", "policy to treat as the baseline to beat")
+  .option("--candidate <policy>", "policy to compare against the baseline")
   .action(async (opts) => {
     const scored = JSON.parse(await readFile(opts.input, "utf-8"));
-    const charts = buildCharts(scored);
+    const charts = buildCharts(scored, {
+      ...(opts.baseline ? { baselinePolicy: opts.baseline } : {}),
+      ...(opts.candidate ? { candidatePolicy: opts.candidate } : {}),
+    });
     if (charts.length === 0) {
       console.log("No comparison to chart -- charts need one agent run under two policies.");
       return;

@@ -141,3 +141,35 @@ describe("data-quality signals", () => {
     expect(curated.passes).toBe(3);
   });
 });
+
+describe("policy selection", () => {
+  it("compares the two arms present when they are not named curated/full", () => {
+    const records = [...many("few-tools", 8, 2), ...many("many-tools", 5, 5)];
+    const { comparisons } = analyze(records);
+    expect(comparisons).toHaveLength(1);
+    expect(new Set([comparisons[0]!.baseline.policy, comparisons[0]!.candidate.policy])).toEqual(
+      new Set(["few-tools", "many-tools"])
+    );
+  });
+
+  it("honours explicit baseline/candidate names", () => {
+    const records = [...many("before", 8, 2), ...many("after", 5, 5)];
+    const { comparisons } = analyze(records, { baselinePolicy: "before", candidatePolicy: "after" });
+    expect(comparisons[0]!.baseline.policy).toBe("before");
+    expect(comparisons[0]!.candidate.policy).toBe("after");
+  });
+
+  it("refuses to guess with three arms, and says so", () => {
+    const records = [...many("a", 3, 1), ...many("b", 3, 1), ...many("c", 3, 1)];
+    const { comparisons, warnings } = analyze(records);
+    expect(comparisons).toHaveLength(0);
+    expect(warnings.join(" ")).toMatch(/Name them explicitly/);
+  });
+
+  it("still prefers curated/full when both are present", () => {
+    const records = [...many("curated", 8, 2), ...many("full", 5, 5), ...many("other", 1, 1)];
+    const { comparisons } = analyze(records);
+    expect(comparisons[0]!.candidate.policy).toBe("curated");
+    expect(comparisons[0]!.baseline.policy).toBe("full");
+  });
+});

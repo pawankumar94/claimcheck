@@ -30,6 +30,7 @@ in a small JSON profile rather than in the tool itself.
 ```bash
 git clone https://github.com/pawankumar94/claimcheck.git && cd claimcheck
 npm install && npm run build && npm link
+claimcheck profiles          # what agents and examples are available
 ```
 
 Then run the bundled example, which tests the most-repeated config claim in
@@ -121,15 +122,45 @@ looking more solid than they are.
 Working examples: [`profiles/gemini-cli.json`](profiles/gemini-cli.json),
 [`profiles/claude-code.json`](profiles/claude-code.json).
 
-## Use as an MCP server
+## Use it as a plugin
+
+claimcheck is also an MCP server, which is the one integration path that works
+across essentially every current coding agent — Claude Code, Cursor, VS Code,
+Gemini CLI, Codex, Windsurf, Zed. Install it once and the client drives
+evaluations itself.
 
 ```bash
-claimcheck mcp
+claude mcp add claimcheck -- npx -y claimcheck mcp
 ```
 
-Exposes `run_evaluation`, `score_results`, and `generate_report` over stdio,
-so an MCP-capable agent can run an evaluation itself — including pointing
-claimcheck at its own profile to measure its own configuration.
+<details>
+<summary>Other clients (Cursor, VS Code, Gemini CLI, Codex, …)</summary>
+
+Most clients take the same block, only the file location differs —
+`.cursor/mcp.json`, `~/.gemini/settings.json`, and so on:
+
+```json
+{
+  "mcpServers": {
+    "claimcheck": { "command": "npx", "args": ["-y", "claimcheck", "mcp"] }
+  }
+}
+```
+
+Full per-client instructions: [docs/integrations.md](docs/integrations.md).
+
+</details>
+
+Four tools are exposed: `list_agent_profiles` (discovery — returns profile
+and example names, so the client never needs a filesystem path),
+`run_evaluation`, `score_results`, and `generate_report`. Then you can just
+ask:
+
+> *Use claimcheck to test whether restricting my agent's tools changes task
+> success. Run the bundled example against gemini-cli with 3 trials.*
+
+Since the client and the measured agent can be the same one, this is also how
+an agent evaluates its own configuration.
 
 ## Development
 
@@ -141,9 +172,12 @@ npm run typecheck
 
 The suite covers the full pipeline using a stub agent and a local git repo,
 so you can validate changes without spending API budget.
-[docs/architecture.md](docs/architecture.md) covers the internals;
-[AGENTS.md](AGENTS.md) is the entry point for coding agents working in this
-repo.
+
+| Doc | Covers |
+|---|---|
+| [docs/architecture.md](docs/architecture.md) | Internals and extension points |
+| [docs/integrations.md](docs/integrations.md) | Per-client plugin setup, library usage |
+| [AGENTS.md](AGENTS.md) | Entry point for coding agents working in this repo |
 
 ## Scope and limits
 

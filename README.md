@@ -13,19 +13,49 @@
 
 ## The problem
 
-Monday, Claude Code in this repo:
+You have an app like this:
 
-> Auth only goes through `src/middleware.ts`. Don’t put checks in route handlers.
+```
+src/middleware.ts      # the only place that checks the session
+src/routes/home.ts
+src/routes/settings.ts
+```
 
-That sentence is a **claim about files**. It is true. It is also trapped in Monday’s chat.
+Monday, Claude Code is in the repo. You say:
 
-Wednesday you open the same repo in Cursor, or Codex, or a new Claude session. The files are still there. The promise is gone. The new agent adds `requireUser()` in a route because nothing told it not to. You find out in review.
+> Auth only goes through `src/middleware.ts`. Do not call `requireUser()` in route handlers.
 
-That is not the model being dumb. It is **fragmented context**: assertions that cite files live in a transcript no other agent will read.
+It agrees. It even refactors a handler to match. That sentence is now **only in Monday’s chat log**. It is not in the repo. It is not in a test. It is not in CODEOWNERS.
 
-Git tells you what changed. Chat told you what was true. Nothing joins them.
+Wednesday you open the same commit in Cursor (or Codex, or a new Claude session). Chat is empty. You say:
 
-Tests lock behavior. CODEOWNERS lock who may touch a path. **Nothing locks the sentences agents keep losing when the session ends.**
+> Add `src/routes/admin.ts` for `/admin`.
+
+Nothing in the tree tells the new agent about Monday’s rule. It ships this:
+
+```ts
+// src/routes/admin.ts
+export function admin(req) {
+  requireUser(req); // session check, again
+  return renderAdmin();
+}
+```
+
+`git diff` looks like a normal new file. Tests still pass: they never encoded “auth lives in one file.” Review is where you notice, if you notice.
+
+That is not the model being dumb. The **constraint was never attached to `src/middleware.ts` and `src/routes/`**, so no later agent could see it.
+
+Same pattern, different files:
+
+| Someone said (in chat) | Files it was about | What happens next session |
+|---|---|---|
+| “Don’t put SQL in route handlers, only `src/db/`.” | `src/db/`, `src/routes/` | Agent inlines a query in a new route |
+| “`config.ts` is generated. Edit `config.schema.ts`.” | `src/config.ts`, `src/config.schema.ts` | Agent “fixes” the generated file; next build overwrites it |
+| “All prices are cents in `src/money.ts`. No floats.” | `src/money.ts`, `src/billing/` | Agent adds `price * 1.1` in a billing helper |
+
+Git will tell you those files changed. It will not tell you a **promise about them** died with the last session.
+
+Tests lock behavior. CODEOWNERS lock who may touch a path. **Nothing locks the sentences agents keep losing when the chat ends.**
 
 ## What we are building
 

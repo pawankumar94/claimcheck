@@ -1,4 +1,4 @@
-import type { RawRecord, ScoredRecord, Task, TasksDoc } from "../types.js";
+import type { AcceptanceCriterion, RawRecord, ScoredRecord, Task, TasksDoc } from "../types.js";
 
 /**
  * Deliberately not an LLM-as-judge: for small task sets this is small enough
@@ -40,14 +40,42 @@ export function keywordPresent(keyword: string, textLower: string): boolean {
   return textLower.includes(kwLower);
 }
 
+/** Human-readable name for a criterion, used to report what was missing. */
+export function describeCriterion(c: AcceptanceCriterion): string {
+  if (typeof c === "string") return c;
+  if (c.label) return c.label;
+  if ("any_of" in c) return `any of [${c.any_of.join(" | ")}]`;
+  if ("all_of" in c) return `all of [${c.all_of.join(" + ")}]`;
+  return `/${c.regex}/`;
+}
+
+export function criterionSatisfied(c: AcceptanceCriterion, textLower: string): boolean {
+  if (typeof c === "string") return keywordPresent(c, textLower);
+  if ("any_of" in c) return c.any_of.some((k) => keywordPresent(k, textLower));
+  if ("all_of" in c) return c.all_of.every((k) => keywordPresent(k, textLower));
+  try {
+    return new RegExp(c.regex, c.flags ?? "i").test(textLower);
+  } catch {
+    // A malformed pattern must not silently pass; surface it as unmet.
+    return false;
+  }
+}
+
+/** Criteria for a task: `accept` when present, else the legacy keyword list. */
+export function criteriaFor(task: Task): AcceptanceCriterion[] {
+  if (task.accept && task.accept.length > 0) return task.accept;
+  return task.expected_keywords ?? [];
+}
+
 export function scoreOne(
   resultText: string,
-  expectedKeywords: string[]
+  criteria: AcceptanceCriterion[]
 ): { verdict: "PASS" | "PARTIAL" | "FAIL"; missing: string[] } {
   const textLower = resultText.toLowerCase();
-  const missing = expectedKeywords.filter((kw) => !keywordPresent(kw, textLower));
+  const missing = criteria.filter((c) => !criterionSatisfied(c, textLower)).map(describeCriterion);
+  if (criteria.length === 0) return { verdict: "FAIL", missing: ["(task declares no acceptance criteria)"] };
   if (missing.length === 0) return { verdict: "PASS", missing: [] };
-  if (missing.length < expectedKeywords.length) return { verdict: "PARTIAL", missing };
+  if (missing.length < criteria.length) return { verdict: "PARTIAL", missing };
   return { verdict: "FAIL", missing };
 }
 
@@ -69,7 +97,7 @@ export function scoreRecords(records: RawRecord[], tasksDoc: TasksDoc): ScoredRe
     }
 
     const resultText = rec.metrics?.result_text ?? "";
-    const { verdict, missing } = scoreOne(resultText, task.expected_keywords);
+    const { verdict, missing } = scoreOne(resultText, criteriaFor(task));
     const finalVerdict = task.verified
       ? verdict
       : `${verdict} (UNVERIFIED ANSWER KEY -- ${task.note ?? ""})`;

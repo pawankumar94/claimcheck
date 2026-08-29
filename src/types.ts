@@ -1,8 +1,29 @@
+/**
+ * One acceptance criterion. Every criterion on a task must be satisfied for a
+ * PASS.
+ *
+ * A bare string is a keyword (the original form, kept so existing task sets
+ * keep working). The object forms exist because keyword-only keys reject
+ * correct answers that used different words -- two independent runs found that
+ * to be the dominant source of failure, ahead of anything the agent actually
+ * got wrong. `any_of` lets a key enumerate acceptable phrasings up front,
+ * which stays pre-registered and deterministic rather than sliding toward
+ * grading to taste.
+ */
+export type AcceptanceCriterion =
+  | string
+  | { any_of: string[]; label?: string }
+  | { all_of: string[]; label?: string }
+  | { regex: string; flags?: string; label?: string };
+
 export interface Task {
   id: string;
   prompt: string;
   source_files?: string[];
-  expected_keywords: string[];
+  /** Legacy keyword list. Use `accept` for new task sets. */
+  expected_keywords?: string[];
+  /** Richer acceptance criteria. Takes precedence over expected_keywords. */
+  accept?: AcceptanceCriterion[];
   verified: boolean;
   note?: string;
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { keywordPresent, scoreOne, scoreRecords } from "../src/core/scorer.js";
+import { criteriaFor, keywordPresent, scoreOne, scoreRecords } from "../src/core/scorer.js";
 import type { RawRecord, TasksDoc } from "../src/types.js";
 
 describe("keywordPresent", () => {
@@ -106,5 +106,53 @@ describe("scoreRecords", () => {
       { task_id: "unknown", agent_name: "a", policy_name: "p", trial: 0, prompt: "?", ok: true, latency_ms: 1 },
     ];
     expect(scoreRecords(records, tasksDoc)).toEqual([]);
+  });
+});
+
+describe("acceptance criteria (v2)", () => {
+  const answer =
+    "No, this repository does not currently ship an MCP server. It is planned for Phase 5, gated on Phase 4.";
+
+  it("any_of accepts a correct paraphrase that a literal keyword rejects", () => {
+    // The exact failure both the Gemini and Codex runs hit independently.
+    expect(scoreOne(answer, ["not started"]).verdict).toBe("FAIL");
+    expect(
+      scoreOne(answer, [{ any_of: ["not started", "does not currently ship", "no MCP server"] }, "Phase 4"])
+        .verdict
+    ).toBe("PASS");
+  });
+
+  it("any_of still fails when no alternative appears", () => {
+    expect(scoreOne("Completely unrelated.", [{ any_of: ["alpha", "beta"] }]).verdict).toBe("FAIL");
+  });
+
+  it("all_of requires every member", () => {
+    expect(scoreOne("only alpha here", [{ all_of: ["alpha", "beta"] }]).verdict).toBe("FAIL");
+    expect(scoreOne("alpha and beta", [{ all_of: ["alpha", "beta"] }]).verdict).toBe("PASS");
+  });
+
+  it("regex criteria match case-insensitively by default", () => {
+    expect(scoreOne("improved by 33 to 83 points", [{ regex: "33\\s*(to|-|–)\\s*83" }]).verdict).toBe("PASS");
+  });
+
+  it("treats a malformed regex as unmet rather than silently passing", () => {
+    const res = scoreOne("anything", [{ regex: "([unclosed" }]);
+    expect(res.verdict).toBe("FAIL");
+  });
+
+  it("reports a readable label for what was missing", () => {
+    const res = scoreOne("nothing relevant", [{ any_of: ["x", "y"], label: "MCP status" }]);
+    expect(res.missing).toEqual(["MCP status"]);
+  });
+
+  it("fails loudly when a task declares no criteria at all", () => {
+    expect(scoreOne("anything", []).verdict).toBe("FAIL");
+  });
+
+  it("criteriaFor prefers accept but falls back to legacy keywords", () => {
+    expect(criteriaFor({ id: "a", prompt: "?", expected_keywords: ["k"], verified: true })).toEqual(["k"]);
+    expect(
+      criteriaFor({ id: "a", prompt: "?", expected_keywords: ["k"], accept: [{ any_of: ["x"] }], verified: true })
+    ).toEqual([{ any_of: ["x"] }]);
   });
 });

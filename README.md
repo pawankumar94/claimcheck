@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="brand/svg/diedinchat-icon.svg" width="112" alt="diedinchat logo">
+  <img src="brand/png/icon-256.png" width="88" alt="diedinchat logo">
 </p>
 
 <h1 align="center">diedinchat</h1>

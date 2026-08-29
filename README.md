@@ -61,11 +61,14 @@ provides no evidence that "curated" and "full" differ in task success.
 Difference: +4 points (95% CI -21 to +28, Agresti-Caffo).
 ```
 
-That's a real result from this repo — 8 tasks × 2 policies × 3 trials against
-Gemini CLI, 48 invocations. The most-repeated claim in agent tooling showed
-**no detectable effect** at this sample size. Full write-up, including why the
-scorer turned out to matter more than the tool policy:
-**[benchmarks/2026-08-29-gemini-cli/](benchmarks/2026-08-29-gemini-cli/)**.
+That's a real result from this repo. Across **three runs on two agents**
+(Gemini CLI and Codex, 144 invocations total), reducing the tool surface showed
+**no detectable effect** — every interval spans zero. All results, charts, and
+the caveats that bound them: **[benchmarks/](benchmarks/)**.
+
+Which is a finding about our experiments as much as about the claim: published
+work using much wider contrasts *does* find an effect, so these runs were
+underpowered by design rather than the claim being false. The write-ups say so.
 
 > Requires the target agent's CLI installed and authenticated. The example
 > above needs `gemini` and `GEMINI_API_KEY`; substitute `--agent claude-code`

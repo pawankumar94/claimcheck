@@ -16,10 +16,14 @@ Every answer key was verified against the pinned source *before* the run.
 
 ## Result
 
+![Pass rate by policy with 95% confidence interval](pass-rate.svg)
+
 | policy | pass rate |
 |---|---|
 | curated | 18/24 (75%) |
 | full | 17/24 (71%) |
+
+![Per-task pass counts](per-task.svg)
 
 **Difference: +4 points (95% CI −21 to +28).** The interval spans zero, so this
 run provides **no evidence** that narrowing the tool surface changes task

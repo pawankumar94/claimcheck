@@ -1,0 +1,39 @@
+{
+  "name": "claude-code-vertex",
+  "description": "Claude Code CLI in --bare mode, routed to Claude on Google Vertex AI rather than the Anthropic API. Identical to the claude-code profile apart from pinning a model that Vertex deployments actually serve.",
+  "command": "claude",
+  "baseArgs": [
+    "--bare",
+    "-p"
+  ],
+  "promptPlacement": "after-base",
+  "policyArgs": {
+    "curated": [
+      "--allowedTools",
+      "Read,Bash(grep *),Bash(find *),Bash(cat *),Bash(ls *),Bash(sed -n *)",
+      "--permission-mode",
+      "dontAsk"
+    ],
+    "full": [
+      "--allowedTools",
+      "Bash,Read,Edit",
+      "--permission-mode",
+      "dontAsk"
+    ]
+  },
+  "extraArgs": [
+    "--model",
+    "claude-sonnet-5",
+    "--output-format",
+    "json"
+  ],
+  "output": {
+    "type": "json",
+    "resultField": "result",
+    "costField": "total_cost_usd",
+    "sessionIdField": "session_id"
+  },
+  "timeoutMs": 300000,
+  "verified": true,
+  "verificationNote": "Verified against a live install (claude 2.1.220) routed to Vertex AI. Requires four environment variables that this profile deliberately does not encode, because they are deployment configuration rather than invocation arguments: CLAUDE_CODE_USE_VERTEX=1, ANTHROPIC_VERTEX_PROJECT_ID, CLOUD_ML_REGION, and GOOGLE_APPLICATION_CREDENTIALS pointing at a service-account JSON file. Model availability is per-deployment and must be checked before a run: on the deployment used here, claude-sonnet-5, claude-sonnet-4-6 and claude-opus-4-6 all answered, while Claude Code's own default (claude-sonnet-4-5@20250929) returned 'not available on your vertex deployment' -- which is why the model is pinned explicitly rather than left to the CLI default. Opus 5 is not offered on Vertex at all. Cost IS reported: a smoke test returned total_cost_usd of 0.0131 (few-tools prompt) and 0.0545 (many-tools prompt), so per-invocation cost is captured for this profile. Those are the CLI's own figures computed from token usage; Vertex is partner-billed at rates that differ from first-party, so treat them as a close estimate and reconcile against the cloud project's billing for anything that matters financially."
+}

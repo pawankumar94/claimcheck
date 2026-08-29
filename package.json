@@ -1,7 +1,7 @@
 {
   "name": "@pawankumar94/diedinchat",
   "version": "0.1.0",
-  "description": "Pin what a coding agent asserted to the files it was about. Tickets live in the repo, survive sessions and tool switches, and go stale when those files change. Also ships a lab CLI/MCP to measure agent-config claims without anecdotes.",
+  "description": "Pin what an agent asserted to the files it was about. Tickets live in git, survive sessions and tool switches, and go stale when those files change.",
   "type": "module",
   "bin": {
     "diedinchat": "./dist/cli.js"
@@ -31,16 +31,16 @@
     "prepublishOnly": "npm run typecheck && npm run test && npm run build"
   },
   "keywords": [
-    "coding-agent",
-    "agent-memory",
-    "context",
+    "diedinchat",
+    "coding-agents",
     "mcp",
     "mcp-server",
-    "claude-code",
+    "cli",
     "cursor",
+    "claude-code",
     "codex",
-    "gemini-cli",
-    "agent-evaluation"
+    "file-tickets",
+    "developer-tools"
   ],
   "license": "MIT",
   "author": "Pawan Kumar",

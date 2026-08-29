@@ -252,11 +252,6 @@ Copy [`examples/claim-001-tool-count/`](examples/claim-001-tool-count/):
 a new `tasks.json` plus `policies/*.json`, reusing existing agent profiles.
 Claims are independent — nothing assumes there's only one.
 
-## History
-
-Started as a Python harness that only drove Claude Code, preserved as-is in
-[`legacy-python/`](legacy-python/). This TypeScript rewrite keeps the method
-and generalizes the subject: any CLI-based coding agent, not one.
 
 ## License
 

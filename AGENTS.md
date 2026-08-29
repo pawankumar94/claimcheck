@@ -62,11 +62,4 @@ first.
   profile and must be defined per agent, never copy-pasted assuming another
   agent's tool-name syntax will parse.
 
-## Legacy Python pipeline
 
-[legacy-python/](legacy-python/) holds the original Claude-Code-only
-Python implementation this package replaced. It's kept as-is (not
-maintained going forward) because it documents the original claim's
-falsification criteria and a real scoring bug fix (short numeric keywords
-false-positiving on substring match) worth reading before touching
-`src/core/scorer.ts`.

@@ -6,7 +6,7 @@ here are pure data, with no agent-specific flags in them. Any agent profile
 (built-in `claude-code`, or your own) plugs into this task set unchanged.
 
 Full hypothesis, corpus, and falsification criteria:
-[legacy-python/claims/001-tool-count-reduction.md](../../legacy-python/claims/001-tool-count-reduction.md).
+[CLAIM.md](CLAIM.md).
 
 ## Running it against Claude Code
 

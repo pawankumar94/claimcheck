@@ -45,15 +45,24 @@ export function admin(req) {
 
 That is not the model being dumb. The **constraint was never attached to `src/middleware.ts` and `src/routes/`**, so no later agent could see it.
 
+**Not a `git diff` problem. Not a memory problem.**
+
+| | What it answers | What it misses |
+|---|---|---|
+| **`git diff`** | Which lines moved | That Monday *promised* auth only lives in `middleware.ts`. Git has no object for a sentence. |
+| **Context tools** (memories, `.cursorrules`, a stuffed `AGENTS.md`, “summarize last chat”) | Stuff more of the transcript into the next window | Tied to that agent / that machine. Doesn’t know which paths it’s about. Still recites last week’s sentence after `middleware.ts` changes. |
+| **diedinchat** | Is this sentence about these files still true? | — |
+
+Context tools fight amnesia. Git fights “what changed.” The hole is a **promise that cited files and then died in Monday’s thread.** A ticket on those paths is a tripwire: the next agent doesn’t need the chat, and the stamp rots when the files move.
+
 Same pattern, different files:
+
 
 | Someone said (in chat) | Files it was about | What happens next session |
 |---|---|---|
 | “Don’t put SQL in route handlers, only `src/db/`.” | `src/db/`, `src/routes/` | Agent inlines a query in a new route |
 | “`config.ts` is generated. Edit `config.schema.ts`.” | `src/config.ts`, `src/config.schema.ts` | Agent “fixes” the generated file; next build overwrites it |
 | “All prices are cents in `src/money.ts`. No floats.” | `src/money.ts`, `src/billing/` | Agent adds `price * 1.1` in a billing helper |
-
-Git will tell you those files changed. It will not tell you a **promise about them** died with the last session.
 
 Tests lock behavior. CODEOWNERS lock who may touch a path. **Nothing locks the sentences agents keep losing when the chat ends.**
 

@@ -10,6 +10,7 @@ import { startMcpServer } from "./mcp-server.js";
 import { describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
 import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "./core/install.js";
 import { buildCharts } from "./core/chart.js";
+import { importBfclFromFiles } from "./core/import-bfcl.js";
 import type { RawRecord } from "./types.js";
 
 function collect(value: string, previous: string[]): string[] {
@@ -171,6 +172,30 @@ program
     const report = buildReport(scored);
     await writeFile(opts.output, report);
     console.log(`Wrote report to ${opts.output}`);
+  });
+
+program
+  .command("import-bfcl")
+  .description("Build a tool-count task set from Berkeley Function Calling Leaderboard data. Holds each question and its correct answer fixed while varying only how many irrelevant functions are shown.")
+  .requiredOption("--entries <path>", "BFCL data file, e.g. BFCL_v4_multiple.json")
+  .requiredOption("--ground-truth <path>", "matching file from BFCL's possible_answer/ directory")
+  .option("--few <n>", "distractor functions in the narrow arm", "0")
+  .option("--many <n>", "distractor functions in the wide arm", "40")
+  .option("--limit <n>", "cap the number of imported tasks")
+  .option("--seed <n>", "seed for distractor sampling, so imports reproduce", "1")
+  .option("--output <path>", "where to write the task set", "./tasks-bfcl.json")
+  .action(async (opts) => {
+    const doc = await importBfclFromFiles(opts.entries, opts.groundTruth, {
+      fewDistractors: Number(opts.few),
+      manyDistractors: Number(opts.many),
+      ...(opts.limit ? { limit: Number(opts.limit) } : {}),
+      seed: Number(opts.seed),
+    });
+    await writeFile(opts.output, JSON.stringify(doc, null, 2));
+    const policies = Object.keys(doc.tasks[0]?.prompt_by_policy ?? {});
+    console.log(`Wrote ${doc.tasks.length} tasks to ${opts.output}`);
+    console.log(`Policies: ${policies.join(", ")}  (${opts.few} vs ${opts.many} distractor functions)`);
+    console.log(`Source: ${doc.source?.name}`);
   });
 
 program

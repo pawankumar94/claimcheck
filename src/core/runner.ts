@@ -41,15 +41,23 @@ export async function runEvaluation(opts: RunOptions): Promise<RawRecord[]> {
           const tmpRoot = await mkdtemp(join(tmpdir(), "claimcheck-"));
           let record: RawRecord;
           try {
-            const repoDir = await freshCheckout(opts.tasksDoc.repo_url, opts.tasksDoc.pinned_sha, tmpRoot);
-            const result = await invokeAgent(agent, policyName, task.prompt, repoDir);
+            // A task set with no repo is self-contained in its prompts; it
+            // still gets a fresh empty directory so runs stay isolated.
+            const workDir = opts.tasksDoc.repo_url
+              ? await freshCheckout(opts.tasksDoc.repo_url, opts.tasksDoc.pinned_sha!, tmpRoot)
+              : tmpRoot;
+            const promptVariant = task.prompt_by_policy?.[policyName];
+            const prompt = promptVariant ?? task.prompt;
+            const result = await invokeAgent(agent, policyName, prompt, workDir, {
+              allowMissingPolicyArgs: promptVariant !== undefined,
+            });
 
             record = {
               task_id: task.id,
               agent_name: agent.name,
               policy_name: policyName,
               trial,
-              prompt: task.prompt,
+              prompt,
               ok: result.ok,
               latency_ms: result.latencyMs,
               ...(result.error ? { error: result.error } : {}),

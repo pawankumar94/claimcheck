@@ -24,14 +24,31 @@ export interface Task {
   expected_keywords?: string[];
   /** Richer acceptance criteria. Takes precedence over expected_keywords. */
   accept?: AcceptanceCriterion[];
+  /**
+   * Per-policy prompt variants. When present, the runner sends the variant
+   * matching the policy under test instead of `prompt`.
+   *
+   * This is what lets a policy be any controlled variable rather than only a
+   * set of CLI flags. Some variables -- how many tools are described to the
+   * model, how much context it is given -- live in the prompt, and cannot be
+   * expressed as flags on any agent.
+   */
+  prompt_by_policy?: Record<string, string>;
   verified: boolean;
   note?: string;
 }
 
 export interface TasksDoc {
-  repo_url: string;
-  pinned_sha: string;
+  /**
+   * Repo to clone fresh for each invocation. Omit for task sets that are
+   * self-contained in the prompt (an imported benchmark, for instance), in
+   * which case each invocation runs in an empty temporary directory.
+   */
+  repo_url?: string;
+  pinned_sha?: string;
   note?: string;
+  /** Where this task set came from, for task sets not authored here. */
+  source?: { name: string; url?: string; license?: string; note?: string };
   tasks: Task[];
 }
 

@@ -105,3 +105,19 @@ describe("getByPath", () => {
     expect(getByPath({ a: 1 }, "b.c")).toBeUndefined();
   });
 });
+
+describe("prompt-only policies", () => {
+  it("still rejects an unknown policy by default, so typos stay loud", () => {
+    expect(() => buildInvocation(claudeCodeProfile, "typo", "p")).toThrow(/no policyArgs entry/);
+  });
+
+  it("allows a policy with no flags when the caller says it is carried by the prompt", () => {
+    const { args } = buildInvocation(claudeCodeProfile, "many-tools", "PROMPT", {
+      allowMissingPolicyArgs: true,
+    });
+    // No policy flags contributed, but the invocation is otherwise intact.
+    expect(args).toContain("PROMPT");
+    expect(args).toContain("--output-format");
+    expect(args).not.toContain("--allowedTools");
+  });
+});

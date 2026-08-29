@@ -45,8 +45,16 @@ export interface BuiltCommand {
  * one place policy names get resolved into an agent's actual flag syntax --
  * everything upstream of this stays agent-neutral.
  */
-export function buildInvocation(profile: AgentProfile, policyName: string, prompt: string): BuiltCommand {
-  const policyArgs = profile.policyArgs[policyName];
+export function buildInvocation(
+  profile: AgentProfile,
+  policyName: string,
+  prompt: string,
+  opts: { allowMissingPolicyArgs?: boolean } = {}
+): BuiltCommand {
+  // A policy carried entirely by the prompt (how many tools are described, how
+  // much context is supplied) needs no flags from any agent. The caller says so
+  // explicitly; otherwise a missing entry is a typo and must still be loud.
+  const policyArgs = profile.policyArgs[policyName] ?? (opts.allowMissingPolicyArgs ? [] : undefined);
   if (!policyArgs) {
     const available = Object.keys(profile.policyArgs).join(", ");
     throw new Error(

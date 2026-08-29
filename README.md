@@ -1,9 +1,15 @@
-# claimcheck
+<p align="center">
+  <img src="brand/svg/claimcheck-icon.svg" width="112" alt="claimcheck logo">
+</p>
 
-**A/B test your coding agent's configuration instead of guessing.**
+<h1 align="center">claimcheck</h1>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%3E%3D18.17-brightgreen.svg)](package.json)
+<p align="center"><strong>A/B test your coding agent's configuration instead of guessing.</strong></p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-145C60.svg" alt="MIT license"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D18.17-2DB8A8.svg" alt="Node 18.17 or newer"></a>
+</p>
 
 ## The problem
 
@@ -232,6 +238,7 @@ so you can validate changes without spending API budget.
 | [docs/architecture.md](docs/architecture.md) | Internals and extension points |
 | [docs/integrations.md](docs/integrations.md) | Per-client plugin setup, library usage |
 | [AGENTS.md](AGENTS.md) | Entry point for coding agents working in this repo |
+| [brand/BRAND.md](brand/BRAND.md) | Logo files, social artwork, favicon, and brand colors |
 
 ## Scope and limits
 

@@ -8,9 +8,10 @@ export function invokeAgent(
   profile: AgentProfile,
   policyName: string,
   prompt: string,
-  cwd: string
+  cwd: string,
+  opts: { allowMissingPolicyArgs?: boolean } = {}
 ): Promise<InvocationResult> {
-  const { command, args, stdin } = buildInvocation(profile, policyName, prompt);
+  const { command, args, stdin } = buildInvocation(profile, policyName, prompt, opts);
   const timeoutMs = profile.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const start = Date.now();
 

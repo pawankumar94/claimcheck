@@ -1,4 +1,4 @@
-# Run: 2026-08-29 — Gemini CLI, claim-001 (tool count)
+# Run: 2026-08-29. Gemini CLI, claim-001 (tool count)
 
 First real end-to-end result produced by claimcheck.
 
@@ -7,10 +7,10 @@ First real end-to-end result produced by claimcheck.
 | | |
 |---|---|
 | Agent | `gemini-cli` (Gemini CLI 0.10.0, model `gemini-3.1-pro-preview`) |
-| Task set | `examples/claim-001-tool-count` — 8 repo-comprehension questions |
+| Task set | `examples/claim-001-tool-count`, 8 repo-comprehension questions |
 | Corpus | [`pawankumar94/nocontext`](https://github.com/pawankumar94/nocontext) pinned at `6f0d6f48` |
 | Policies | `curated` (read-only tools) vs `full` (unrestricted, write-capable) |
-| Trials | 3 per task per policy — 48 invocations total |
+| Trials | 3 per task per policy, 48 invocations total |
 
 Every answer key was verified against the pinned source *before* the run.
 
@@ -41,14 +41,14 @@ most are correct answers rejected on phrasing:
 
 - `t4-mcp-status` was scored PARTIAL five times out of six for answers like
   *"this repository does not currently ship an MCP server … Phase 5 … gated on
-  Phase 4"* — correct in substance, but the key demands the README's literal
+  Phase 4"*, correct in substance, but the key demands the README's literal
   phrase `"not started"`.
 - `t8-benchmark-comparison` was scored PARTIAL for *"holds the retriever fixed
   and varies the navigation surface"*, because the key demands the literal
   `"fixes the retriever"`.
 
 Both policies were penalised identically, so the comparison itself isn't
-biased — but the absolute pass rates understate real accuracy, and the
+biased, but the absolute pass rates understate real accuracy, and the
 between-policy signal is buried under scoring noise.
 
 **One degenerate generation.** `t8` trial 1 returned a single `}` under both

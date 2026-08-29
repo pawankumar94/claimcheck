@@ -2,7 +2,7 @@
 
 claimcheck ships as an **MCP server**, which is the one integration path that
 works across essentially every current coding agent. Install it once and any
-MCP-capable client can drive evaluations directly — no per-agent adapter, no
+MCP-capable client can drive evaluations directly, with no per-agent adapter and no
 wrapper script.
 
 ```bash
@@ -15,14 +15,14 @@ client wants that line written down.
 > **Two different things called "agents" here.** The *client* is the agent you
 > configure claimcheck into (it calls the MCP tools). The *subject* is the
 > agent claimcheck runs and measures, chosen per-run via an agent profile.
-> They can be the same agent — that's how you have an agent measure its own
+> They can be the same agent, which is how you have an agent measure its own
 > configuration.
 
 ## The tools it exposes
 
 | Tool | Purpose |
 |---|---|
-| `list_agent_profiles` | Discovery. Returns bundled agent profiles (with their policy names and verification status) and example task sets. **Call this first** — it's how a client learns valid arguments for the others. |
+| `list_agent_profiles` | Discovery. Returns bundled agent profiles (with their policy names and verification status) and example task sets. **Call this first**, since it is how a client learns valid arguments for the others. |
 | `run_evaluation` | Runs tasks × agents × policies × trials. Spawns real agent CLIs and spends real API budget. |
 | `score_results` | Matches each answer against its pre-registered key. |
 | `generate_report` | Aggregates into a markdown report with pass rate, cost, and latency. |
@@ -106,7 +106,7 @@ your client's current MCP docs if a block here doesn't take.
 
 ## A typical session
 
-Once connected, ask the client in plain language — it picks the tools:
+Once connected, ask the client in plain language and it picks the tools:
 
 > Use claimcheck to test whether restricting my agent's tools changes task
 > success. Run the bundled example against gemini-cli with 3 trials, then

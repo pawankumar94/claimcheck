@@ -41,7 +41,7 @@ export function passRateChart(comparison: PolicyComparison): string {
 
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Pass rate by policy with 95% confidence interval on the difference">`,
-    `<text x="${padL}" y="28" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="${INK}">${esc(comparison.agent)} — pass rate by policy</text>`,
+    `<text x="${padL}" y="28" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="${INK}">${esc(comparison.agent)}: pass rate by policy</text>`,
   ];
 
   // Gridlines every 25%.
@@ -77,7 +77,7 @@ export function passRateChart(comparison: PolicyComparison): string {
     `<line x1="${dx(0)}" y1="${ciTop - 20}" x2="${dx(0)}" y2="${ciTop + 20}" stroke="${ZERO}" stroke-width="1.5" stroke-dasharray="4 3"/>`,
     `<text x="${dx(0)}" y="${ciTop + 34}" font-family="system-ui,sans-serif" font-size="11" fill="${ZERO}" text-anchor="middle">no difference</text>`,
     `<text x="${padL}" y="${H - 10}" font-family="system-ui,sans-serif" font-size="12" fill="${INK}">${esc(
-      `${comparison.deltaPoints >= 0 ? "+" : ""}${comparison.deltaPoints.toFixed(0)} pts (95% CI ${comparison.ci95[0].toFixed(0)} to ${comparison.ci95[1].toFixed(0)}) — ${comparison.distinguishable ? "excludes zero" : "spans zero: not distinguishable"}`
+      `${comparison.deltaPoints >= 0 ? "+" : ""}${comparison.deltaPoints.toFixed(0)} pts (95% CI ${comparison.ci95[0].toFixed(0)} to ${comparison.ci95[1].toFixed(0)}) - ${comparison.distinguishable ? "excludes zero" : "spans zero: not distinguishable"}`
     )}</text>`,
     `</svg>`
   );

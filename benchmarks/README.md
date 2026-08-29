@@ -9,7 +9,7 @@ curated here by hand; raw run output stays untracked.
 |---|---|---|---|---|
 | [2026-08-29-gemini-cli](2026-08-29-gemini-cli/) | Gemini CLI 0.10.0 | Tool count (`--allowed-tools` vs unrestricted) | 75% vs 71%, **+4 pts** (CI −21 to +28) | No |
 | [2026-08-29-codex-in-agent](2026-08-29-codex-in-agent/) | Codex CLI 0.147.0 | Tool count (29 MCP servers vs claimcheck only) | 75% vs 75%, **0 pts** (CI −40 to +40) | No |
-| [2026-08-29-codex-sandbox](2026-08-29-codex-sandbox/) | Codex CLI 0.147.0 | Sandbox permission — **not** tool count | 88% vs 88%, **0 pts** (CI −20 to +20) | No |
+| [2026-08-29-codex-sandbox](2026-08-29-codex-sandbox/) | Codex CLI 0.147.0 | Sandbox permission, **not** tool count | 88% vs 88%, **0 pts** (CI −20 to +20) | No |
 
 ## What three runs actually show
 
@@ -17,13 +17,13 @@ curated here by hand; raw run output stays untracked.
 independent agents, two different mechanisms for restricting tools, and a
 negative control all came back indistinguishable from zero.
 
-That is *not* "the claim is false." Every run here is underpowered — 8 to 24
-observations per arm detects only large effects. Published work using much
+That is *not* "the claim is false." Every run here is underpowered. At 8 to 24
+observations per arm, only large effects are detectable. Published work using much
 wider contrasts does find an effect: ["How Many Tools Should an LLM Agent
 See?"](https://arxiv.org/html/2605.24660v1) reports 93.1% vs 87.1% (and 76.8%
 vs 60.9% on harder queries) when varying shortlist depth over registries of
-370–3,251 tools. Our contrasts are tiny by comparison — five read-only tools
-versus a slightly larger set — and every task was deliberately answerable
+370–3,251 tools. Our contrasts are tiny by comparison (five read-only tools
+versus a slightly larger set), and every task was deliberately answerable
 either way.
 
 The honest reading: **these runs were not designed to detect the effect that
@@ -42,7 +42,7 @@ server"* scored PARTIAL because the key demanded the literal `"not started"`;
 manual review the Codex run scored 8/8 in both arms where automated scoring
 gave 6/8.
 
-Both arms are penalised identically, so the comparisons stand — but every
+Both arms are penalised identically, so the comparisons stand, but every
 absolute pass rate here understates real accuracy.
 
 Keys were **not** loosened afterwards; that would make the measurement

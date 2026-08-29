@@ -1,14 +1,14 @@
 # claimcheck: measuring agent configuration changes
 
-Use this whenever someone asks whether a change to an agent's setup — tools,
-MCP servers, context, model, prompt — actually made it better. The answer is a
+Use this whenever someone asks whether a change to an agent's setup (tools,
+MCP servers, context, model, prompt) actually made it better. The answer is a
 measurement, not an impression.
 
 ## The trap this exists to prevent
 
 Agent configuration advice is almost entirely anecdotal: *"I cut our tool count
 and it felt sharper."* Nobody's numbers are on your tasks or your codebase.
-Worse, the natural way to check is circular — run the agent, look at the
+Worse, the natural way to check is circular: run the agent, look at the
 output, then decide what counts as a good answer.
 
 ## The method
@@ -20,7 +20,7 @@ output, then decide what counts as a good answer.
 2. **Freeze the keys.** Never adjust an answer key after seeing output. That
    single act converts a measurement into a rubber stamp. If a key turns out
    to be badly specified, say so, and fix it in a *new* task set that gets its
-   own run — do not patch it into the current one.
+   own run. Do not patch it into the current one.
 
 3. **Change exactly one thing.** Run the task set under configuration A, change
    only the variable under test, run it again under configuration B. Same
@@ -33,7 +33,7 @@ output, then decide what counts as a good answer.
 5. **Report the uncertainty, not just the delta.** "75% vs 71%" is not a
    result. "+4 points, 95% CI −21 to +28" is, and it says plainly that the run
    found nothing. When the interval spans zero, say the conditions are *not
-   distinguishable* — never describe that as one side winning.
+   distinguishable*, and never describe that as one side winning.
 
 6. **Underpowered is not equivalent.** "No detectable difference" at small n
    means the run could not see an effect, not that no effect exists. Say which
@@ -49,7 +49,7 @@ output, then decide what counts as a good answer.
    read as a bad configuration.
 
 9. **Inspect every non-pass by hand.** Keyword scoring rejects correct answers
-   that used different words. Before reporting, read the failures — if most are
+   that used different words. Before reporting, read the failures. If most are
    phrasing mismatches, the scorer is your limiting factor and the pass rates
    understate real accuracy. Say so.
 
@@ -68,7 +68,7 @@ claimcheck report                                     # verdict + CI
 If the claimcheck MCP server is connected, `start_run` / `submit_answers` /
 `compare_runs` do the same thing with you as the subject: answer the tasks
 yourself under one configuration, have the user change their real setup, answer
-again, then compare. Record honestly what configuration was in effect — the
+again, then compare. Record honestly what configuration was in effect, because the
 restriction is enforced by the user's actual config, not by claimcheck.
 
 If neither is installed, you can still follow the method above by hand. The
@@ -78,5 +78,5 @@ discipline is the point; the tooling only removes arithmetic.
 
 Lead with whether the difference was distinguishable. Then the rates, then the
 interval, then the caveats that bound them. Never present a statistically
-indistinguishable gap as a win, and never drop the caveats when summarising —
+indistinguishable gap as a win, and never drop the caveats when summarising, because
 they are what makes the number worth anything.

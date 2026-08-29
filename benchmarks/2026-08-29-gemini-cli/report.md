@@ -2,7 +2,7 @@
 
 ## Verdict
 
-**gemini-cli** — Not distinguishable. The interval spans zero, so this run provides no evidence that "curated" and "full" differ in task success.
+**gemini-cli**: Not distinguishable. The interval spans zero, so this run provides no evidence that "curated" and "full" differ in task success.
 
 | policy | pass rate | n |
 |---|---|---|

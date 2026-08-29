@@ -39,7 +39,7 @@ function buildVerdictSection(records: ScoredRecord[], opts: ReportOptions = {}):
 
   for (const c of comparisons) {
     lines.push(
-      `**${c.agent}** — ${c.verdict}`,
+      `**${c.agent}**: ${c.verdict}`,
       "",
       `| policy | pass rate | n |`,
       `|---|---|---|`,

@@ -2,7 +2,7 @@
 
 ## Verdict
 
-**codex** — Not distinguishable. The interval spans zero, so this run provides no evidence that "curated" and "full" differ in task success.
+**codex**: Not distinguishable. The interval spans zero, so this run provides no evidence that "curated" and "full" differ in task success.
 
 | policy | pass rate | n |
 |---|---|---|

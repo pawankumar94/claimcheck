@@ -190,8 +190,8 @@ export function createServer(): McpServer {
         candidatePolicy: b.label,
         preamble: [
           `Configurations compared (as reported by the client, not verified by claimcheck):`,
-          `- **${a.label}** — ${a.configNote}`,
-          `- **${b.label}** — ${b.configNote}`,
+          `- **${a.label}** - ${a.configNote}`,
+          `- **${b.label}** - ${b.configNote}`,
         ],
       });
       if (outputPath) {

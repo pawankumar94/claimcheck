@@ -47,7 +47,7 @@ claimcheck score --tasks examples/bfcl-tool-count/tasks.json
 claimcheck report && claimcheck chart
 ```
 
-No repository is cloned — each prompt carries its own function specs — and the
+No repository is cloned, since each prompt carries its own function specs, and the
 policy needs no agent flags, since the variable lives entirely in the prompt.
 That makes this task set runnable against **any** agent profile unchanged.
 

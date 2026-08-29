@@ -16,6 +16,32 @@ describe("keywordPresent", () => {
   it("is case-insensitive", () => {
     expect(keywordPresent("MIT", "this project uses the mit license")).toBe(true);
   });
+
+  describe("explicit stem matching with a trailing *", () => {
+    it("matches any inflection of the stem", () => {
+      const text = "that release carries real transitive advisories";
+      expect(keywordPresent("advisor*", text)).toBe(true);
+      expect(keywordPresent("advisor*", "a security advisory was filed")).toBe(true);
+      expect(keywordPresent("advisor*", "ask your advisor")).toBe(true);
+    });
+
+    it("still anchors on a word boundary, so it does not match mid-word", () => {
+      expect(keywordPresent("advisor*", "the subadvisory board")).toBe(false);
+    });
+
+    it("does not match when the stem is absent", () => {
+      expect(keywordPresent("advisor*", "no such word here")).toBe(false);
+    });
+
+    it("supports punctuated stems", () => {
+      expect(keywordPresent("@huggingface/transformer*", "install @huggingface/transformers")).toBe(true);
+    });
+
+    it("treats a bare * as a literal, not a stem", () => {
+      expect(keywordPresent("*", "no asterisk in this text")).toBe(false);
+      expect(keywordPresent("*", "a literal * character")).toBe(true);
+    });
+  });
 });
 
 describe("scoreOne", () => {

@@ -36,20 +36,20 @@
       "note": "README Integrations table: MCP server 'not started -- Phase 5, gated on Phase 4'."
     },
     {
-      "id": "t5-planner-section9",
-      "prompt": "What does PLANNER.md section 9 cover, based on how AGENTS.md refers to it?",
-      "source_files": ["AGENTS.md", "PLANNER.md"],
-      "expected_keywords": ["rejected"],
-      "verified": false,
-      "note": "AGENTS.md only says section 9 is 'the full list of what gets rejected' -- I have not read PLANNER.md itself to confirm section 9's actual content. VERIFY against PLANNER.md before trusting this answer key."
+      "id": "t5-fixture-drift",
+      "prompt": "According to PLANNER.md section 9, what directory does CI regenerate and fail the build on if the committed tree has moved, and what is the one-word term for that failure?",
+      "source_files": ["PLANNER.md"],
+      "expected_keywords": ["examples", "drift"],
+      "verified": true,
+      "note": "PLANNER.md section 9 ('Verifying your work'): CI regenerates examples/ and fails if the committed tree has moved, 'because fixture drift voids the control without anything appearing to break'. Replaces an earlier task that asked what section 9 covers 'based on how AGENTS.md refers to it' -- that was unanswerable as scored: nocontext's AGENTS.md says section 9 is 'the full list of what gets rejected', but section 9 is 'Verifying your work' and section 10 is 'What gets rejected'. The stale cross-reference meant the old answer key rewarded parroting AGENTS.md and failed any agent that read PLANNER.md correctly. Verified by reading PLANNER.md at the pinned SHA before any run."
     },
     {
       "id": "t6-optional-dependency",
       "prompt": "What optional npm package does semantic scoring require, and why is it optional rather than a default dependency?",
       "source_files": ["README.md", "CONTRIBUTING.md"],
-      "expected_keywords": ["@huggingface/transformers", "advisor"],
+      "expected_keywords": ["@huggingface/transformers", "advisor*"],
       "verified": true,
-      "note": "README: '@huggingface/transformers ... opt-in because that dependency's current release carries real transitive advisories'. 'advisor' as a stem matches 'advisory'/'advisories'."
+      "note": "README: '@huggingface/transformers ... opt-in because that dependency's current release carries real transitive advisories'. The key is the stem form 'advisor*' so any inflection (advisory/advisories) counts; a bare 'advisor' would not match 'advisories' under word-boundary matching, which would score a correct answer as PARTIAL."
     },
     {
       "id": "t7-adversarial-example",

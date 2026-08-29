@@ -1,0 +1,18 @@
+{
+  "name": "codex",
+  "description": "OpenAI Codex CLI in non-interactive mode (`codex exec`). Uses Codex's own sandbox levels as the policy axis, which is a cleaner operationalisation than a tool allow-list: the restriction is enforced by the sandbox, not by asking the model to abstain.",
+  "command": "codex",
+  "baseArgs": ["exec"],
+  "promptPlacement": "end",
+  "policyArgs": {
+    "curated": ["--sandbox", "read-only"],
+    "full": ["--sandbox", "workspace-write"]
+  },
+  "extraArgs": ["--ignore-user-config", "--skip-git-repo-check"],
+  "output": {
+    "type": "text"
+  },
+  "timeoutMs": 300000,
+  "verified": true,
+  "verificationNote": "Verified against a live install (codex-cli 0.147.0, authenticated via ChatGPT). `codex exec --ignore-user-config --sandbox read-only --skip-git-repo-check \"<prompt>\"` was run and returned the answer as plain stdout ('This project uses the MIT License.'), so output.type is \"text\" -- no JSON or JSONL parsing is involved. --ignore-user-config is set so the run does not inherit whatever MCP servers and settings the operator has in ~/.codex/config.toml, giving a reproducible baseline; auth still resolves via CODEX_HOME, so this does not require re-login. NOT captured: cost and token counts. Codex reports usage only on its --json event stream, and adding a JSONL parser purely to read a token count was judged not worth the per-agent parsing burden it reintroduces, so cost shows n/a for this agent."
+}

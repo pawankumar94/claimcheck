@@ -4,5 +4,16 @@ export { loadPolicy } from "./core/policy.js";
 export { loadAgentProfile, buildInvocation, getByPath, validateProfile } from "./agents/profile.js";
 export { invokeAgent } from "./agents/invoke.js";
 export { runEvaluation } from "./core/runner.js";
+export {
+  PACKAGE_ROOT,
+  PROFILES_DIR,
+  EXAMPLES_DIR,
+  resolveAgentProfile,
+  listBuiltinProfileNames,
+  describeBuiltinProfiles,
+  listBuiltinExamples,
+  builtinExampleTasksPath,
+} from "./core/resolve.js";
+export { createServer as createMcpServer, startMcpServer } from "./mcp-server.js";
 export { scoreOne, scoreRecords, keywordPresent } from "./core/scorer.js";
 export { buildReport } from "./core/reporter.js";

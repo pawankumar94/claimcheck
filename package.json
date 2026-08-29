@@ -1,32 +1,58 @@
 {
   "name": "claimcheck",
   "version": "0.1.0",
-  "description": "Test claims about coding-agent behavior (e.g. \"fewer tools improves task success\") against any CLI-based coding agent -- Claude Code, Codex, Cursor, Aider, or your own -- through a small agent-profile config, no agent-specific rewrite required.",
+  "description": "A/B test your coding agent's configuration. Runs the same tasks under different tool policies against any CLI-based coding agent (Claude Code, Gemini CLI, Codex, Cursor) and reports pass rates. Ships as a CLI and an MCP server.",
   "type": "module",
   "bin": {
     "claimcheck": "./dist/cli.js"
   },
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist",
-    "profiles"
+    "profiles",
+    "examples",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
   },
   "keywords": [
-    "coding-agent",
     "mcp",
+    "mcp-server",
+    "coding-agent",
+    "agent-evaluation",
     "eval",
     "benchmark",
+    "ab-testing",
     "claude-code",
+    "gemini-cli",
     "codex",
-    "cursor"
+    "cursor",
+    "llm"
   ],
   "license": "MIT",
+  "author": "Pawan Kumar",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pawankumar94/claimcheck.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pawankumar94/claimcheck/issues"
+  },
+  "homepage": "https://github.com/pawankumar94/claimcheck#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
     "commander": "^12.1.0",

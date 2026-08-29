@@ -1,33 +1,17 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { readFile, writeFile, readdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { join, dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { loadTasksDoc } from "./core/tasks.js";
-import { loadAgentProfile } from "./agents/profile.js";
 import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { startMcpServer } from "./mcp-server.js";
-import type { AgentProfile, RawRecord } from "./types.js";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PACKAGE_ROOT = resolve(__dirname, "..");
+import { describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
+import type { RawRecord } from "./types.js";
 
 function collect(value: string, previous: string[]): string[] {
   return [...previous, value];
-}
-
-/** An --agent value is either a path to a profile JSON file, or the name of a built-in profile shipped in profiles/. */
-async function resolveAgentProfile(nameOrPath: string): Promise<AgentProfile> {
-  if (existsSync(nameOrPath)) return loadAgentProfile(nameOrPath);
-  const builtin = join(PACKAGE_ROOT, "profiles", `${nameOrPath}.json`);
-  if (existsSync(builtin)) return loadAgentProfile(builtin);
-  throw new Error(
-    `no agent profile found for "${nameOrPath}" -- not a file path, and no built-in profile at ${builtin}. ` +
-      `Built-in profiles ship in profiles/; custom ones can be any path to a profile JSON file.`
-  );
 }
 
 async function loadRawRecords(dir: string): Promise<RawRecord[]> {
@@ -43,8 +27,32 @@ const program = new Command();
 program
   .name("claimcheck")
   .description(
-    "Test claims about coding-agent behavior against any CLI-based coding agent, via a small agent-profile config."
-  );
+    "A/B test a coding agent's configuration: run the same tasks under different tool policies and compare pass rates."
+  )
+  .version("0.1.0");
+
+program
+  .command("profiles")
+  .description("List the built-in agent profiles and bundled example task sets.")
+  .option("--json", "emit machine-readable JSON instead of a table")
+  .action(async (opts) => {
+    const [profiles, examples] = await Promise.all([describeBuiltinProfiles(), listBuiltinExamples()]);
+    if (opts.json) {
+      console.log(JSON.stringify({ agentProfiles: profiles, exampleTaskSets: examples }, null, 2));
+      return;
+    }
+    console.log("Built-in agent profiles:\n");
+    for (const p of profiles) {
+      console.log(`  ${p.name}${p.verified ? "" : "  (unverified)"}`);
+      console.log(`    command:  ${p.command}`);
+      console.log(`    policies: ${p.policies.join(", ")}`);
+      if (p.description) console.log(`    ${p.description}`);
+      console.log();
+    }
+    console.log("Bundled example task sets:\n");
+    for (const e of examples) console.log(`  ${e}`);
+    console.log("\nUse a profile name with --agent, e.g.  claimcheck run --agent gemini-cli ...");
+  });
 
 program
   .command("run")

@@ -1,5 +1,5 @@
 {
-  "name": "claimcheck",
+  "name": "@pawankumar94/claimcheck",
   "version": "0.1.0",
   "description": "A/B test your coding agent's configuration. Runs the same tasks under different tool policies against any CLI-based coding agent (Claude Code, Gemini CLI, Codex, Cursor) and reports pass rates. Ships as a CLI and an MCP server.",
   "type": "module",

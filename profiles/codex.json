@@ -1,18 +1,18 @@
 {
   "name": "codex",
-  "description": "OpenAI Codex CLI in non-interactive mode (`codex exec`). Uses Codex's own sandbox levels as the policy axis, which is a cleaner operationalisation than a tool allow-list: the restriction is enforced by the sandbox, not by asking the model to abstain.",
+  "description": "OpenAI Codex CLI in non-interactive mode (`codex exec`). Policies vary how many tools are exposed: `curated` ignores the operator's config so only Codex's built-ins are present, while `full` loads it and inherits every configured MCP server and plugin.",
   "command": "codex",
   "baseArgs": ["exec"],
   "promptPlacement": "end",
   "policyArgs": {
-    "curated": ["--sandbox", "read-only"],
-    "full": ["--sandbox", "workspace-write"]
+    "curated": ["--ignore-user-config"],
+    "full": []
   },
-  "extraArgs": ["--ignore-user-config", "--skip-git-repo-check"],
+  "extraArgs": ["--sandbox", "read-only", "--skip-git-repo-check"],
   "output": {
     "type": "text"
   },
   "timeoutMs": 300000,
   "verified": true,
-  "verificationNote": "Verified against a live install (codex-cli 0.147.0, authenticated via ChatGPT). `codex exec --ignore-user-config --sandbox read-only --skip-git-repo-check \"<prompt>\"` was run and returned the answer as plain stdout ('This project uses the MIT License.'), so output.type is \"text\" -- no JSON or JSONL parsing is involved. --ignore-user-config is set so the run does not inherit whatever MCP servers and settings the operator has in ~/.codex/config.toml, giving a reproducible baseline; auth still resolves via CODEX_HOME, so this does not require re-login. NOT captured: cost and token counts. Codex reports usage only on its --json event stream, and adding a JSONL parser purely to read a token count was judged not worth the per-agent parsing burden it reintroduces, so cost shows n/a for this agent."
+  "verificationNote": "Verified against a live install (codex-cli 0.147.0, authenticated via ChatGPT). `codex exec --ignore-user-config --sandbox read-only --skip-git-repo-check \"<prompt>\"` returns the answer as plain stdout, so output.type is \"text\" -- no JSON or JSONL parsing involved. IMPORTANT, a correction: an earlier version of this profile mapped curated/full to --sandbox read-only vs workspace-write. That varies write permission, not the number of exposed tools, so it was the wrong variable for claim 001. The sandbox is now fixed at read-only in extraArgs for both arms, and the policy axis is --ignore-user-config, which is what actually changes how many tools the model sees. THE SIZE OF THAT CONTRAST DEPENDS ON THE OPERATOR: on a machine with no MCP servers configured, curated and full are identical and the comparison is vacuous. Record how many servers/plugins your config loads when reporting a result from this profile. NOT captured: cost and token counts, which Codex reports only on its --json event stream."
 }

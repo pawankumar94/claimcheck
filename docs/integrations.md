@@ -6,7 +6,7 @@ MCP-capable client can drive evaluations directly — no per-agent adapter, no
 wrapper script.
 
 ```bash
-npx -y claimcheck mcp
+npx -y @pawankumar94/claimcheck mcp
 ```
 
 That command is the whole integration. Everything below is just where each
@@ -35,7 +35,7 @@ has to know where npm installed the package.
 ### Claude Code
 
 ```bash
-claude mcp add claimcheck -- npx -y claimcheck mcp
+claude mcp add claimcheck -- npx -y @pawankumar94/claimcheck mcp
 ```
 
 Add `-s user` to make it available in every project rather than just the
@@ -50,7 +50,7 @@ current one.
   "mcpServers": {
     "claimcheck": {
       "command": "npx",
-      "args": ["-y", "claimcheck", "mcp"]
+      "args": ["-y", "@pawankumar94/claimcheck", "mcp"]
     }
   }
 }
@@ -66,7 +66,7 @@ current one.
     "claimcheck": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "claimcheck", "mcp"]
+      "args": ["-y", "@pawankumar94/claimcheck", "mcp"]
     }
   }
 }
@@ -81,7 +81,7 @@ current one.
   "mcpServers": {
     "claimcheck": {
       "command": "npx",
-      "args": ["-y", "claimcheck", "mcp"]
+      "args": ["-y", "@pawankumar94/claimcheck", "mcp"]
     }
   }
 }
@@ -94,7 +94,7 @@ current one.
 ```toml
 [mcp_servers.claimcheck]
 command = "npx"
-args = ["-y", "claimcheck", "mcp"]
+args = ["-y", "@pawankumar94/claimcheck", "mcp"]
 ```
 
 ### Anything else
@@ -134,7 +134,7 @@ another trial.
 The same pipeline is importable if you'd rather script it:
 
 ```ts
-import { resolveAgentProfile, runEvaluation, scoreRecords, buildReport, loadTasksDoc } from "claimcheck";
+import { resolveAgentProfile, runEvaluation, scoreRecords, buildReport, loadTasksDoc } from "@pawankumar94/claimcheck";
 
 const tasksDoc = await loadTasksDoc("./tasks.json");
 const agent = await resolveAgentProfile("gemini-cli");

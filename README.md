@@ -138,7 +138,7 @@ Working examples: [`profiles/gemini-cli.json`](profiles/gemini-cli.json),
 Start here — one command, no server, no config file to edit:
 
 ```bash
-npx claimcheck install
+npx @pawankumar94/claimcheck install
 ```
 
 It detects which coding agents your project uses and writes the method into the
@@ -176,7 +176,7 @@ Then `/claimcheck-agents` lists what it can measure and `/claimcheck-run`
 runs an evaluation. Or wire up just the MCP server:
 
 ```bash
-claude mcp add claimcheck -- npx -y claimcheck mcp
+claude mcp add claimcheck -- npx -y @pawankumar94/claimcheck mcp
 ```
 
 <details>
@@ -188,7 +188,7 @@ Most clients take the same block, only the file location differs —
 ```json
 {
   "mcpServers": {
-    "claimcheck": { "command": "npx", "args": ["-y", "claimcheck", "mcp"] }
+    "claimcheck": { "command": "npx", "args": ["-y", "@pawankumar94/claimcheck", "mcp"] }
   }
 }
 ```

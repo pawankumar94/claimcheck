@@ -13,7 +13,7 @@
   "mcpServers": {
     "claimcheck": {
       "command": "npx",
-      "args": ["-y", "claimcheck", "mcp"]
+      "args": ["-y", "@pawankumar94/claimcheck", "mcp"]
     }
   }
 }

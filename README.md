@@ -65,7 +65,7 @@ Three rules a coding agent cannot read from the code. Ten trials each, with and
 without the rule pinned.
 
 <p align="center">
-  <img src="docs/assets/what-the-agent-wrote.svg" width="100%" alt="For three rules, what Claude Code wrote with and without a pinned ticket, one dot per trial over ten trials each">
+  <img src="docs/assets/what-the-agent-wrote.png" width="100%" alt="For three rules, what Claude Code wrote with and without a pinned ticket, one dot per trial over ten trials each">
 </p>
 
 **18/20 versus 0/20.** +90 points, 95% interval +65 to +99.
@@ -76,7 +76,7 @@ were broken and left the working one alone — which is the part that makes the
 other two rows worth believing.
 
 <p align="center">
-  <img src="docs/assets/evidence-summary.svg" width="100%" alt="Forest plot of four experiments with 95 percent intervals: honor on constraints the code cannot express +90, capture +100, negative control +0, honor on inferable constraints +0">
+  <img src="docs/assets/evidence-summary.png" width="100%" alt="Forest plot of four experiments with 95 percent intervals: honor on constraints the code cannot express +90, capture +100, negative control +0, honor on inferable constraints +0">
 </p>
 
 Four experiments, 117 invocations, every raw record committed and re-runnable.
@@ -136,7 +136,7 @@ is in middleware"* keeps saying it after someone deletes middleware. A ticket
 re-checks itself and goes red.
 
 <p align="center">
-  <img src="docs/assets/handoff-loop.svg" width="100%" alt="A constraint stated on Monday is pinned into .diedinchat in git; the chat log ends at the session boundary, but the ticket crosses it and a different agent reads it on Wednesday">
+  <img src="docs/assets/handoff-loop.png" width="100%" alt="A constraint stated on Monday is pinned into .diedinchat in git; the chat log ends at the session boundary, but the ticket crosses it and a different agent reads it on Wednesday">
 </p>
 
 ## FAQ

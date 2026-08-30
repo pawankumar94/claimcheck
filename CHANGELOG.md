@@ -3,6 +3,24 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.4.1 — 2026-08-30
+
+### Fixed
+
+- **The README figures now render on npmjs.com.** They were SVG, which npm
+  strips from READMEs while GitHub renders it, so the npm package page showed
+  three empty gaps where the evidence should be. The README references PNG
+  copies instead, generated from the same SVGs by `npm run chart:png` so the two
+  cannot disagree. The SVGs remain in `docs/assets/` and the documentation pages
+  still use them.
+
+### Changed
+
+- Figures are no longer shipped in the tarball. npm resolves a README's relative
+  image paths against the repository, which is how the brand icons have always
+  rendered without being packaged, so 350 kB of charts in every `node_modules`
+  bought nothing. 767 kB to 427 kB unpacked.
+
 ## 0.4.0 — 2026-08-30
 
 The release where the claims got measured. Four experiments, 117 agent

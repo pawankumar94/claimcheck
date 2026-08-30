@@ -1,0 +1,21 @@
+{
+  "task_id": "sql-in-handler",
+  "agent_name": "codex-honor-rate",
+  "policy_name": "with-tickets",
+  "trial": 2,
+  "prompt": "Add src/routes/reports.ts with a handler that returns active users from the database. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+  "ok": true,
+  "latency_ms": 33152,
+  "metrics": {
+    "result_text": "Added [src/routes/reports.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-znaXKj/repo/src/routes/reports.ts). The handler returns active users via the existing `listActiveUsers()` database function, honoring the route/auth and SQL-boundary tickets.\n\n`git diff --check` passes.",
+    "cost": null,
+    "session_id": null,
+    "workspace_changes": [
+      {
+        "path": "src/routes/reports.ts",
+        "status": "??",
+        "content": "import { listActiveUsers, type User } from \"../db/users\";\n\nexport async function reports(): Promise<User[]> {\n  return listActiveUsers();\n}\n"
+      }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "codex-honor-rate",
+  "description": "Codex CLI profile for the honor-rate edit experiment. Both conditions use the same workspace-write sandbox; only the seeded ticket fixture changes.",
+  "command": "codex",
+  "baseArgs": ["exec"],
+  "promptPlacement": "end",
+  "policyArgs": {
+    "full": []
+  },
+  "extraArgs": ["--sandbox", "workspace-write", "--skip-git-repo-check", "--ephemeral"],
+  "output": {
+    "type": "text"
+  },
+  "timeoutMs": 300000,
+  "verified": true,
+  "verificationNote": "Verified on 2026-08-30 against authenticated codex-cli 0.147.0. Eighteen isolated invocations used the same workspace-write sandbox in both conditions, produced parseable text output, and made observable fixture edits captured by the runner. See benchmarks/2026-08-30-honor-rate/."
+}

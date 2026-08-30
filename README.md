@@ -118,7 +118,7 @@ Agent: list tickets on src/routes/ → sees the stamp → puts auth in middlewar
 
 `diedinchat install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
 
-What’s left to build (honor-rate eval, close/unpin, publish) is in
+What’s left to build (ticket lifecycle, self-hosted tickets, publish) is in
 [`PLANNER.md`](PLANNER.md). Brand/icons are paused.
 
 ## Where we are
@@ -137,6 +137,11 @@ diedinchat check
 **Still the lab:** `diedinchat measure` A/B-tests a coding-agent config
 against frozen tasks. Use it to prove tickets work (honor rate with vs
 without `.diedinchat/`), not as the homepage claim.
+
+**First evidence:** in a frozen Codex CLI run, tickets were honored in 9/9
+edits versus 5/9 without tickets: **+44 points, 95% CI +2 to +70**. This is a
+small, single-agent result, not a universal claim. Read the
+[raw records, manual audit, and report](benchmarks/2026-08-30-honor-rate/).
 
 If you are here to run the lab, skip to [Lab: measuring a config claim](#lab-measuring-a-config-claim).
 
@@ -168,14 +173,14 @@ found no evidence either way. That is the point: not a leaderboard number, but
 a bounded answer to "did this change do anything."
 
 The claimcheck-era tool-count runs that used to live in `benchmarks/` have been
-retired with the old direction. The run that matters for this product is the
-one that is not done yet: honor rate `with-tickets` vs `no-tickets`, same
-tasks, keys frozen first.
+retired with the old direction. The run that matters for this product is honor
+rate `with-tickets` vs `no-tickets`, same tasks, keys frozen first.
 
-The task set, fixture, and honor scorer for it are in
-[examples/honor-rate/](examples/honor-rate/). **There is no number yet**, so
-nothing here is evidence that tickets change agent behavior. A demo is not a
-result.
+The task set, fixture, and honor scorer are in
+[examples/honor-rate/](examples/honor-rate/). The first real result is in
+[benchmarks/2026-08-30-honor-rate/](benchmarks/2026-08-30-honor-rate/), with
+all raw records committed. It is evidence for one agent on three tasks, not a
+claim that every coding agent will behave the same way.
 
 ### Teach your agent the method
 

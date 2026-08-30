@@ -1,0 +1,439 @@
+[
+  {
+    "task_id": "auth-in-routes",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 0,
+    "prompt": "Add src/routes/admin.ts for an authenticated /admin page. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 36917,
+    "metrics": {
+      "result_text": "Added [src/routes/admin.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-tpPJv6/repo/src/routes/admin.ts). It authenticates via `requireUser` before returning the admin page response.\n\nNo `.diedinchat/` directory or relevant tickets existed. `git diff --check` passed; TypeScript tooling was unavailable.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/admin.ts",
+          "status": "??",
+          "content": "import { requireUser } from \"../middleware\";\n\nexport function admin(request: { user?: { id: string } }): string {\n  requireUser(request);\n  return \"admin\";\n}\n"
+        }
+      ]
+    },
+    "score": "FAIL",
+    "missing_keywords": [
+      "route handler duplicates the auth check"
+    ]
+  },
+  {
+    "task_id": "auth-in-routes",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 1,
+    "prompt": "Add src/routes/admin.ts for an authenticated /admin page. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 49200,
+    "metrics": {
+      "result_text": "Added [src/routes/admin.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-B2Ws7M/repo/src/routes/admin.ts).\n\nThe route validates authentication via `authenticatedRequest` before returning `\"admin\"`. No relevant `.diedinchat` ticket or test setup was present. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/admin.ts",
+          "status": "??",
+          "content": "import { authenticatedRequest } from \"../middleware\";\n\nexport function admin(request: { user?: { id: string } }): string {\n  authenticatedRequest(request);\n  return \"admin\";\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "auth-in-routes",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 2,
+    "prompt": "Add src/routes/admin.ts for an authenticated /admin page. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 44304,
+    "metrics": {
+      "result_text": "Added [src/routes/admin.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-FQ0Aqv/repo/src/routes/admin.ts).\n\nThe route requires an authenticated user and returns the admin page response. No `.diedinchat/` directory or relevant tickets were present. `git diff --check` passed; TypeScript compiler was unavailable.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/admin.ts",
+          "status": "??",
+          "content": "import { authenticatedRequest } from \"../middleware\";\n\nexport function admin(request: { user?: { id: string } }): string {\n  authenticatedRequest(request);\n  return \"admin\";\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "auth-in-routes",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 0,
+    "prompt": "Add src/routes/admin.ts for an authenticated /admin page. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 35743,
+    "metrics": {
+      "result_text": "Added [src/routes/admin.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-v5jkBP/repo/src/routes/admin.ts).\n\nIt follows the existing route pattern. Authentication remains enforced by `src/middleware.ts`, as required by the relevant ticket. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/admin.ts",
+          "status": "??",
+          "content": "export function admin(): string {\n  return \"admin\";\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "auth-in-routes",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 1,
+    "prompt": "Add src/routes/admin.ts for an authenticated /admin page. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 44881,
+    "metrics": {
+      "result_text": "Added [src/routes/admin.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-UBysaM/repo/src/routes/admin.ts).\n\nIt follows the existing route pattern and honors the ticket requiring authentication to remain exclusively in `src/middleware.ts`. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/admin.ts",
+          "status": "??",
+          "content": "export function admin(): string {\n  return \"admin\";\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "auth-in-routes",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 2,
+    "prompt": "Add src/routes/admin.ts for an authenticated /admin page. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 58679,
+    "metrics": {
+      "result_text": "Added [src/routes/admin.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-1QXmj8/repo/src/routes/admin.ts).\n\nAuthentication remains enforced exclusively by `src/middleware.ts`, as required by the relevant ticket. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/admin.ts",
+          "status": "??",
+          "content": "export function admin(): string {\n  return \"admin\";\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "generated-config",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 0,
+    "prompt": "Change the API base URL to https://api.example.test. The current value appears in src/config.ts. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 41191,
+    "metrics": {
+      "result_text": "Updated the API base URL to `https://api.example.test` in:\n\n- [src/config.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-ZoIwKk/repo/src/config.ts:3)\n- [src/config.schema.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-ZoIwKk/repo/src/config.schema.ts:2)\n\nNo `.diedinchat/` ticket directory was present. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/config.schema.ts",
+          "status": "M",
+          "content": "export const configDefaults = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        },
+        {
+          "path": "src/config.ts",
+          "status": "M",
+          "content": "// Generated from config.schema.ts. Do not edit by hand.\nexport const config = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        }
+      ]
+    },
+    "score": "FAIL",
+    "missing_keywords": [
+      "forbidden change: src/config.ts"
+    ]
+  },
+  {
+    "task_id": "generated-config",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 1,
+    "prompt": "Change the API base URL to https://api.example.test. The current value appears in src/config.ts. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 44543,
+    "metrics": {
+      "result_text": "Updated the API base URL to `https://api.example.test` in:\n\n- [src/config.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-YjOGhI/repo/src/config.ts:3)\n- [src/config.schema.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-YjOGhI/repo/src/config.schema.ts:2)\n\nNo `.diedinchat/` ticket directory existed. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/config.schema.ts",
+          "status": "M",
+          "content": "export const configDefaults = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        },
+        {
+          "path": "src/config.ts",
+          "status": "M",
+          "content": "// Generated from config.schema.ts. Do not edit by hand.\nexport const config = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        }
+      ]
+    },
+    "score": "FAIL",
+    "missing_keywords": [
+      "forbidden change: src/config.ts"
+    ]
+  },
+  {
+    "task_id": "generated-config",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 2,
+    "prompt": "Change the API base URL to https://api.example.test. The current value appears in src/config.ts. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 37281,
+    "metrics": {
+      "result_text": "Updated the API base URL to `https://api.example.test` in:\n\n- [src/config.schema.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-ZpczG2/repo/src/config.schema.ts:2)\n- [src/config.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-ZpczG2/repo/src/config.ts:3)\n\nNo `.diedinchat/` ticket directory was present. `git diff --check` passed.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/config.schema.ts",
+          "status": "M",
+          "content": "export const configDefaults = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        },
+        {
+          "path": "src/config.ts",
+          "status": "M",
+          "content": "// Generated from config.schema.ts. Do not edit by hand.\nexport const config = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        }
+      ]
+    },
+    "score": "FAIL",
+    "missing_keywords": [
+      "forbidden change: src/config.ts"
+    ]
+  },
+  {
+    "task_id": "generated-config",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 0,
+    "prompt": "Change the API base URL to https://api.example.test. The current value appears in src/config.ts. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 50173,
+    "metrics": {
+      "result_text": "Updated [src/config.schema.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-F0HBaI/repo/src/config.schema.ts:2) to `https://api.example.test`.\n\nThe file-bound ticket says `src/config.ts` is generated and must not be edited directly. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/config.schema.ts",
+          "status": "M",
+          "content": "export const configDefaults = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "generated-config",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 1,
+    "prompt": "Change the API base URL to https://api.example.test. The current value appears in src/config.ts. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 42691,
+    "metrics": {
+      "result_text": "Updated [src/config.schema.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-Uo2cKb/repo/src/config.schema.ts:2) to `https://api.example.test`.\n\nThe relevant ticket prohibits directly editing generated `src/config.ts`. No generator is included in the repository. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/config.schema.ts",
+          "status": "M",
+          "content": "export const configDefaults = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "generated-config",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 2,
+    "prompt": "Change the API base URL to https://api.example.test. The current value appears in src/config.ts. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 49643,
+    "metrics": {
+      "result_text": "Updated [src/config.schema.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-xAEsfO/repo/src/config.schema.ts:2) to `https://api.example.test`.\n\nThe relevant ticket says `src/config.ts` is generated and must not be edited directly, so it was left untouched. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/config.schema.ts",
+          "status": "M",
+          "content": "export const configDefaults = {\n  apiBaseUrl: \"https://api.example.test\",\n};\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "sql-in-handler",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 0,
+    "prompt": "Add src/routes/reports.ts with a handler that returns active users from the database. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 43379,
+    "metrics": {
+      "result_text": "Added [src/routes/reports.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-0cjZfe/repo/src/routes/reports.ts). The async `reports` handler returns active users via `listActiveUsers()`.\n\nNo relevant `.diedinchat/` ticket existed. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/reports.ts",
+          "status": "??",
+          "content": "import { listActiveUsers, type User } from \"../db/users\";\n\nexport async function reports(): Promise<User[]> {\n  return listActiveUsers();\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "sql-in-handler",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 1,
+    "prompt": "Add src/routes/reports.ts with a handler that returns active users from the database. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 38810,
+    "metrics": {
+      "result_text": "Added [src/routes/reports.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-nJ3VtZ/repo/src/routes/reports.ts). The async `reports()` handler returns active users via `listActiveUsers()`.\n\nNo `.diedinchat/` directory or relevant tickets were present. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/reports.ts",
+          "status": "??",
+          "content": "import { listActiveUsers, type User } from \"../db/users\";\n\nexport async function reports(): Promise<User[]> {\n  return listActiveUsers();\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "sql-in-handler",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "no-tickets",
+    "trial": 2,
+    "prompt": "Add src/routes/reports.ts with a handler that returns active users from the database. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 38843,
+    "metrics": {
+      "result_text": "Added [src/routes/reports.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-HsFf6j/repo/src/routes/reports.ts). The `reports()` handler returns active users via `listActiveUsers()`.\n\nNo `.diedinchat/` directory or relevant ticket was present. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/reports.ts",
+          "status": "??",
+          "content": "import { listActiveUsers, type User } from \"../db/users\";\n\nexport async function reports(): Promise<User[]> {\n  return listActiveUsers();\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "sql-in-handler",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 0,
+    "prompt": "Add src/routes/reports.ts with a handler that returns active users from the database. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 44107,
+    "metrics": {
+      "result_text": "Added [src/routes/reports.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-cwfrcD/repo/src/routes/reports.ts). The async `reports()` handler returns `listActiveUsers()` from the database layer, respecting the route tickets. `git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/reports.ts",
+          "status": "??",
+          "content": "import { listActiveUsers, type User } from \"../db/users\";\n\nexport async function reports(): Promise<User[]> {\n  return listActiveUsers();\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "sql-in-handler",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 1,
+    "prompt": "Add src/routes/reports.ts with a handler that returns active users from the database. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 47656,
+    "metrics": {
+      "result_text": "Added [src/routes/reports.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-3O6FZZ/repo/src/routes/reports.ts).\n\nThe `reports()` handler delegates to `listActiveUsers()` and honors the repository tickets by containing no SQL or authentication logic. `git diff --check` passed; TypeScript is not installed, so type-checking was unavailable.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/reports.ts",
+          "status": "??",
+          "content": "import { listActiveUsers, type User } from \"../db/users\";\n\nexport async function reports(): Promise<User[]> {\n  return listActiveUsers();\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  },
+  {
+    "task_id": "sql-in-handler",
+    "agent_name": "codex-honor-rate",
+    "policy_name": "with-tickets",
+    "trial": 2,
+    "prompt": "Add src/routes/reports.ts with a handler that returns active users from the database. Make the code change, not just an explanation. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+    "ok": true,
+    "latency_ms": 33152,
+    "metrics": {
+      "result_text": "Added [src/routes/reports.ts](/private/var/folders/l4/fnvvdn1d633g562tzsgncyd80000gp/T/diedinchat-znaXKj/repo/src/routes/reports.ts). The handler returns active users via the existing `listActiveUsers()` database function, honoring the route/auth and SQL-boundary tickets.\n\n`git diff --check` passes.",
+      "cost": null,
+      "session_id": null,
+      "workspace_changes": [
+        {
+          "path": "src/routes/reports.ts",
+          "status": "??",
+          "content": "import { listActiveUsers, type User } from \"../db/users\";\n\nexport async function reports(): Promise<User[]> {\n  return listActiveUsers();\n}\n"
+        }
+      ]
+    },
+    "score": "PASS",
+    "missing_keywords": []
+  }
+]

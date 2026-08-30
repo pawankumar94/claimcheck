@@ -68,16 +68,11 @@ same constraint lived only in a prior chat (i.e. is absent).
    [`src/core/scorer.ts`](src/core/scorer.ts) matches `forbid` / `require`
    against *that*, not against the agent's prose. `isPass` is now the one
    definition of a pass, so `HONORED` counts everywhere.
-4. **Open.** One real multi-trial run against at least one verified agent
-   profile. Write `benchmarks/YYYY-MM-DD-honor-rate/` with raw + scored +
-   report. Honor rate with tickets vs without is the headline; do not fold
-   `ERROR` rows into the pass rate.
-
-   Blocker to clear first: this is the only task set that needs the agent to
-   **write files**. A read-only invocation scores `VIOLATED` in both arms,
-   which reads as a null result and is not one. No profile is verified for
-   write access here. Confirm on one trial that the files actually changed
-   before paying for three.
+4. ~~One real multi-trial run against at least one verified agent profile.~~
+   **Done.** Codex CLI 0.147.0 honored 9/9 edits with tickets and 5/9 without,
+   a +44 point difference (95% CI +2 to +70), with zero harness errors. Raw
+   records, scored output, report, and manual audit are committed in
+   [`benchmarks/2026-08-30-honor-rate/`](benchmarks/2026-08-30-honor-rate/).
 
 **Done when**
 
@@ -85,8 +80,8 @@ same constraint lived only in a prior chat (i.e. is absent).
   **Done**, [`test/honor.test.ts`](test/honor.test.ts) — including a guard
   that the untouched fixture scores `VIOLATED` on every task, which already
   caught one key that a do-nothing agent would have passed.
-- A report exists that a skeptic can read without running anything.
-- README “Still the lab” links that report, not BFCL.
+- ~~A report exists that a skeptic can read without running anything.~~
+- ~~README “Still the lab” links that report, not BFCL.~~
 
 **Do not** change `expected_keywords` after seeing the run. Do not declare
 victory on one trial or one agent.

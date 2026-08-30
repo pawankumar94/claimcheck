@@ -1,0 +1,20 @@
+{
+  "id": "auth-surface",
+  "text": "Auth only goes through src/middleware.ts. Route handlers must not call requireUser() themselves; wrap the handler with withAuth().",
+  "files": [
+    "src/middleware.ts",
+    "src/routes"
+  ],
+  "evidence": [
+    "withAuth"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/middleware.ts": "34a4f00836c19a3f1eb3847dc592e1ccf488aa8920ff4e10056faa75bb46fc0c",
+    "src/routes/home.ts": "aca88b9d76f13a20eb0bf387695791d955c869a933b4d2b7abdbd5b29361a0ab",
+    "src/routes/settings.ts": "1724cb40808ff906c6f7b1fa8cc3dd6a337761f76d4fe78bdc453e27316f146f"
+  },
+  "agent": "authored-by-hand",
+  "created_at": "2026-08-30T08:35:18.833Z",
+  "updated_at": "2026-08-30T08:35:18.833Z"
+}

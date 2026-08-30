@@ -1,4 +1,11 @@
-import type { AcceptanceCriterion, RawRecord, ScoredRecord, Task, TasksDoc } from "../types.js";
+import type {
+  AcceptanceCriterion,
+  HonorSpec,
+  RawRecord,
+  ScoredRecord,
+  Task,
+  TasksDoc,
+} from "../types.js";
 
 /**
  * Deliberately not an LLM-as-judge: for small task sets this is small enough
@@ -85,6 +92,54 @@ export function scoreOne(
   return { verdict: "FAIL", missing };
 }
 
+
+/**
+ * The single definition of "the agent got it right", used by the reporter,
+ * the charts, and the interval math. Honor tasks report HONORED/VIOLATED
+ * rather than PASS/FAIL, and every consumer that counted only `PASS` would
+ * have silently reported a 0% honor rate.
+ *
+ * The prefix match is deliberate: an unverified answer key appends a suffix
+ * ("PASS (UNVERIFIED ANSWER KEY -- ...)") and still counts, because the
+ * reporter flags that caveat separately rather than by zeroing the row.
+ */
+export function isPass(score: string): boolean {
+  return score.startsWith("PASS") || score.startsWith("HONORED");
+}
+
+/**
+ * Scores whether a pinned constraint was obeyed, against what the agent wrote
+ * to the files rather than what it said about them. An agent that explains the
+ * rule in prose and then violates it in code is VIOLATED, which is the whole
+ * reason honor is not scored on `result_text`.
+ *
+ * VIOLATED beats missing-requirement: if a forbidden pattern is present, that
+ * is the finding, and listing an unmet `require` alongside it would double-count
+ * one failure.
+ */
+export function scoreHonor(
+  workspaceText: string,
+  honor: HonorSpec
+): { verdict: "HONORED" | "VIOLATED"; missing: string[] } {
+  const textLower = workspaceText.toLowerCase();
+
+  const violated = (honor.forbid ?? []).filter((c) => criterionSatisfied(c, textLower));
+  if (violated.length > 0) {
+    return { verdict: "VIOLATED", missing: violated.map((c) => `forbidden: ${describeCriterion(c)}`) };
+  }
+
+  const unmet = (honor.require ?? []).filter((c) => !criterionSatisfied(c, textLower));
+  if (unmet.length > 0) {
+    return { verdict: "VIOLATED", missing: unmet.map((c) => `required: ${describeCriterion(c)}`) };
+  }
+
+  if ((honor.forbid ?? []).length === 0 && (honor.require ?? []).length === 0) {
+    return { verdict: "VIOLATED", missing: ["(task declares an empty honor spec)"] };
+  }
+
+  return { verdict: "HONORED", missing: [] };
+}
+
 export function scoreRecords(records: RawRecord[], tasksDoc: TasksDoc): ScoredRecord[] {
   const answerKeys = new Map<string, Task>(tasksDoc.tasks.map((t) => [t.id, t]));
   const scored: ScoredRecord[] = [];
@@ -102,8 +157,12 @@ export function scoreRecords(records: RawRecord[], tasksDoc: TasksDoc): ScoredRe
       continue;
     }
 
-    const resultText = rec.metrics?.result_text ?? "";
-    const { verdict, missing } = scoreOne(resultText, criteriaFor(task));
+    // An honor task is asking a different question -- did the agent obey a
+    // constraint it was never told -- so it is scored on the files it left
+    // behind, not on its prose.
+    const { verdict, missing } = task.honor
+      ? scoreHonor(rec.metrics?.workspace_text ?? "", task.honor)
+      : scoreOne(rec.metrics?.result_text ?? "", criteriaFor(task));
     const finalVerdict = task.verified
       ? verdict
       : `${verdict} (UNVERIFIED ANSWER KEY -- ${task.note ?? ""})`;

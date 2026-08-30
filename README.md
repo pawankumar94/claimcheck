@@ -156,9 +156,14 @@ found no evidence either way. That is the point: not a leaderboard number, but
 a bounded answer to "did this change do anything."
 
 The claimcheck-era tool-count runs that used to live in `benchmarks/` have been
-retired with the old direction. The next published run is the one that matters
-for this product: honor rate `with-tickets` vs `no-tickets`, same tasks, keys
-frozen first. See [PLANNER.md](PLANNER.md) Phase 1. A demo is not a result.
+retired with the old direction. The run that matters for this product is the
+one that is not done yet: honor rate `with-tickets` vs `no-tickets`, same
+tasks, keys frozen first.
+
+The task set, fixture, and honor scorer for it are in
+[examples/honor-rate/](examples/honor-rate/). **There is no number yet**, so
+nothing here is evidence that tickets change agent behavior. A demo is not a
+result.
 
 ### Teach your agent the method
 

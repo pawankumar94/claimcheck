@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { readFile, writeFile, readdir, mkdir } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join, resolve as resolvePath } from "node:path";
 import { loadTasksDoc } from "./core/tasks.js";
 import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
@@ -309,6 +309,9 @@ program
       policyNames: opts.policy,
       outDir: opts.outDir,
       trials: Number(opts.trials),
+      // fixture_dir / policy_overlays are written relative to the tasks doc,
+      // so a task set stays runnable from any working directory.
+      baseDir: dirname(resolvePath(opts.tasks)),
       onRecord: (r) => {
         const status = r.ok ? "ok" : `FAILED: ${r.error}`;
         console.log(`[${r.agent_name}/${r.policy_name}] ${r.task_id} trial=${r.trial} -> ${status}`);

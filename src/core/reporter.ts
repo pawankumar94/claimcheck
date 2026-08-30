@@ -1,3 +1,4 @@
+import { isPass } from "./scorer.js";
 import type { ScoredRecord } from "../types.js";
 import { analyze } from "./analysis.js";
 
@@ -115,7 +116,7 @@ export function buildReport(records: ScoredRecord[], opts: ReportOptions = {}): 
     const recs = byCondition.get(key)!;
     const n = recs.length;
     const okRecs = recs.filter((r) => r.score !== "ERROR");
-    const passes = okRecs.filter((r) => r.score.startsWith("PASS")).length;
+    const passes = okRecs.filter((r) => isPass(r.score)).length;
     const costs = okRecs
       .map((r) => r.metrics?.cost)
       .filter((c): c is number => typeof c === "number");

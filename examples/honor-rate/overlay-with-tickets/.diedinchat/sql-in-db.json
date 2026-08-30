@@ -1,0 +1,22 @@
+{
+  "id": "sql-in-db",
+  "text": "Every SQL string lives under src/db/. Route handlers and billing code call a function from src/db/, never query() or a raw SELECT.",
+  "files": [
+    "src/db",
+    "src/routes"
+  ],
+  "evidence": [
+    "query<"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/db/index.ts": "6b86ddc4e6c0403dea3e4d4bba9cf8b15223e2140897cec5f01fe3ccf214df0e",
+    "src/db/posts.ts": "0346905f79a330a3710b02fcc707ec27385ae926196b0c2c4727563db69b7d77",
+    "src/db/users.ts": "a4457744e622f539c00e1cc2e8ac9a223bec1b002a115ecb1f3292bd849a40ff",
+    "src/routes/home.ts": "aca88b9d76f13a20eb0bf387695791d955c869a933b4d2b7abdbd5b29361a0ab",
+    "src/routes/settings.ts": "1724cb40808ff906c6f7b1fa8cc3dd6a337761f76d4fe78bdc453e27316f146f"
+  },
+  "agent": "authored-by-hand",
+  "created_at": "2026-08-30T08:35:18.845Z",
+  "updated_at": "2026-08-30T08:35:18.845Z"
+}

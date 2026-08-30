@@ -1,0 +1,59 @@
+name: Release
+
+# Publishing happens when a GitHub Release is published, so the tag, the
+# release notes, and the npm version are one action rather than three that can
+# drift apart.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Pack and verify without publishing"
+        type: boolean
+        default: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Required for npm provenance: lets the job mint an OIDC token that npm
+      # verifies, which is what produces the "Built and signed on GitHub
+      # Actions" badge and links the tarball to this exact commit.
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      # Build before test: mcp-server.test.ts drives dist/cli.js over stdio.
+      - run: npm run build
+      - run: npm test
+
+      # A tag that disagrees with package.json means the release notes describe
+      # a version nobody can install. Fail here rather than publish the wrong one.
+      - name: Check tag matches package.json
+        if: github.event_name == 'release'
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          PKG=$(node -p "require('./package.json').version")
+          echo "tag=$TAG package.json=$PKG"
+          [ "$TAG" = "$PKG" ] || { echo "::error::Tag $TAG != package.json $PKG"; exit 1; }
+
+      - name: Publish to npm with provenance
+        if: github.event_name == 'release'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dry run
+        if: github.event_name == 'workflow_dispatch'
+        run: npm publish --provenance --access public --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

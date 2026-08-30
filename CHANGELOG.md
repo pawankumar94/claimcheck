@@ -3,6 +3,17 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.10.1 — 2026-08-30
+
+### Fixed
+
+- **An unknown command no longer silently runs `status`.** `status` is the
+  default command and takes an optional path, so `diedinchat innit` — or any
+  command copied from newer docs than the installed version — became a path
+  filter, printed "No active tickets", and exited 0. Indistinguishable from the
+  tool being broken. It now errors, lists the real commands, and suggests the
+  nearest match. Found by running the cold-start path a stranger would.
+
 ## 0.10.0 — 2026-08-30
 
 Onboarding was four commands across five concepts. It is now one.

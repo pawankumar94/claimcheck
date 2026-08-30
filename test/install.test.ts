@@ -151,3 +151,23 @@ describe("skill-host targets", () => {
   });
 
 });
+
+describe("unknown commands", () => {
+  it("does not silently run status when given something that is not a path", async () => {
+    // `status` is the default command and takes an optional path, so a typo or a
+    // command from a newer version's docs became a path filter and reported
+    // "no tickets" with exit 0 -- indistinguishable from the tool being broken.
+    const root = await mkdtemp(join(tmpdir(), "unknown-cmd-"));
+    const cli = new URL("../dist/cli.js", import.meta.url).pathname;
+    await expect(
+      execFileAsync(process.execPath, [cli, "innit", "--dir", root])
+    ).rejects.toMatchObject({ code: 1 });
+
+    try {
+      await execFileAsync(process.execPath, [cli, "innit", "--dir", root]);
+    } catch (err) {
+      expect((err as { stderr: string }).stderr).toContain("diedinchat init");
+    }
+    await rm(root, { recursive: true, force: true });
+  });
+});

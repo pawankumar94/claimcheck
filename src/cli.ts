@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { Command } from "commander";
 import { readFile, writeFile, readdir, mkdir } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { dirname, join, resolve as resolvePath } from "node:path";
 import { loadTasksDoc } from "./core/tasks.js";
 import { runEvaluation } from "./core/runner.js";
@@ -20,6 +21,21 @@ import { AGENT_HOSTS, agentHookIgnoreDir, installAgentHook, installCheckHook } f
 import { reviewDiff, reviewMarkdown } from "./core/review.js";
 import type { AgentHost } from "./core/hooks.js";
 import type { SupportedHook } from "./core/hooks.js";
+
+/** Levenshtein, for "did you mean" on a mistyped command. */
+function editDistance(a: string, b: string): number {
+  const prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    let diag = prev[0]!;
+    prev[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = prev[j]!;
+      prev[j] = Math.min(prev[j]! + 1, prev[j - 1]! + 1, diag + (a[i - 1] === b[j - 1] ? 0 : 1));
+      diag = tmp;
+    }
+  }
+  return prev[b.length]!;
+}
 
 function collect(value: string, previous: string[]): string[] {
   return [...previous, value];
@@ -143,6 +159,21 @@ program
   .option("--all", "include closed tickets")
   .option("--json", "emit machine-readable JSON")
   .action(async (path, opts) => {
+    // `status` is the default command and takes an optional path, so an unknown
+    // subcommand -- a typo, or one from a newer version's docs -- silently
+    // becomes a path filter and reports "no tickets" with exit 0. Saying so is
+    // the difference between "you typed something wrong" and "this tool is broken".
+    if (path && !existsSync(resolvePath(opts.dir, path))) {
+      const known = program.commands.map((c) => c.name());
+      const guess = known
+        .map((c) => [c, editDistance(c, path)] as const)
+        .filter(([, d]) => d <= 3)
+        .sort((a, b) => a[1] - b[1])[0]?.[0];
+      console.error(`"${path}" is not a path in this project${guess ? `, and not a command. Did you mean \`diedinchat ${guess}\`?` : "."}`);
+      console.error(`Commands: ${known.join(", ")}`);
+      process.exitCode = 1;
+      return;
+    }
     const evals = await statusClaims(opts.dir, path, opts.all);
     outputEvaluations(evals, opts.json);
   });

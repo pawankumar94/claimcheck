@@ -46,8 +46,22 @@ jobs:
           echo "tag=$TAG package.json=$PKG"
           [ "$TAG" = "$PKG" ] || { echo "::error::Tag $TAG != package.json $PKG"; exit 1; }
 
+      # A release can be cut for a version already on npm -- backfilling notes
+      # for a hand-published version, or re-running a partly-failed release.
+      # Republishing is rejected by the registry, so check first and skip.
+      - name: Is this version already on npm?
+        id: published
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          if npm view "diedinchat@$PKG" version >/dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "diedinchat@$PKG is already published; skipping publish."
+          else
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Publish to npm with provenance
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' && steps.published.outputs.already == 'false'
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

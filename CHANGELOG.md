@@ -3,6 +3,24 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.5.0 — 2026-08-30
+
+### Added
+
+- **`close_claim` and `unpin_claim` over MCP.** An agent reaching diedinchat
+  only through MCP could pin tickets and had no way to retire them — `close` and
+  `unpin` had been CLI-only since 0.3.0. `list_claims_for_file` also takes
+  `includeClosed`, since closed tickets are hidden by default and an MCP client
+  otherwise could not see what it had just closed.
+
+### Fixed
+
+- **Removed a Smithery install instruction that never worked.**
+  `docs/integrations.md` told you to run
+  `npx @smithery/cli install diedinchat --client claude` and linked to a listing
+  page. There is no such listing; the link 404s and the command fails. It is
+  gone rather than left as a promise the project does not keep.
+
 ## 0.4.1 — 2026-08-30
 
 ### Fixed

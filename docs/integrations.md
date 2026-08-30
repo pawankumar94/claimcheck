@@ -101,15 +101,14 @@ command = "npx"
 args = ["-y", "diedinchat", "mcp"]
 ```
 
-### Anything else (Smithery / Windsurf / Zed / Claude Desktop)
+### Anything else (Windsurf / Zed / Claude Desktop)
 
-To install automatically via [Smithery](https://smithery.ai/server/diedinchat):
+> **Not on Smithery yet.** An earlier version of this page told you to run
+> `npx @smithery/cli install diedinchat`. That listing does not exist — the
+> command fails and the link 404s. It is removed rather than left as a promise
+> the project does not keep. Tracked in [PLANNER.md](../PLANNER.md).
 
-```bash
-npx -y @smithery/cli install diedinchat --client claude
-```
-
-Or configure manually: most other MCP clients (Windsurf, Zed, Claude Desktop, Continue, and the rest)
+Configure manually: most other MCP clients (Windsurf, Zed, Claude Desktop, Continue, and the rest)
 accept the same `mcpServers` object shown under Cursor above; only the file
 location differs. Config keys and paths do drift between releases, so check
 your client's current MCP docs if a block here doesn't take.

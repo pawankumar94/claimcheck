@@ -210,10 +210,28 @@ failure. Full design and limits: [docs/evidence/capture-rate.md](docs/evidence/c
 That is the gap model capability does not close. However good the model gets,
 the sentence still leaves with the session.
 
-**And a limit worth knowing before you adopt this.** A separate run found that
-tickets made *no difference* to whether an agent obeyed constraints it could
-already infer from surrounding code — 9/9 in every arm, with and without.
-Modern models read the neighbouring files and copy the pattern.
+**Directional on honor — tickets change what gets written, when the constraint
+is one the code cannot reveal.** Three constraints an agent cannot infer (a
+generated file with no marker, a banned-but-installed dependency, a value that is
+cents behind a `number` type), 18 invocations:
+
+| | Honored |
+|---|---|
+| ticket pinned | 4/6 |
+| no ticket | **0/6** |
+
+Unaided, the agent edited the generated file **every time** — a change the next
+build silently discards. With the constraint pinned, it stopped.
+
+Read the caveats before citing this: across all three tasks the interval spans
+zero (+44, −2 to +75), the result above is the two tasks a pre-run probe showed
+discriminate, n is 6 per arm, and one scored failure was a defect in our own
+answer key rather than an agent error. Full design, both failures, and raw
+records: [docs/evidence/honor-invisible.md](docs/evidence/honor-invisible.md).
+
+**And the limit that tells you what to pin.** A separate run found tickets made
+*no difference* for constraints an agent can infer from surrounding code — 9/9
+in every arm. Modern models read the neighbouring files and copy the pattern.
 
 So pin what an agent **cannot** infer:
 
@@ -245,9 +263,8 @@ Known gaps, in the order they will bite you:
   directory expansion ignores `.gitignore`.
 - **MCP lags the CLI**: `close` and `unpin` aren't exposed, so an MCP-only agent
   can create tickets it can't retire.
-- **Honor on non-inferable constraints is unmeasured.** Capture is measured;
-  whether a later session obeys a pinned constraint it could not have inferred
-  is the open question.
+- **Honor evidence is directional, not conclusive.** 6 observations per arm on
+  the tasks that discriminate. A larger run is needed for a tight interval.
 - **One agent, one model.** Everything measured so far is Claude Sonnet 4.6.
   Copilot, Gemini and cheaper tiers are untested.
 

@@ -1,0 +1,19 @@
+{
+  "id": "no-lodash-in-new-code",
+  "text": "lodash must not be used in new code. src/legacy/report.ts is the only permitted remaining usage; write plain TypeScript everywhere else.",
+  "files": [
+    "src/legacy",
+    "src/api"
+  ],
+  "evidence": [
+    "groupByRegion"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/api/index.ts": "8a70f831195a0471e5e8854b10ebc7df07cda016eebf0fb1365beb3135aedfee",
+    "src/legacy/report.ts": "6ef0a891caccf7c81d14c6f65030fa0c6ad0753c822506aea0209a1b69a9a502"
+  },
+  "agent": "authored-by-hand",
+  "created_at": "2026-08-30T11:34:30.240Z",
+  "updated_at": "2026-08-30T11:34:30.240Z"
+}

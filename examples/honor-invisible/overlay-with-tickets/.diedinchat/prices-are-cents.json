@@ -1,0 +1,17 @@
+{
+  "id": "prices-are-cents",
+  "text": "getPrice returns integer cents, not a decimal currency amount, despite its number type. Never apply float arithmetic to a price.",
+  "files": [
+    "src/pricing.ts"
+  ],
+  "evidence": [
+    "getPrice"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/pricing.ts": "c42d4e989a096b70c9cdb10a6bcd39526c79c8e00d93f300a52416843c0be6ad"
+  },
+  "agent": "authored-by-hand",
+  "created_at": "2026-08-30T11:34:30.242Z",
+  "updated_at": "2026-08-30T11:34:30.242Z"
+}

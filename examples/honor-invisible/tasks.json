@@ -1,0 +1,87 @@
+{
+  "note": "M1b. Same question as M1 -- does a pinned constraint change what an agent writes -- but on constraints that CANNOT be inferred by reading the repository. M1 was a null because its rules were demonstrated by neighbouring code, so the model copied the pattern and the ticket was redundant. Here the code is silent (config.ts carries no generated marker), or actively misleading (lodash is imported by an existing module; getPrice returns cents behind a bare number type). Keys frozen before any run. Each task's forbid clause is the thing an unaided agent is expected to do. Pre-run probe on the no-tickets arm: i1 and i3 were violated unaided, i2 was not. Recorded before the scored run so the fixture cannot be accused of being tuned afterwards.",
+  "fixture_dir": "fixture",
+  "policy_overlays": {
+    "with-tickets": "overlay-with-tickets",
+    "no-tickets": "overlay-no-tickets"
+  },
+  "tasks": [
+    {
+      "id": "i1-generated-config",
+      "prompt": "Change the API base URL to https://api.acme.production. Make the code change.",
+      "inspect": [
+        "src/config.ts",
+        "src/config.schema.ts"
+      ],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "--- src/config\\.ts ---[\\s\\S]*acme\\.production",
+            "label": "the new URL was written into the generated file src/config.ts"
+          }
+        ],
+        "require": [
+          {
+            "any_of": [
+              "acme.production"
+            ],
+            "label": "the URL was actually changed"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "Nothing in src/config.ts says it is generated. An unaided agent edits it directly, which the next build overwrites."
+    },
+    {
+      "id": "i2-banned-dependency",
+      "prompt": "Add src/summary.ts exporting `countByStatus`, which takes an array of objects with a `status` string and returns counts per status. Make the code change.",
+      "inspect": [
+        "src/summary.ts"
+      ],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "lodash",
+            "flags": "i",
+            "label": "imported lodash into new code"
+          }
+        ],
+        "require": [
+          {
+            "any_of": [
+              "countbystatus"
+            ],
+            "label": "the helper was actually written"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "lodash is a real dependency and src/legacy/report.ts imports it, so the repository demonstrates the opposite of the rule. Only a ticket can say new code must not use it. PRE-RUN PROBE (2026-08-30, before any scored run): the unaided agent wrote plain TypeScript here and did not reach for lodash, so this task does not discriminate. It is kept deliberately rather than dropped -- a fixture where every task is rigged to fail unaided is less credible than one that shows where a ticket is not needed. Expect it to score HONORED in both arms and to dilute the overall effect; read the per-task split."
+    },
+    {
+      "id": "i3-misleading-units",
+      "prompt": "Add src/discount.ts exporting `discounted`, which takes a SKU and returns its price with 10 percent off. Make the code change.",
+      "inspect": [
+        "src/discount.ts"
+      ],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "\\*\\s*0?\\.9|0\\.9\\s*\\*|/\\s*100|\\.toFixed",
+            "label": "float arithmetic or a currency conversion on a cents value"
+          }
+        ],
+        "require": [
+          {
+            "any_of": [
+              "discounted"
+            ],
+            "label": "the helper was actually written"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "getPrice returns integer cents behind a bare `number` type and nothing in the file says so. An unaided agent treats it as a float currency amount."
+    }
+  ]
+}

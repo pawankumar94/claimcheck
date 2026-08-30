@@ -1,0 +1,19 @@
+{
+  "id": "config-is-generated",
+  "text": "src/config.ts is generated from src/config.schema.ts on every build. Never edit src/config.ts directly; change the schema instead.",
+  "files": [
+    "src/config.ts",
+    "src/config.schema.ts"
+  ],
+  "evidence": [
+    "ConfigSchema"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/config.schema.ts": "c7d2a9df45e2706dac11038c964be34f83f231bcbb22e0b99db1c32ff2f48227",
+    "src/config.ts": "38b857e5b22aed63c0379a4765b412347637893d397e8c486aae9330489a0a54"
+  },
+  "agent": "authored-by-hand",
+  "created_at": "2026-08-30T11:34:30.233Z",
+  "updated_at": "2026-08-30T11:34:30.233Z"
+}

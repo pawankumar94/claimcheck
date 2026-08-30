@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" width="720" height="300" role="img" aria-label="Pass rate by policy with 95% confidence interval on the difference">
+<rect x="1" y="1" width="718" height="298" rx="14" fill="#F7F5EE" stroke="#D8D4C8"/>
+<text x="130" y="28" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="#171713">claude-vertex-honor-rate: pass rate by policy</text>
+<line x1="130" y1="52" x2="130" y2="180" stroke="#D8D4C8" stroke-width="1"/>
+<text x="130" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">0%</text>
+<line x1="267.5" y1="52" x2="267.5" y2="180" stroke="#D8D4C8" stroke-width="1"/>
+<text x="267.5" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">25%</text>
+<line x1="405" y1="52" x2="405" y2="180" stroke="#D8D4C8" stroke-width="1"/>
+<text x="405" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">50%</text>
+<line x1="542.5" y1="52" x2="542.5" y2="180" stroke="#D8D4C8" stroke-width="1"/>
+<text x="542.5" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">75%</text>
+<line x1="680" y1="52" x2="680" y2="180" stroke="#D8D4C8" stroke-width="1"/>
+<text x="680" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">100%</text>
+<text x="118" y="83" font-family="system-ui,sans-serif" font-size="13" fill="#171713" text-anchor="end">with-tickets</text>
+<rect x="130" y="60" width="427.7777777777777" height="38" fill="#9BD627" rx="3"/>
+<text x="565.7777777777777" y="83" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#171713">7/9 (78%)</text>
+<text x="118" y="143" font-family="system-ui,sans-serif" font-size="13" fill="#171713" text-anchor="end">no-tickets</text>
+<rect x="130" y="120" width="183.33333333333337" height="38" fill="#746C83" rx="3"/>
+<text x="321.33333333333337" y="143" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#171713">3/9 (33%)</text>
+<text x="118" y="229" font-family="system-ui,sans-serif" font-size="13" fill="#171713" text-anchor="end">difference</text>
+<line x1="176.583928722437" y1="224" x2="650.0827379442297" y2="224" stroke="#171713" stroke-width="3"/>
+<line x1="176.583928722437" y1="217" x2="176.583928722437" y2="231" stroke="#171713" stroke-width="3"/>
+<line x1="650.0827379442297" y1="217" x2="650.0827379442297" y2="231" stroke="#171713" stroke-width="3"/>
+<circle cx="462.71604938271605" cy="224" r="5" fill="#9BD627"/>
+<line x1="191.11111111111111" y1="204" x2="191.11111111111111" y2="244" stroke="#D34E3F" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="191.11111111111111" y="258" font-family="system-ui,sans-serif" font-size="11" fill="#D34E3F" text-anchor="middle">no difference</text>
+<text x="130" y="290" font-family="system-ui,sans-serif" font-size="12" fill="#171713">+44 pts (95% CI -2 to 75) - spans zero: not distinguishable</text>
+</svg>

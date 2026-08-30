@@ -89,34 +89,117 @@ victory on one trial or one agent.
 
 ---
 
-## Phase 1b — Public developer-gain benchmark (next proof)
+## Phase 1b — The measurement program
 
 The fixture result proves mechanism sensitivity, not developer value. Do not
 use 9/9 versus 5/9 as the README headline.
 
-Build a paired, [SWE-bench](https://github.com/SWE-bench/SWE-bench)-derived
-handoff evaluation on real GitHub issues:
+### The claim is a chain, and we have measured one link
 
-1. Select a preregistered constraint-relevant subset from public tasks. Freeze
-   repository commits, official tests, task selection, and source-backed
-   file constraints before running an agent.
-2. Run the same task, agent, model, prompt, permissions, and trial count in
-   both arms. The only variable is whether the fresh workspace contains the
-   relevant `.diedinchat/` ticket.
-3. Primary metric: official test-passing issue resolution. Secondary metrics:
-   repeated constraint violations, rework, tokens, latency, and harness errors.
-4. Compare each agent against itself with at least three trials and a paired
-   interval. Test cross-agent ticket handoff separately; it is a protocol test,
-   not an agent leaderboard.
-5. Publish one stable explanation page under `docs/evidence/`, compact result
-   data, and README SVGs. Never restore dated raw-run folders at repository root.
+For a developer to get value, all six of these must hold. The product is worth
+the product of them, not the best of them:
 
-Call this **SWE-bench-derived**, not an official SWE-bench leaderboard result:
-the ticket intervention and constraint-relevant subset are ours.
+| # | Link | Question | State |
+|---|---|---|---|
+| 1 | **Capture** | Does an agent pin a constraint when the user states one? | **unmeasured** |
+| 2 | **Persistence** | Does it survive session end and tool switch? | trivially true — it is a git-tracked file |
+| 3 | **Retrieval** | Does the next agent look, without being told to? | **unmeasured** |
+| 4 | **Honor** | Having seen it, does it comply? | measured: n=18, prompt told it to look |
+| 5 | **Decay accuracy** | Does `stale` fire when the belief is at risk, and stay quiet otherwise? | **known broken, unquantified** |
+| 6 | **No harm** | Do tickets avoid degrading unrelated work? | **unmeasured** |
 
-**Done when** the README can state a developer gain such as resolved-task lift
-or repeated-mistake reduction on public tasks, with an interval and raw-enough
-compact evidence to audit it.
+Link 4 is the only one with a number, and its prompt instructed the agent to
+consult tickets — which presupposes link 3. If link 1 or 3 is near zero, the
+honor result describes a path nobody walks.
+
+Order the work by cost ascending and by probability-of-revealing-a-blocker
+descending. Do not start at M5 because it sounds the most credible.
+
+### M0 — Stale false-alarm rate (no agent, no API spend)
+
+Replay real history. Clone public repos, pin a ticket at commit N with evidence
+drawn from the file, replay the next 50 commits, and count how often the ticket
+flips `stale` while the constraint it describes is untouched.
+
+Deterministic, free, and runnable in CI as a regression gate. Report separately
+for file-pinned and directory-pinned tickets, since the defect is believed to
+be concentrated in the latter.
+
+**Reveals** how unusable directory tickets actually are, and whether file-level
+pinning is already fine. **Gates** the stale fix: this is the before-number that
+makes the after-number mean something.
+
+### M1 — Unprompted retrieval rate
+
+Rerun the honor-rate fixture with one change: delete *"Before editing, follow
+the repository instructions and inspect any relevant file-bound tickets."*
+Everything else frozen. Report retrieval (did it read `.diedinchat/` at all) and
+honor separately — they are different failures.
+
+**Reveals** whether `install` works, or whether the behavioural tier is a
+fiction and the git hook is the actual product. Cheapest experiment that can
+invalidate the current pitch, so run it first among agent tests.
+
+### M2 — Capture rate
+
+New fixture: a session where the user states a constraint in passing
+(*"by the way, keep all SQL in src/db/"*) and then asks for unrelated work.
+Does the agent pin it, or only acknowledge it in prose?
+
+**Reveals** whether the product has an input path at all. If agents do not pin
+unprompted, pinning is a human action and the docs must say so plainly.
+
+### M3 — Negative control and harm
+
+Two arms nobody has run, and the first two questions a skeptic asks:
+
+- **Irrelevant tickets.** Tickets present that do not bear on the task. Does
+  task success drop, does the agent become over-conservative, do tokens rise?
+- **Volume.** 20+ tickets in `.diedinchat/`. Does path-scoped retrieval still
+  surface the right two, or does it drown?
+
+**Reveals** the cost side of the ledger. A benefit number without this is half
+an argument.
+
+### M4 — Cross-tool handoff
+
+Agent A pins; a *different vendor's* agent B, fresh workspace, must honor it.
+This is the headline claim — "same tickets if you switch tools" — and it has
+never been tested. A protocol test, not an agent leaderboard: never rank A
+against B.
+
+### M5 — Paired run on real repository issues
+
+Only after M0–M4. Build on public tasks with frozen commits and official tests.
+
+**Fix the metric before spending.** Official test-passing resolution is
+insensitive to this intervention: those tests do not check repo-specific
+constraints, so an agent can violate every ticket and still resolve the issue.
+A null result would be uninformative rather than negative.
+
+- **Primary:** constraint-violation rate on the pinned rules.
+- **Secondary:** official resolution, as a *does this cost anything* guard.
+- **Precondition:** verify unaided agents actually violate the chosen
+  constraints, the way `test/honor.test.ts` asserts the untouched fixture scores
+  `VIOLATED`. A constraint nobody breaks measures nothing.
+
+Select the task subset first, then author constraints genuinely implicated in
+those files. Call it **SWE-bench-derived**, never an official leaderboard
+result: the intervention and the subset are ours.
+
+### Gates before inviting outside users
+
+Publicising earlier spends the one chance at a first impression on a tool whose
+signal is not yet trustworthy:
+
+- [ ] M0 run, stale fixed, false-alarm rate published
+- [ ] M1 run — pitch matches whichever tier actually works
+- [ ] M2 run — docs state honestly who does the pinning
+- [ ] M3 run — no measured harm at realistic ticket volume
+- [ ] MCP reaches CLI parity (`close`, `unpin`), so MCP users are not stuck
+
+M4 and M5 can follow public release. M0 through M3 cannot: each can change what
+the product *is*, and all four are cheap.
 
 ---
 

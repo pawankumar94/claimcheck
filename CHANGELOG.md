@@ -3,6 +3,48 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.3.1 — 2026-08-30
+
+A correctness fix in how status is derived, plus the documentation catching up
+to it. 0.3.0 shipped before this landed, so npm users should take this one.
+
+### Fixed
+
+- **A ticket whose frozen evidence is gone now reports `contradicted`, even
+  when the pinned file also changed.** Previously the hash check ran first, so
+  a single commit that both edited a file and removed its evidence reported
+  `stale` — routine churn hiding the one status that means something actually
+  broke. Contradiction is now checked immediately after `closed`.
+
+  This is a behaviour change, not only an internal one: a ticket that reported
+  `stale` under 0.3.0 may report `contradicted` here. That is the point. If you
+  script against `status --json`, read the new order in
+  [docs/how-it-works.md](docs/how-it-works.md).
+
+### Documentation
+
+- `docs/how-it-works.md` describes the ticket product — the cross-session
+  handoff, how status is derived, and the guarantee boundary between what holds
+  deterministically and what depends on an agent choosing to look.
+  `docs/architecture.md` remains the lab.
+- The honor-rate record now discloses that every prompt in that run instructed
+  the agent to inspect tickets. The +44 point result therefore measures whether
+  tickets change the edits of an agent that consults them, not whether an
+  unprompted agent consults them at all. It also notes that the maintained
+  fixture in `examples/honor-rate/` has different prompts and will not
+  reproduce those numbers.
+- All SVGs consolidated under `docs/assets/`.
+
+### Known gaps
+
+Unchanged from 0.3.0, and still the things a first real user hits:
+
+- A ticket pinned to a directory flips `stale` on any byte change under it.
+- `--file` takes literal paths only — no globs, no `.gitignore` awareness.
+- The MCP server exposes `pin_claim`, `list_claims_for_file`, and
+  `check_claim`, but not `close` or `unpin`. An agent reaching diedinchat only
+  over MCP can create tickets it cannot retire.
+
 ## 0.3.0 — 2026-08-30
 
 The release where the claim stopped being an assertion. First published

@@ -128,7 +128,7 @@ diedinchat run --tasks examples/honor-rate/tasks.json \
 node -e 'const r=require("/tmp/m1-smoke/h1-auth-in-routes__gemini-honor-rate__with-tickets__t0.json"); console.log(r.metrics.workspace_text || "(EMPTY - agent wrote nothing, fix write access before paying for a full run)")'
 ```
 
-Swap `gemini.json` for `claude-vertex.json` to use Vertex instead.
+Swap `gemini.json` for `claude-code.json` to use Vertex instead.
 
 ### Full run
 

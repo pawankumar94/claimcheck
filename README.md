@@ -180,7 +180,7 @@ Yes, that is the point.
 
 ```bash
 diedinchat run --tasks examples/honor-invisible/tasks-v2.json \
-  --agent examples/honor-rate/claude-vertex.json \
+  --agent examples/honor-rate/claude-code.json \
   --policy no-tickets --policy with-tickets --trials 10
 diedinchat score --tasks examples/honor-invisible/tasks-v2.json
 diedinchat report --baseline no-tickets --candidate with-tickets

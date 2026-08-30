@@ -147,7 +147,7 @@ Reproduce:
 
 ```bash
 diedinchat run --tasks examples/honor-invisible/tasks-v2.json \
-  --agent examples/honor-rate/claude-vertex.json \
+  --agent examples/honor-rate/claude-code.json \
   --policy no-tickets --policy with-tickets --trials 10 --out-dir ./results/v2
 diedinchat score --tasks examples/honor-invisible/tasks-v2.json --raw-dir ./results/v2
 diedinchat report --baseline no-tickets --candidate with-tickets

@@ -3,6 +3,29 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.11.0 — 2026-08-30
+
+Makes the MCPB bundle actually usable, which is also what fills in an empty
+Smithery listing.
+
+### Fixed
+
+- **The MCP server can be told which repository to read.** Every tool defaulted
+  its project root to `process.cwd()`. That is right for a CLI-launched server,
+  but a desktop MCP client starting a bundled server sets cwd to its own
+  directory — so every tool silently read the wrong `.diedinchat/`, or none at
+  all. `DIEDINCHAT_ROOT` now takes precedence, and an explicit `root` argument
+  still wins over both.
+
+### Added
+
+- **`user_config` in the MCPB manifest.** The bundle now asks for the project
+  directory and passes it as `DIEDINCHAT_ROOT`. This is the same metadata
+  Smithery renders as a listing's configuration section: a local stdio server
+  cannot be scanned and has no URL to serve a server card from, so the bundle is
+  the only thing that can populate the page. A bundle without `user_config`
+  renders empty.
+
 ## 0.10.1 — 2026-08-30
 
 ### Fixed

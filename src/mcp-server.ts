@@ -71,12 +71,12 @@ export function createServer(): McpServer {
           .optional()
           .describe("Frozen phrases that must remain in the files for the ticket to stay supported"),
         agent: z.string().optional(),
-        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+        root: z.string().optional().describe("Project root. Defaults to $DIEDINCHAT_ROOT, then the current working directory."),
       },
     },
     async ({ text, files, id, evidence, agent, root }) => {
       const { claim, path, action } = await pinClaim({
-        root: root ?? process.cwd(),
+        root: root ?? defaultRoot(),
         text,
         files,
         ...(id ? { id } : {}),
@@ -98,7 +98,7 @@ export function createServer(): McpServer {
         "(open / supported / contradicted / stale). Omit path to list every ticket in the repo.",
       inputSchema: {
         path: z.string().optional().describe("File or directory to filter by"),
-        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+        root: z.string().optional().describe("Project root. Defaults to $DIEDINCHAT_ROOT, then the current working directory."),
         includeClosed: z
           .boolean()
           .optional()
@@ -106,7 +106,7 @@ export function createServer(): McpServer {
       },
     },
     async ({ path, root, includeClosed }) => {
-      const evals = await statusClaims(root ?? process.cwd(), path, includeClosed ?? false);
+      const evals = await statusClaims(root ?? defaultRoot(), path, includeClosed ?? false);
       return {
         content: [
           {
@@ -139,11 +139,11 @@ export function createServer(): McpServer {
         "phrases are gone). No LLM. Pass an id, or omit to check every ticket.",
       inputSchema: {
         id: z.string().optional(),
-        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+        root: z.string().optional().describe("Project root. Defaults to $DIEDINCHAT_ROOT, then the current working directory."),
       },
     },
     async ({ id, root }) => {
-      const cwd = root ?? process.cwd();
+      const cwd = root ?? defaultRoot();
       const evals = id ? [await checkClaim(cwd, id)] : await statusClaims(cwd);
       return {
         content: [
@@ -182,11 +182,11 @@ export function createServer(): McpServer {
         "Prefer this over unpin_claim: a closed ticket still records that the constraint once held.",
       inputSchema: {
         id: z.string().describe("Ticket id, as returned by list_claims_for_file"),
-        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+        root: z.string().optional().describe("Project root. Defaults to $DIEDINCHAT_ROOT, then the current working directory."),
       },
     },
     async ({ id, root }) => {
-      const evaluated = await closeClaim(root ?? process.cwd(), id);
+      const evaluated = await closeClaim(root ?? defaultRoot(), id);
       return {
         content: [
           {
@@ -216,11 +216,11 @@ export function createServer(): McpServer {
         "ticket was pinned in error and should leave no trace.",
       inputSchema: {
         id: z.string().describe("Ticket id, as returned by list_claims_for_file"),
-        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+        root: z.string().optional().describe("Project root. Defaults to $DIEDINCHAT_ROOT, then the current working directory."),
       },
     },
     async ({ id, root }) => {
-      const removed = await unpinClaim(root ?? process.cwd(), id);
+      const removed = await unpinClaim(root ?? defaultRoot(), id);
       return {
         content: [{ type: "text", text: JSON.stringify({ removed: removed.id, path: removed.path }, null, 2) }],
       };
@@ -503,6 +503,18 @@ export function createServer(): McpServer {
   );
 
   return server;
+}
+
+/**
+ * The repository these tools operate on.
+ *
+ * `process.cwd()` is right for a CLI-launched server, but a desktop MCP client
+ * starting a bundled server sets cwd to its own directory, not the user's repo
+ * -- so every tool would silently read the wrong `.diedinchat/`. DIEDINCHAT_ROOT
+ * is how the MCPB bundle passes the directory the user picked.
+ */
+function defaultRoot(): string {
+  return process.env.DIEDINCHAT_ROOT || process.cwd();
 }
 
 export async function startMcpServer(): Promise<void> {

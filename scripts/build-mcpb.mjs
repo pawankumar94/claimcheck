@@ -62,15 +62,33 @@ const manifest = {
   documentation: pkg.homepage,
   license: pkg.license,
   keywords: ["coding-agents", "context", "developer-tools", "code-review"],
+  // A desktop client launches this with its own cwd, not the user's repo, so the
+  // directory has to be asked for. This is also what populates the configuration
+  // section of the Smithery listing -- a bundle with no user_config renders empty.
+  user_config: {
+    project_root: {
+      type: "directory",
+      title: "Project root",
+      description:
+        "The repository whose .diedinchat/ rules you want to use. Leave blank to use the " +
+        "working directory the server was started in.",
+      required: false,
+      multiple: false,
+    },
+  },
   server: {
     type: "node",
     entry_point: "server/dist/cli.js",
-    mcp_config: { command: "node", args: ["${__dirname}/server/dist/cli.js", "mcp"] },
+    mcp_config: {
+      command: "node",
+      args: ["${__dirname}/server/dist/cli.js", "mcp"],
+      env: { DIEDINCHAT_ROOT: "${user_config.project_root}" },
+    },
   },
   tools: [
-    { name: "pin_claim", description: "Pin a rule to one or more paths" },
-    { name: "list_claims_for_file", description: "List rules covering a path, with live status" },
-    { name: "check_claim", description: "Re-evaluate a rule against current files" },
+    { name: "list_claims_for_file", description: "List the rules covering a path, with live status. Call before editing." },
+    { name: "pin_claim", description: "Pin a rule to one or more paths, with frozen evidence" },
+    { name: "check_claim", description: "Re-evaluate a rule against current files. No model involved." },
     { name: "close_claim", description: "Retire a rule, keeping its history" },
     { name: "unpin_claim", description: "Delete a rule permanently" },
   ],

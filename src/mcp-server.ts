@@ -8,8 +8,7 @@ import {
   builtinExampleTasksPath,
   describeBuiltinProfiles,
   listBuiltinExamples,
-  resolveAgentProfile,
-} from "./core/resolve.js";
+  resolveAgentProfile, VERSION } from "./core/resolve.js";
 import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
@@ -17,7 +16,6 @@ import { loadRun, sessionToRecords, startRun, submitAnswers } from "./core/sessi
 import { checkClaim, pinClaim, statusClaims } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
 
-const VERSION = "0.1.0";
 
 /**
  * Exposes diedinchat's pipeline as MCP tools so any MCP-capable coding agent

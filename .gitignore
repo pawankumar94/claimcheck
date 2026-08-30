@@ -13,3 +13,6 @@ dist/
 results/
 __pycache__/
 *.pyc
+
+# Scratch preview output.
+.tmp-preview/

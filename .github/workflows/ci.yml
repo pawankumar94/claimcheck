@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The floor declared in package.json engines, and current LTS.
+        node: ["18.17", "22"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  # A release must not ship 5 MB of README art again, and must not ship a
+  # tarball that omits something the CLI needs at runtime.
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Pack and check size
+        run: |
+          npm pack --dry-run 2>&1 | tail -20
+          SIZE=$(npm pack --dry-run --json | node -e \
+            'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s)[0].unpackedSize))')
+          echo "unpacked: $SIZE bytes"
+          if [ "$SIZE" -gt 3000000 ]; then
+            echo "::error::Package is $SIZE bytes unpacked, over the 3 MB budget."
+            exit 1
+          fi

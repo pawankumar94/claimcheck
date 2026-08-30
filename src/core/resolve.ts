@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { readdir } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -26,6 +26,15 @@ function findPackageRoot(startDir: string): string {
 }
 
 export const PACKAGE_ROOT = findPackageRoot(dirname(fileURLToPath(import.meta.url)));
+
+/**
+ * Read from package.json rather than repeated as a literal. Two hardcoded
+ * copies had already drifted: 0.1.1 shipped reporting itself as 0.1.0 from
+ * both `--version` and the MCP handshake.
+ */
+export const VERSION: string = JSON.parse(
+  readFileSync(join(PACKAGE_ROOT, "package.json"), "utf-8")
+).version;
 
 export const PROFILES_DIR = join(PACKAGE_ROOT, "profiles");
 export const EXAMPLES_DIR = join(PACKAGE_ROOT, "examples");

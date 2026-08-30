@@ -7,7 +7,7 @@ import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { startMcpServer } from "./mcp-server.js";
-import { builtinExampleTasksPath, describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
+import { VERSION, builtinExampleTasksPath, describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
 import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "./core/install.js";
 import { buildCharts } from "./core/chart.js";
 import { detectAgents, explainNoAgent, pickDefaultAgent } from "./core/detect.js";
@@ -56,7 +56,7 @@ program
   .description(
     "Pin what an agent asserted to the files it was about. Tickets live in .diedinchat/, survive sessions, and go stale when those files change."
   )
-  .version("0.1.0");
+  .version(VERSION);
 
 program
   .command("status", { isDefault: true })

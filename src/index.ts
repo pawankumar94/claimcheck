@@ -18,7 +18,7 @@ export { createServer as createMcpServer, startMcpServer } from "./mcp-server.js
 export { detectAgents, pickDefaultAgent, explainNoAgent, isOnPath } from "./core/detect.js";
 export { analyze, summarizeConditions, differenceInterval } from "./core/analysis.js";
 export { buildCharts } from "./core/chart.js";
-export { scoreOne, scoreRecords, keywordPresent } from "./core/scorer.js";
+export { scoreOne, scoreHonor, scoreRecords, keywordPresent, isPass } from "./core/scorer.js";
 export { buildReport } from "./core/reporter.js";
 export {
   TARGETS,

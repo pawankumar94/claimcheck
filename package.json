@@ -1,7 +1,7 @@
 {
   "name": "diedinchat",
-  "version": "0.1.1",
-  "description": "Pin what an agent asserted to the files it was about. Tickets live in git, survive sessions and tool switches, and go stale when those files change.",
+  "version": "0.2.0",
+  "description": "File-bound tickets for coding agents. Pin a constraint to the paths it is about; it lives in git, survives session end and tool switches, and flips stale when those files change. CLI, MCP server, and install targets for Claude, Cursor, Copilot, Codex, Gemini and AGENTS.md.",
   "type": "module",
   "bin": {
     "diedinchat": "./dist/cli.js"
@@ -15,12 +15,15 @@
     "dist",
     "profiles",
     "templates",
-    "examples",
     "skills",
-    "brand",
+    "examples/honor-rate",
+    "examples/claim-001-tool-count",
+    "examples/agent-profiles",
+    "docs",
     "smithery.yaml",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsup",
@@ -40,7 +43,10 @@
     "claude-code",
     "codex",
     "file-tickets",
-    "developer-tools"
+    "developer-tools",
+    "agents-md",
+    "stale-detection",
+    "context-handoff"
   ],
   "license": "MIT",
   "author": "Pawan Kumar",

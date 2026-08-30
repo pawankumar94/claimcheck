@@ -28,6 +28,7 @@ Do not rebuild these. Extend them.
 | Install | [`src/core/install.ts`](src/core/install.ts), [`templates/diedinchat.md`](templates/diedinchat.md) | Writes pinning discipline into Claude / Cursor / Copilot / `AGENTS.md` / … |
 | Tests | [`test/claims.test.ts`](test/claims.test.ts), [`test/hooks.test.ts`](test/hooks.test.ts), [`test/install.test.ts`](test/install.test.ts), [`test/mcp-server.test.ts`](test/mcp-server.test.ts), [`test/runner.test.ts`](test/runner.test.ts) | `npm test` must stay green |
 | Name | package `diedinchat`, bin `diedinchat`, GitHub `pawankumar94/diedinchat` | Old `claimcheck` URLs redirect |
+| Repository tickets | [`.diedinchat/`](.diedinchat/) | Four real constraints about profiles, ticket location, CLI default, and path containment |
 
 ```bash
 npm test
@@ -117,23 +118,16 @@ stale after `middleware.ts` changes, all without MCP.
 
 ---
 
-## Phase 3 — Eat our own cooking
+## Phase 3 — Eat our own cooking (complete)
 
-This repo currently *describes* tickets and does not have any.
+**Completed 2026-08-30.** Four supported tickets are tracked in
+`.diedinchat/`: agent-profile isolation, repository-local ticket storage, bare
+CLI status, and path containment. They bind to real implementation files and
+carry frozen evidence. `AGENTS.md` was refreshed through `diedinchat install`,
+and the README uses these tickets as the worked example.
 
-Pin 3–5 real constraints about *this* codebase into `.diedinchat/` (tracked):
-
-- Auth/session examples in the README are *illustrative*; do not invent
-  app files. Pin things that are true here, e.g. “agent-specific flags
-  live only in `profiles/*.json`”, “ticket store is `.diedinchat/`, not
-  `~/.diedinchat`”, “bare CLI is `status`, not `measure`”.
-- `diedinchat install` already runs against `AGENTS.md`; after pinning,
-  `diedinchat status` in this repo should print those tickets.
-- Add `.diedinchat/` to docs as the worked example, not a screenshot of a
-  fake app.
-
-**Done when** `diedinchat status` at the repo root lists tickets and
-`check` is green on a clean tree.
+`diedinchat status` at the repo root lists these tickets, and `check` must
+remain green on a clean tree.
 
 ---
 
@@ -177,7 +171,7 @@ remaining product phases.
 
 ## Suggested order for the next agent
 
-1. Phase 3 (pin this repo).
-2. Replicate Phase 1 on a second authenticated agent when available.
-3. Stop and review both the honor-rate evidence and lifecycle UX before publishing or building an
+1. Replicate Phase 1 on a second authenticated agent when available.
+2. Review the honor-rate evidence and lifecycle UX before expanding the public listing beyond the npm name hold.
+3. Do not build an
    IDE extension.

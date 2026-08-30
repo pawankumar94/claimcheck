@@ -1,0 +1,17 @@
+{
+  "id": "preserve-path-containment",
+  "text": "Ticket paths must remain inside the project through resolveInside; do not relax path containment.",
+  "files": [
+    "src/core/claims.ts"
+  ],
+  "evidence": [
+    "Path escapes the project"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/core/claims.ts": "88671ef6916f6119795612adc5cde1bea1d5e53b19506bc86dda5822fd9b51a7"
+  },
+  "agent": "codex",
+  "created_at": "2026-08-30T09:17:17.973Z",
+  "updated_at": "2026-08-30T09:17:17.973Z"
+}

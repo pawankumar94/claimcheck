@@ -1,0 +1,22 @@
+{
+  "id": "agent-profile-boundary",
+  "text": "Agent-specific invocation flags belong in profiles/*.json; task and policy data stay agent-neutral.",
+  "files": [
+    "profiles",
+    "src/agents/profile.ts"
+  ],
+  "evidence": [
+    "policyArgs"
+  ],
+  "status": "supported",
+  "hashes": {
+    "profiles/claude-code-vertex.json": "15b64e9710cb5bd706566937f8e33a330286b43d89d715d13946b61912eb700f",
+    "profiles/claude-code.json": "04a04e7f18b7a23b60ab871d2ce307f29247e19e3c93dfee2f18f303c84053ff",
+    "profiles/codex.json": "41d5017cde4698557a2a0dab9e917ad14d02f8f8f89dbfe0cdb853d2ff1f74b9",
+    "profiles/gemini-cli.json": "9d87ca4126b72f42b1860af8fc613aab2772132a459d1396f870a7bb1147270c",
+    "src/agents/profile.ts": "b0a9e9391c026a85fa97fcac511cff5337891f80b1a69c53152a985d3063a2e1"
+  },
+  "agent": "codex",
+  "created_at": "2026-08-30T09:17:17.417Z",
+  "updated_at": "2026-08-30T09:17:17.417Z"
+}

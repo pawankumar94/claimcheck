@@ -118,7 +118,7 @@ Agent: list tickets on src/routes/ → sees the stamp → puts auth in middlewar
 
 `diedinchat install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
 
-What’s left to build (self-hosted tickets, publish) is in
+What’s left to build (cross-agent replication and publishing) is in
 [`PLANNER.md`](PLANNER.md). Brand/icons are paused.
 
 ## Where we are
@@ -147,6 +147,24 @@ diedinchat install-hook --hook pre-commit
 
 Hook installation is idempotent and preserves existing hook content inside a
 separate fenced block.
+
+### This repository uses its own tickets
+
+The constraints are not illustrative documentation. They are tracked under
+[`.diedinchat/`](.diedinchat/) and evaluated against the files implementing
+them:
+
+```text
+supported  agent-profile-boundary
+supported  default-command-is-status
+supported  preserve-path-containment
+supported  repo-local-ticket-store
+```
+
+For example, `preserve-path-containment` is pinned to
+`src/core/claims.ts` with frozen evidence for the path-escape guard. Run
+`diedinchat status` at the repository root to inspect all four, or
+`diedinchat status src/core/claims.ts` to route only the relevant tickets.
 
 **First evidence:** in a frozen Codex CLI run, tickets were honored in 9/9
 edits versus 5/9 without tickets: **+44 points, 95% CI +2 to +70**. This is a

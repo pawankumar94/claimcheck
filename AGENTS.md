@@ -12,9 +12,10 @@ eval CLI is the *lab* we use to prove that works, not the product. Do not
 lead new copy with BFCL or config A/B.
 
 `pin` / `status` / `check`, the `.diedinchat/` store, the MCP verbs, and
-the pinning-first `templates/diedinchat.md` have all landed. What is left
-is phased in [`PLANNER.md`](PLANNER.md) — read it before starting work.
-Phase 1 (honor rate `with-tickets` vs `no-tickets`) is the open one.
+the pinning-first `templates/diedinchat.md`, ticket lifecycle, and four
+repository-owned tickets have all landed. What is left is phased in
+[`PLANNER.md`](PLANNER.md) — read it before starting work. Phase 1 has one
+Codex result; replication on another agent remains open.
 
 The claimcheck-era `benchmarks/` runs (BFCL tool count, codex sandbox,
 gemini) were deleted with the old direction; the lab *pipeline* stays,
@@ -125,6 +126,10 @@ removes arithmetic.
 diedinchat pin --text "Auth only through middleware." --file src/middleware.ts
 diedinchat status src/middleware.ts
 diedinchat check auth-only-through-middleware
+diedinchat close auth-only-through-middleware
+diedinchat status --all
+diedinchat unpin auth-only-through-middleware
+diedinchat install-hook --hook post-merge
 ```
 
 MCP: `pin_claim`, `list_claims_for_file`, `check_claim`.

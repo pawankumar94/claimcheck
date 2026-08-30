@@ -1,0 +1,19 @@
+{
+  "id": "repo-local-ticket-store",
+  "text": "File tickets live in the repository-local .diedinchat directory; home-directory state is reserved for lab runs.",
+  "files": [
+    "src/core/claims.ts",
+    "src/core/session.ts"
+  ],
+  "evidence": [
+    ".diedinchat"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/core/claims.ts": "88671ef6916f6119795612adc5cde1bea1d5e53b19506bc86dda5822fd9b51a7",
+    "src/core/session.ts": "5cc15013f96d3c94f469bb6bd73353421171a3807423ca25e06753f32badd93c"
+  },
+  "agent": "codex",
+  "created_at": "2026-08-30T09:17:17.611Z",
+  "updated_at": "2026-08-30T09:17:17.611Z"
+}

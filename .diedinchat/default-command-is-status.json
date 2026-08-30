@@ -1,0 +1,18 @@
+{
+  "id": "default-command-is-status",
+  "text": "The bare diedinchat command is local status, never the budget-spending measure command.",
+  "files": [
+    "src/cli.ts"
+  ],
+  "evidence": [
+    ".command(\"status\"",
+    ".command(\"measure\""
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/cli.ts": "ab8d079adba28243ec7533cca9923ddf7e30ffeccb2e8a35cf6416af6cff62aa"
+  },
+  "agent": "codex",
+  "created_at": "2026-08-30T09:17:17.791Z",
+  "updated_at": "2026-08-30T09:17:17.791Z"
+}

@@ -10,9 +10,9 @@
   ],
   "status": "supported",
   "hashes": {
-    "src/cli.ts": "ab8d079adba28243ec7533cca9923ddf7e30ffeccb2e8a35cf6416af6cff62aa"
+    "src/cli.ts": "4932f096da898c9eec9df3a30ccb758ae54cbac21d28c5f0fd1ba88e4981af46"
   },
   "agent": "codex",
   "created_at": "2026-08-30T09:17:17.791Z",
-  "updated_at": "2026-08-30T09:17:17.791Z"
+  "updated_at": "2026-08-30T09:27:12.671Z"
 }

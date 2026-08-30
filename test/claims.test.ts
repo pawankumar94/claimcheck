@@ -103,7 +103,11 @@ describe("status and stale", () => {
     expect(ticketCoversPath(claim, "src/middleware.ts")).toBe(false);
   });
 
-  it("flips to stale when a cited file changes, with no LLM", async () => {
+  it("stays supported when a cited file changes but the evidence still holds", async () => {
+    // Measured on 660 replayed commits: alarming on any byte change made stale
+    // fire on 65% of observations for a file ticket and 97% for a directory
+    // one. Frozen evidence is the check; churn alone is not a failure. The
+    // churn is still reported in `changed` for anyone who wants it.
     await pinClaim({
       root,
       text: "Auth only through middleware.",
@@ -113,11 +117,11 @@ describe("status and stale", () => {
     });
     await writeFile(join(root, "src", "middleware.ts"), "export function auth() { return false }\n");
     const [evaled] = await statusClaims(root);
-    expect(evaled!.status).toBe("stale");
+    expect(evaled!.status).toBe("supported");
     expect(evaled!.changed).toContain("src/middleware.ts");
   });
 
-  it("restores supported when the file is restored and evidence still holds", async () => {
+  it("flips to contradicted when a cited file changes and the evidence is gone", async () => {
     await pinClaim({
       root,
       text: "Auth only through middleware.",
@@ -125,11 +129,28 @@ describe("status and stale", () => {
       evidence: ["export function auth"],
       id: "auth-surface",
     });
+    await writeFile(join(root, "src", "middleware.ts"), "export function somethingElse() {}\n");
+    const [evaled] = await statusClaims(root);
+    expect(evaled!.status).toBe("contradicted");
+  });
+
+  it("never alarms on churn, only on the evidence actually going away", async () => {
+    await pinClaim({
+      root,
+      text: "Auth only through middleware.",
+      files: ["src/middleware.ts"],
+      evidence: ["export function auth"],
+      id: "auth-surface",
+    });
+    // Evidence intact throughout, so the ticket never alarms on churn.
     await writeFile(
       join(root, "src", "middleware.ts"),
       "export function auth() { return true }\n// implementation moved\n"
     );
-    expect((await statusClaims(root))[0]!.status).toBe("stale");
+    expect((await statusClaims(root))[0]!.status).toBe("supported");
+    // Evidence removed: now it is a real failure, not churn.
+    await writeFile(join(root, "src", "middleware.ts"), "export function gone() {}\n");
+    expect((await statusClaims(root))[0]!.status).toBe("contradicted");
     await writeFile(join(root, "src", "middleware.ts"), "export function auth() { return true }\n");
     expect((await statusClaims(root))[0]!.status).toBe("supported");
   });

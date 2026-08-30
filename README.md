@@ -101,9 +101,10 @@ tickets about that directory and nothing else. An agent about to edit a file
 asks a question scoped to that file, instead of carrying every rule you've ever
 written in its context.
 
-**It expires.** Every read re-hashes the files. Touch `middleware.ts` and the
-ticket flips to `stale` on its own — the belief is now suspect and says so. This
-is the part no memory system does: **the claim knows when it might be wrong.**
+**It expires.** Freeze a phrase that must stay true — `withAuth`, say — and
+every read re-checks it against the files. When it stops holding, the ticket
+goes `contradicted` on its own, with nothing to run and no model to ask. This is
+the part no memory system does: **the claim knows when it stopped being true.**
 
 **It travels.** It's a file in your repo. Cursor, Claude Code, Codex, Copilot,
 a teammate, CI — same tickets, because they live next to the code rather than
@@ -121,19 +122,24 @@ the answer is reproducible and auditable.
 | Status | Means |
 |---|---|
 | `open` | Pinned, but nothing frozen to check it against |
-| `supported` | Files unchanged and the evidence still holds |
-| `stale` | A pinned file changed — the belief may be dead, re-check it |
+| `supported` | The frozen evidence still holds |
 | `contradicted` | The evidence is gone. Red, the way a test goes red. |
+| `stale` | A pinned file changed and there was no evidence to check — re-check it by hand |
 
-`stale` is the state that matters. Git tells you a file changed; this tells you
-a *promise about it* may no longer hold — and it's the reason a ticket doesn't
-rot into confident misinformation the way a stored memory does.
+`contradicted` is the state that matters. Git tells you a file changed; this
+tells you a *promise about it* stopped being true — which is why a ticket
+doesn't rot into confident misinformation the way a stored memory does.
+
+Freeze evidence when you pin, and the ticket checks itself. Pin without it and
+all you get is `stale` on any edit, which on real history fired on
+[65% of commits](docs/evidence/stale-noise.md) — noise, not signal.
 
 ## Quickstart
 
 ```bash
 npx diedinchat pin --text "Auth only goes through src/middleware.ts. Never check auth in a route handler." \
-  --file src/middleware.ts --file src/routes/
+  --file src/middleware.ts --file src/routes/ \
+  --evidence withAuth      # a phrase that must stay true; this is what makes it self-checking
 
 npx diedinchat install     # teach every agent in this repo to read tickets first
 ```
@@ -211,8 +217,9 @@ on itself; all four of its tickets are `supported`, and CI fails if one breaks.
 
 Known gaps, in the order they will bite you:
 
-- **A ticket pinned to a directory goes `stale` on any byte change under it**,
-  including a comment. On a busy repo, directory tickets thrash.
+- **A ticket pinned without evidence still goes `stale` on any edit** to its
+  paths. `pin` should require evidence, or generate it; today it is an optional
+  flag most people will skip.
 - **`--file` takes literal paths and directories only** — no globs, and
   directory expansion ignores `.gitignore`.
 - **MCP lags the CLI**: `close` and `unpin` aren't exposed, so an MCP-only agent

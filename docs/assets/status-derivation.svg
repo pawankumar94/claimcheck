@@ -1,37 +1,39 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 348" width="720" height="348" role="img" aria-label="Status is recomputed on every read in a fixed order: closed, then contradicted when frozen evidence is gone, then stale when a hash changed, then open without evidence, otherwise supported.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 348" width="760" height="348" role="img" aria-label="Status is recomputed on every read: closed, then supported or contradicted when frozen evidence exists, then stale only when a file changed and no evidence was frozen, otherwise open.">
   <title>How a ticket's status is derived</title>
 <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6e7781"/></marker><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#d64550"/></marker></defs>
-  <line x1="230" y1="48" x2="230" y2="296" stroke="#6e7781" stroke-width="1.5" opacity="0.7"/>
+  <line x1="250" y1="48" x2="250" y2="296" stroke="#6e7781" stroke-width="1.5" opacity="0.7"/>
   <text x="24" y="34" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781" font-weight="600">re-hash every file the ticket names</text>
   <text x="24" y="68" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">closed_at set?</text>
-  <circle cx="230" cy="64" r="4" fill="#6e7781"/>
-  <path d="M234 64 H 302" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
-  <text x="268" y="57" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
-  <rect x="310" y="47" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
-  <text x="395" y="69" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">closed</text>
-  <text x="24" y="124" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">evidence now missing?</text>
-  <circle cx="230" cy="120" r="4" fill="#d64550"/>
-  <path d="M234 120 H 302" fill="none" stroke="#d64550" stroke-width="1.5" marker-end="url(#ar)"/>
-  <text x="268" y="113" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#d64550">yes</text>
-  <rect x="310" y="103" width="170" height="34" rx="6" fill="none" stroke="#d64550" stroke-width="2"/>
-  <text x="395" y="125" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#d64550" font-weight="600">contradicted</text>
-  <text x="24" y="180" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">file hash changed?</text>
-  <circle cx="230" cy="176" r="4" fill="#6e7781"/>
-  <path d="M234 176 H 302" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
-  <text x="268" y="169" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
-  <rect x="310" y="159" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
-  <text x="395" y="181" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">stale</text>
-  <text x="24" y="236" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">evidence declared?</text>
-  <circle cx="230" cy="232" r="4" fill="#6e7781"/>
-  <path d="M234 232 H 302" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
-  <text x="268" y="225" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">no</text>
-  <rect x="310" y="215" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
-  <text x="395" y="237" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">open</text>
-  <path d="M230 296 H 302" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
-  <text x="268" y="289" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">no</text>
-  <rect x="310" y="279" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
-  <text x="395" y="301" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">supported</text>
-  <text x="500" y="120" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#d64550">broken evidence outranks</text>
-  <text x="500" y="136" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#d64550">a changed hash</text>
+  <circle cx="250" cy="64" r="4" fill="#6e7781"/>
+  <path d="M254 64 H 322" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="288" y="57" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
+  <rect x="330" y="47" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="415" y="69" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">closed</text>
+  <text x="24" y="124" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">has frozen evidence, and it holds?</text>
+  <circle cx="250" cy="120" r="4" fill="#6e7781"/>
+  <path d="M254 120 H 322" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="288" y="113" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
+  <rect x="330" y="103" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="415" y="125" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">supported</text>
+  <text x="24" y="180" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">has frozen evidence, now gone?</text>
+  <circle cx="250" cy="176" r="4" fill="#d64550"/>
+  <path d="M254 176 H 322" fill="none" stroke="#d64550" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="288" y="169" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#d64550">yes</text>
+  <rect x="330" y="159" width="170" height="34" rx="6" fill="none" stroke="#d64550" stroke-width="2"/>
+  <text x="415" y="181" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#d64550" font-weight="600">contradicted</text>
+  <text x="24" y="236" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">no evidence, but a file changed?</text>
+  <circle cx="250" cy="232" r="4" fill="#6e7781"/>
+  <path d="M254 232 H 322" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="288" y="225" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
+  <rect x="330" y="215" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="415" y="237" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">stale</text>
+  <path d="M250 296 H 322" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="288" y="289" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">no</text>
+  <rect x="330" y="279" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="415" y="301" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">open</text>
+  <text x="520" y="116" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">evidence is the check.</text>
+  <text x="520" y="132" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">churn alone does not alarm</text>
+  <text x="520" y="228" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">stale only when nothing</text>
+  <text x="520" y="244" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">was frozen to verify against</text>
   <text x="24" y="332" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781" font-style="italic">Derived on every read, from file hashes alone. No model participates.</text>
 </svg>

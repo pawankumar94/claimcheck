@@ -49,22 +49,24 @@ point in this decision.
 
 ![How a ticket's status is derived](assets/status-derivation.svg)
 
-*The first matching condition wins. `closed_at` beats everything, **broken
-evidence beats a changed hash**, and a ticket with no evidence can only ever be
-`open`.*
+*The first matching condition wins. Frozen evidence decides the outcome
+whenever it exists; a changed hash only produces `stale` when there was nothing
+frozen to check against.*
 
-The distinction that matters: **stale is not contradicted.** A hash change
-means the file moved, which is a prompt to re-check. A contradiction means the
-frozen evidence is gone, which is a failure.
+The distinction that matters: **stale is not contradicted.** A contradiction
+means the frozen evidence is gone — a failure. `stale` means only that files
+moved with nothing frozen to check, so no one can say whether the belief
+survived.
 
-Contradiction is checked *first*, so a commit that both edits a pinned file and
-removes its evidence reports `contradicted`, not `stale`. The stronger signal
-wins; otherwise the most serious failure would hide behind routine churn.
+Evidence outranks hashes deliberately. Alarming on any byte change made `stale`
+fire on [65% of replayed commits for a file ticket and 97% for a directory
+one](evidence/stale-noise.md), with directory tickets going red after a single
+commit. Churn is still reported in `changed`; it is just not an alarm.
 
-> **Known defect.** A ticket pinned to a directory goes `stale` when any byte
-> of any file under it changes, including a comment. In an active repo a
-> directory ticket is stale after nearly every commit. This is tracked in
-> [PLANNER.md](../PLANNER.md); do not design around it as if it were intended.
+> **Pin with evidence.** A ticket with no frozen evidence can only ever report
+> `open` or `stale`, and `stale` still fires on any edit to its paths — the
+> noisy mode this design exists to avoid. Measured rates are in
+> [evidence/stale-noise.md](evidence/stale-noise.md).
 
 ## The guarantee boundary
 

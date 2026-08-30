@@ -121,12 +121,22 @@ export async function evaluateClaim(root: string, claim: FileClaim): Promise<Cla
     missingEvidence = scored.missing;
   }
 
+  // Precedence, and why. Measured on 660 replayed commits (M0, see
+  // docs/evidence/stale-noise.md): hashing every byte made `stale` fire on 65%
+  // of observations for a file-pinned ticket and 97% for a directory-pinned
+  // one, with a directory ticket going red after a single commit. A signal
+  // that is almost always on is a signal nobody reads.
+  //
+  // So a hash change no longer outranks passing evidence. If you froze
+  // evidence and it still holds, the evidence *is* the check and the ticket is
+  // supported -- the churn is still reported in `changed` for anyone who wants
+  // it, it just is not an alarm. `stale` now means the honest thing: the files
+  // moved and there is nothing frozen to tell us whether the belief survived.
   let status: ClaimStatus;
   if (claim.closed_at) status = "closed";
-  else if (claim.evidence.length > 0 && evidenceVerdict !== "PASS") status = "contradicted";
+  else if (claim.evidence.length > 0) status = evidenceVerdict === "PASS" ? "supported" : "contradicted";
   else if (changed.size > 0) status = "stale";
-  else if (claim.evidence.length === 0) status = "open";
-  else status = "supported";
+  else status = "open";
 
   return { claim, status, changed: [...changed].sort(), missingEvidence, evidenceVerdict };
 }

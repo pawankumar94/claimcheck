@@ -115,7 +115,7 @@ honor result describes a path nobody walks.
 Order the work by cost ascending and by probability-of-revealing-a-blocker
 descending. Do not start at M5 because it sounds the most credible.
 
-### M0 — Stale false-alarm rate (no agent, no API spend)
+### M0 — Stale false-alarm rate (no agent, no API spend) — **done**
 
 Replay real history. Clone public repos, pin a ticket at commit N with evidence
 drawn from the file, replay the next 50 commits, and count how often the ticket
@@ -125,9 +125,22 @@ Deterministic, free, and runnable in CI as a regression gate. Report separately
 for file-pinned and directory-pinned tickets, since the defect is believed to
 be concentrated in the latter.
 
-**Reveals** how unusable directory tickets actually are, and whether file-level
-pinning is already fine. **Gates** the stale fix: this is the before-number that
-makes the after-number mean something.
+**Result, 2026-08-30:** 660 observations over this repo's history. Before the
+fix, `stale` fired on 65% of observations for a file-pinned ticket and 97% for a
+directory-pinned one, with directory tickets going red after a single commit at
+the median. After making frozen evidence outrank hashes: **0%**, with injected
+breakages still caught **11/11**, and a self-test confirming a muted alarm would
+have scored 0/11. Write-up: [`docs/evidence/stale-noise.md`](evidence/stale-noise.md).
+Re-run with `npm run m0`.
+
+**Still open on M0:** one young repository, purely additive, so no constraint
+broke on its own and detection rests on injected breakages. Re-run against
+larger public repos. And evidence quality is unmeasured — a belief that dies
+while its evidence string survives is invisible to this design.
+
+**Product consequence:** a ticket pinned without evidence can only be `open` or
+`stale`, which is the 65% path. `pin` should require or generate evidence rather
+than treat it as an optional flag.
 
 ### M1 — Unprompted retrieval rate
 
@@ -192,7 +205,7 @@ result: the intervention and the subset are ours.
 Publicising earlier spends the one chance at a first impression on a tool whose
 signal is not yet trustworthy:
 
-- [ ] M0 run, stale fixed, false-alarm rate published
+- [x] M0 run, stale fixed, false-alarm rate published (65%/97% -> 0%, detection 11/11)
 - [ ] M1 run — pitch matches whichever tier actually works
 - [ ] M2 run — docs state honestly who does the pinning
 - [ ] M3 run — no measured harm at realistic ticket volume

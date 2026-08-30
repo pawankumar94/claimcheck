@@ -40,6 +40,8 @@ export {
   closeClaim,
   unpinClaim,
   evaluateClaim,
+  computeHashes,
+  expandFiles,
   makeClaimId,
   ticketCoversPath,
 } from "./core/claims.js";

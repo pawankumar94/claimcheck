@@ -23,7 +23,6 @@
     "examples/agent-profiles",
     "docs/*.md",
     "docs/evidence/*.md",
-    "smithery.yaml",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
@@ -38,7 +37,8 @@
     "m0": "npm run build && node scripts/m0-stale-noise.mjs . 30 12",
     "chart:summary": "npm run build && node scripts/summary-chart.mjs",
     "chart:outcome": "npm run build && node scripts/outcome-chart.mjs",
-    "chart:png": "npm run build && node scripts/svg-to-png.mjs"
+    "chart:png": "npm run build && node scripts/svg-to-png.mjs",
+    "build:mcpb": "npm run build && node scripts/build-mcpb.mjs"
   },
   "keywords": [
     "diedinchat",

@@ -269,9 +269,13 @@ with `--dry-run`.
 
 Still open:
 
-- Smithery: verify [`smithery.yaml`](smithery.yaml) after a real listing. Do
-  not submit the directory until a stranger can pin a ticket without reading
-  this file.
+- **Smithery: the mechanism changed.** `smithery.yaml` is no longer how a
+  server is listed — publishing is `smithery mcp publish` or smithery.ai/new,
+  and a stdio server needs an MCPB bundle rather than an npm reference. Build
+  one with `npm run build:mcpb`; it is verified to work unpacked (see below).
+  Publishing needs a `SMITHERY_API_KEY`, so it is a human step. A hosted URL
+  listing is not an option: diedinchat reads the caller's repository, so there
+  is nothing useful to host.
 - GitHub social preview: human in Settings → `brand/social/og-1280x640.png`.
 - 0.2.0 and earlier carry no provenance and cannot get it retroactively.
 

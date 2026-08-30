@@ -16,7 +16,8 @@ import { importBfclFromFiles } from "./core/import-bfcl.js";
 import { checkClaim, closeClaim, pinClaim, statusClaims, unpinClaim } from "./core/claims.js";
 import type { ClaimEvaluation } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
-import { installCheckHook, installClaudeCodeHook } from "./core/hooks.js";
+import { AGENT_HOSTS, agentHookIgnoreDir, installAgentHook, installCheckHook } from "./core/hooks.js";
+import type { AgentHost } from "./core/hooks.js";
 import type { SupportedHook } from "./core/hooks.js";
 
 function collect(value: string, previous: string[]): string[] {
@@ -363,24 +364,27 @@ program
     "Install a pre-write gate for a coding agent. Surfaces the rules covering a file before the " +
     "agent edits it, and denies the write when one is contradicted."
   )
-  .option("--agent <name>", "claude-code", "claude-code")
+  .option("--agent <name>", `which agent: ${AGENT_HOSTS.join(" | ")}`, "claude-code")
   .option("--dir <path>", "project root", process.cwd())
   .action(async (opts) => {
-    if (opts.agent !== "claude-code") {
-      console.error(`Unsupported agent "${opts.agent}". Today: claude-code. Cursor is next.`);
+    if (!AGENT_HOSTS.includes(opts.agent)) {
+      console.error(`Unsupported agent "${opts.agent}". Today: ${AGENT_HOSTS.join(", ")}.`);
+      console.error("Gating needs a host that exposes a pre-write hook. Copilot's path-scoped");
+      console.error("instructions are advisory only; use `diedinchat install-hook --hook pre-commit` there.");
       process.exitCode = 1;
       return;
     }
-    const out = await installClaudeCodeHook(opts.dir);
+    const out = await installAgentHook(opts.dir, opts.agent as AgentHost);
     console.log(`  ${out.action.padEnd(9)} ${out.script}`);
-    console.log(`  ${out.action.padEnd(9)} ${out.settings}   (PreToolUse on Edit|Write|MultiEdit)`);
+    console.log(`  ${out.action.padEnd(9)} ${out.settings}   (${out.note})`);
     console.log(
       "\nThe agent now sees rules covering a file before it writes, and is denied when one is\n" +
       "contradicted. Requires `diedinchat` on PATH."
     );
-    if (await isGitIgnored(opts.dir, ".claude")) {
+    const dir = agentHookIgnoreDir(opts.agent as AgentHost);
+    if (await isGitIgnored(opts.dir, dir)) {
       console.warn(
-        "\n[warn] git ignores .claude/, so this hook will not travel with your repo.\n" +
+        `\n[warn] git ignores ${dir}/, so this hook will not travel with your repo.\n` +
         "       It protects you and nobody else. Un-ignore it, or rely on:\n" +
         "       diedinchat install-hook --hook pre-commit"
       );

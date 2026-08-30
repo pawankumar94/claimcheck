@@ -3,6 +3,29 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.7.0 — 2026-08-30
+
+### Added
+
+- **Cursor pre-write adapter.** `diedinchat install-agent-hook --agent cursor`
+  installs a `preToolUse` hook that surfaces the rules covering a file as
+  `agent_message` and denies the write when one is contradicted. Same `gate`
+  call as the Claude Code adapter; only the wire format differs.
+- The installer is now host-driven rather than special-cased, so a third host is
+  a table entry: adapter script, config path, and how to merge into it.
+
+### Fixed
+
+- `install-agent-hook` reported "updated" whenever a settings file merely
+  existed. It now describes whether *our* hook entry was created or replaced,
+  which is the thing the reader cares about.
+
+### Note on what Cursor can gate
+
+`preToolUse` can deny a write. `afterFileEdit` is observational and cannot —
+which is why the adapter binds to the former. Neither covers a human editing by
+hand; the git hook remains the floor.
+
 ## 0.6.0 — 2026-08-30
 
 Constraints now arrive *before* the write, instead of relying on the agent to

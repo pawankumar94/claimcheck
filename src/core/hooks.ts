@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { copyFile } from "node:fs/promises";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { PACKAGE_ROOT } from "./resolve.js";
 import { promisify } from "node:util";
 
@@ -64,42 +64,99 @@ export async function installCheckHook(
 }
 
 
+/** Coding agents that expose a hook capable of denying a write. */
+export type AgentHost = "claude-code" | "cursor";
+
+interface HostSpec {
+  adapter: string;
+  scriptPath: (root: string) => string;
+  settingsPath: (root: string) => string;
+  /** Merge our entry into whatever config the user already has. */
+  merge: (settings: Record<string, any>, scriptRel: string) => Record<string, any>;
+  ignoreDir: string;
+  note: string;
+}
+
+const HOSTS: Record<AgentHost, HostSpec> = {
+  "claude-code": {
+    adapter: "claude-code-pretooluse.mjs",
+    scriptPath: (root) => join(root, ".claude", "hooks", "diedinchat-gate.mjs"),
+    settingsPath: (root) => join(root, ".claude", "settings.json"),
+    ignoreDir: ".claude",
+    note: "PreToolUse on Edit|Write|MultiEdit",
+    merge(settings, scriptRel) {
+      settings.hooks ??= {};
+      settings.hooks.PreToolUse ??= [];
+      const entry = {
+        matcher: "Edit|Write|MultiEdit|NotebookEdit",
+        hooks: [{ type: "command", command: `node $CLAUDE_PROJECT_DIR/${scriptRel}`, timeout: 10 }],
+      };
+      const at = settings.hooks.PreToolUse.findIndex((g: any) =>
+        (g?.hooks ?? []).some((h: any) => typeof h?.command === "string" && h.command.includes("diedinchat-gate"))
+      );
+      if (at >= 0) settings.hooks.PreToolUse[at] = entry;
+      else settings.hooks.PreToolUse.push(entry);
+      return settings;
+    },
+  },
+  cursor: {
+    adapter: "cursor-pretooluse.mjs",
+    scriptPath: (root) => join(root, ".cursor", "hooks", "diedinchat-gate.mjs"),
+    settingsPath: (root) => join(root, ".cursor", "hooks.json"),
+    ignoreDir: ".cursor",
+    note: "preToolUse",
+    merge(settings, scriptRel) {
+      // Cursor's hooks.json is versioned and keyed by hook name, with no
+      // matcher: the adapter filters on tool_input itself.
+      settings.version ??= 1;
+      settings.hooks ??= {};
+      settings.hooks.preToolUse ??= [];
+      const entry = { command: `node ./${scriptRel}`, timeout: 10 };
+      const at = settings.hooks.preToolUse.findIndex(
+        (h: any) => typeof h?.command === "string" && h.command.includes("diedinchat-gate")
+      );
+      if (at >= 0) settings.hooks.preToolUse[at] = entry;
+      else settings.hooks.preToolUse.push(entry);
+      return settings;
+    },
+  },
+};
+
+export const AGENT_HOSTS = Object.keys(HOSTS) as AgentHost[];
+
 /**
- * Installs the Claude Code PreToolUse adapter: the script, plus the settings
- * entry that fires it before Edit/Write/MultiEdit.
+ * Installs a pre-write adapter: the script, plus the config entry that fires it.
  *
- * Merged into settings.json rather than overwriting it, and matched on our own
- * command string so re-running is idempotent and someone else's hooks survive.
+ * Config is merged rather than overwritten and matched on our own command
+ * string, so re-running is idempotent and someone else's hooks survive.
  */
-export async function installClaudeCodeHook(
-  root: string
-): Promise<{ script: string; settings: string; action: "created" | "updated" }> {
-  const scriptDir = join(root, ".claude", "hooks");
-  const script = join(scriptDir, "diedinchat-gate.mjs");
-  await mkdir(scriptDir, { recursive: true });
-  await copyFile(join(PACKAGE_ROOT, "templates", "adapters", "claude-code-pretooluse.mjs"), script);
+export async function installAgentHook(
+  root: string,
+  host: AgentHost
+): Promise<{ host: AgentHost; script: string; settings: string; note: string; action: "created" | "updated" }> {
+  const spec = HOSTS[host];
+  if (!spec) throw new Error(`Unsupported agent "${host}". Today: ${AGENT_HOSTS.join(", ")}.`);
+
+  const script = spec.scriptPath(root);
+  await mkdir(dirname(script), { recursive: true });
+  await copyFile(join(PACKAGE_ROOT, "templates", "adapters", spec.adapter), script);
   await chmod(script, 0o755);
 
-  const settingsPath = join(root, ".claude", "settings.json");
-  const settings: Record<string, any> = existsSync(settingsPath)
-    ? JSON.parse(await readFile(settingsPath, "utf8"))
-    : {};
-  settings.hooks ??= {};
-  settings.hooks.PreToolUse ??= [];
+  const settingsPath = spec.settingsPath(root);
+  const settings = existsSync(settingsPath) ? JSON.parse(await readFile(settingsPath, "utf8")) : {};
 
-  const command = "$CLAUDE_PROJECT_DIR/.claude/hooks/diedinchat-gate.mjs";
-  const entry = {
-    matcher: "Edit|Write|MultiEdit|NotebookEdit",
-    hooks: [{ type: "command", command: `node ${command}`, timeout: 10 }],
-  };
+  // "created" vs "updated" describes OUR hook entry, not whether the user
+  // happened to have a settings file already. Someone with existing settings
+  // installing this for the first time has created something.
+  const hadOurs = JSON.stringify(settings).includes("diedinchat-gate");
+  const scriptRel = relative(root, script).split(sep).join("/");
+  const merged = spec.merge(settings, scriptRel);
 
-  const existing = settings.hooks.PreToolUse.findIndex((g: any) =>
-    (g?.hooks ?? []).some((h: any) => typeof h?.command === "string" && h.command.includes("diedinchat-gate"))
-  );
-  const action = existing >= 0 ? "updated" : "created";
-  if (existing >= 0) settings.hooks.PreToolUse[existing] = entry;
-  else settings.hooks.PreToolUse.push(entry);
+  await mkdir(dirname(settingsPath), { recursive: true });
+  await writeFile(settingsPath, JSON.stringify(merged, null, 2) + "\n");
+  return { host, script, settings: settingsPath, note: spec.note, action: hadOurs ? "updated" : "created" };
+}
 
-  await writeFile(settingsPath, JSON.stringify(settings, null, 2) + "\n");
-  return { script, settings: settingsPath, action };
+export function agentHookIgnoreDir(host: AgentHost): string {
+  return HOSTS[host].ignoreDir;
 }

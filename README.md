@@ -163,8 +163,9 @@ Sometimes it does — at 90%, roughly one invocation in ten still misses. Two
 answers, in increasing strength:
 
 ```bash
-diedinchat install-agent-hook     # Claude Code: gate the write itself
-diedinchat install-hook --hook pre-commit   # works regardless of editor
+diedinchat install-agent-hook --agent claude-code
+diedinchat install-agent-hook --agent cursor
+diedinchat install-hook --hook pre-commit     # works regardless of editor
 ```
 
 The agent hook runs *before* an edit: it puts the rules covering that file in
@@ -173,9 +174,11 @@ That closes the exact failure we measured — an agent editing a generated file
 having never looked. The git hook is the floor under everything, including a
 human editing by hand.
 
-Gating needs a host that exposes a pre-write hook. Claude Code and Cursor do;
-Copilot's path-scoped instructions are advisory only. Nothing can gate what
-exposes no gate, so git and CI stay the editor-independent backstop.
+Gating needs a host that exposes a pre-write hook. Claude Code and Cursor do —
+both adapters ship. Copilot's path-scoped instructions are advisory, and Cursor's
+own `afterFileEdit` is observational, so neither can stop a write. Nothing can
+gate what exposes no gate, and no hook covers a human editing by hand, so git and
+CI stay the editor-independent backstop.
 
 **What does it cost?**
 Tokens. In the measured runs, tickets in the workspace raised mean cost per

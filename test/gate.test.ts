@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { pinClaim } from "../src/core/claims.js";
-import { installClaudeCodeHook } from "../src/core/hooks.js";
+import { installAgentHook } from "../src/core/hooks.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -71,22 +71,35 @@ describe("gate — the primitive every adapter projects over", () => {
   });
 });
 
-describe("Claude Code PreToolUse adapter", () => {
-  it("merges into settings.json without clobbering it, and stays idempotent", async () => {
-    const root = await mkdtemp(join(tmpdir(), "hook-"));
-    await mkdir(join(root, ".claude"), { recursive: true });
-    await writeFile(join(root, ".claude", "settings.json"), JSON.stringify({ env: { KEEP: "me" } }));
+describe("pre-write adapters", () => {
+  for (const host of ["claude-code", "cursor"] as const) {
+    it(`${host}: merges into existing config without clobbering it, and stays idempotent`, async () => {
+      const root = await mkdtemp(join(tmpdir(), `hook-${host}-`));
+      const first = await installAgentHook(root, host);
+      // A pre-existing config from the user must survive the merge.
+      const existing = JSON.parse(await readFile(first.settings, "utf-8"));
+      existing.somethingTheUserHad = "keep me";
+      await writeFile(first.settings, JSON.stringify(existing));
 
-    const first = await installClaudeCodeHook(root);
-    expect(first.action).toBe("created");
-    const second = await installClaudeCodeHook(root);
-    expect(second.action).toBe("updated");
+      const second = await installAgentHook(root, host);
+      expect(first.action, "first install creates our entry").toBe("created");
+      expect(second.action, "second install updates it in place").toBe("updated");
 
-    const settings = JSON.parse(await readFile(join(root, ".claude", "settings.json"), "utf-8"));
-    expect(settings.env.KEEP, "someone else's settings must survive").toBe("me");
-    expect(settings.hooks.PreToolUse, "re-running must not duplicate the entry").toHaveLength(1);
-    expect(settings.hooks.PreToolUse[0].matcher).toContain("Write");
+      const settings = JSON.parse(await readFile(first.settings, "utf-8"));
+      expect(settings.somethingTheUserHad).toBe("keep me");
 
+      const entries = host === "cursor" ? settings.hooks.preToolUse : settings.hooks.PreToolUse;
+      expect(entries, "re-running must not duplicate the entry").toHaveLength(1);
+      expect(JSON.stringify(entries)).toContain("diedinchat-gate");
+
+      await rm(root, { recursive: true, force: true });
+    });
+  }
+
+  it("cursor config carries the version field its schema requires", async () => {
+    const root = await mkdtemp(join(tmpdir(), "hook-cursor-v-"));
+    const out = await installAgentHook(root, "cursor");
+    expect(JSON.parse(await readFile(out.settings, "utf-8")).version).toBe(1);
     await rm(root, { recursive: true, force: true });
   });
 });

@@ -1,0 +1,445 @@
+{
+  "agent": "claude-sonnet-4-6 via Vertex",
+  "date": "2026-08-30",
+  "arms": [
+    "no-tickets",
+    "with-tickets",
+    "with-tickets-prompted"
+  ],
+  "scored": [
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "no-tickets",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "no-tickets",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "no-tickets",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets-prompted",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets-prompted",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets-prompted",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "no-tickets",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "no-tickets",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "no-tickets",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets-prompted",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets-prompted",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets-prompted",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "no-tickets",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "no-tickets",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "no-tickets",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets-prompted",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets-prompted",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets-prompted",
+      "trial": 2,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets",
+      "trial": 0,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets",
+      "trial": 1,
+      "score": "HONORED"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets",
+      "trial": 2,
+      "score": "HONORED"
+    }
+  ],
+  "records": [
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "no-tickets",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 28389,
+      "cost": 0.03541725,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ users: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "no-tickets",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 29381,
+      "cost": 0.035435850000000005,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ userCount: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "no-tickets",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 25272,
+      "cost": 0.033830400000000004,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ users: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets-prompted",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 67525,
+      "cost": 0.0959439,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ count: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets-prompted",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 50871,
+      "cost": 0.07609994999999999,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ count: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets-prompted",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 72133,
+      "cost": 0.10705485,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ userCount: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 26059,
+      "cost": 0.036576449999999996,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ count: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 27669,
+      "cost": 0.031303199999999996,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ userCount: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h1-auth-in-routes",
+      "policy": "with-tickets",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 27380,
+      "cost": 0.03732629999999999,
+      "workspace_text": "--- src/routes/admin.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const admin = withAuth((_req: Request) => {\n  return JSON.stringify({ count: countUsers() });\n});\n\n--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "no-tickets",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 26974,
+      "cost": 0.031843050000000005,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ totalUsers: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "no-tickets",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 24086,
+      "cost": 0.0292752,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ users: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "no-tickets",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 28265,
+      "cost": 0.03753645,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ count: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets-prompted",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 43673,
+      "cost": 0.0651096,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ totalUsers: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets-prompted",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 44571,
+      "cost": 0.06902475,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ users: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets-prompted",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 73830,
+      "cost": 0.10682025,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((req: Request) => {\n  return JSON.stringify({ totalUsers: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 28672,
+      "cost": 0.03608715,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ users: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 24694,
+      "cost": 0.034576199999999994,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ users: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h2-sql-in-handler",
+      "policy": "with-tickets",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 29772,
+      "cost": 0.0362433,
+      "workspace_text": "--- src/routes/home.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { listPosts } from \"../db/posts.js\";\n\nexport const home = withAuth((req: Request) => {\n  return JSON.stringify(listPosts(20));\n});\n\n--- src/routes/settings.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { findUser } from \"../db/users.js\";\n\nexport const settings = withAuth((req: Request) => {\n  return JSON.stringify(findUser(req.query.id ?? \"\"));\n});\n\n--- src/routes/stats.ts ---\nimport type { Request } from \"../http.js\";\nimport { withAuth } from \"../middleware.js\";\nimport { countUsers } from \"../db/users.js\";\n\nexport const stats = withAuth((_req: Request) => {\n  return JSON.stringify({ users: countUsers() });\n});\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "no-tickets",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 37469,
+      "cost": 0.042420000000000006,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, -applyRateCents(subtotal, DISCOUNT_BASIS_POINTS)));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "no-tickets",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 23184,
+      "cost": 0.030110699999999997,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(subtotal - applyRateCents(subtotal, DISCOUNT_BASIS_POINTS));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "no-tickets",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 36532,
+      "cost": 0.04268745,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(subtotal - applyRateCents(subtotal, DISCOUNT_BASIS_POINTS));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets-prompted",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 61827,
+      "cost": 0.08837565,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, -applyRateCents(subtotal, DISCOUNT_BASIS_POINTS)));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets-prompted",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 64335,
+      "cost": 0.08955584999999999,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, -applyRateCents(subtotal, DISCOUNT_BASIS_POINTS)));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets-prompted",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file. Before editing, follow the repository instructions and inspect any relevant file-bound tickets.",
+      "latency_ms": 69438,
+      "cost": 0.0953397,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, -applyRateCents(subtotal, DISCOUNT_BASIS_POINTS)));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets",
+      "trial": 0,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 35387,
+      "cost": 0.047383949999999994,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, -applyRateCents(subtotal, DISCOUNT_BASIS_POINTS)));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets",
+      "trial": 1,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 34302,
+      "cost": 0.04681515,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, -applyRateCents(subtotal, DISCOUNT_BASIS_POINTS)));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    },
+    {
+      "task_id": "h3-float-money",
+      "policy": "with-tickets",
+      "trial": 2,
+      "ok": true,
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file.",
+      "latency_ms": 49384,
+      "cost": 0.06780855,
+      "workspace_text": "--- src/billing/discount.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst DISCOUNT_BASIS_POINTS = 1000;\n\nexport function discountedTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(subtotal - applyRateCents(subtotal, DISCOUNT_BASIS_POINTS));\n}\n\n--- src/billing/invoice.ts ---\nimport { addCents, applyRateCents, formatCents, type Cents } from \"../money.js\";\n\nconst VAT_BASIS_POINTS = 2000;\n\nexport function invoiceTotal(lineItems: Cents[]): string {\n  const subtotal = lineItems.reduce(addCents, 0);\n  return formatCents(addCents(subtotal, applyRateCents(subtotal, VAT_BASIS_POINTS)));\n}\n"
+    }
+  ]
+}

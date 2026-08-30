@@ -103,6 +103,12 @@ That is a narrower claim than "your agent forgets your rules", and it is the one
 the evidence supports. Note the README's original hero example — auth only in
 middleware — is on the wrong side of that line.
 
+Raw records for this run: [`honor-rate-m1-results.json`](honor-rate-m1-results.json)
+— all 27 invocations with prompts, workspace contents and frozen scores. The
+separate [`honor-rate-results.json`](honor-rate-results.json) is the earlier Codex
+run, kept for audit; note its scorer was never merged to `src/`, so that one
+cannot be reproduced from this repository.
+
 An honor experiment on non-inferable constraints has not been run. Until it is,
 [capture](capture-rate.md) is the measured effect, and honor is open.
 

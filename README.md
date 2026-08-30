@@ -118,12 +118,12 @@ Agent: list tickets on src/routes/ → sees the stamp → puts auth in middlewar
 
 `diedinchat install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
 
-What’s left to build (ticket lifecycle, self-hosted tickets, publish) is in
+What’s left to build (self-hosted tickets, publish) is in
 [`PLANNER.md`](PLANNER.md). Brand/icons are paused.
 
 ## Where we are
 
-**On `main`:** `pin` / `status` / `check`, a `.diedinchat/` store,
+**On `main`:** `pin` / `status` / `check` / `close` / `unpin`, a `.diedinchat/` store,
 MCP tools (`pin_claim`, `list_claims_for_file`, `check_claim`), and an
 install template that teaches pinning rather than only evals. Bare
 `diedinchat` is `status` (local, free), not a budget-spending measure.
@@ -132,16 +132,29 @@ install template that teaches pinning rather than only evals. Bare
 diedinchat pin --text "Auth only through middleware." --file src/middleware.ts
 diedinchat status src/middleware.ts
 diedinchat check
+diedinchat close auth-only-through-middleware
+diedinchat status --all
+diedinchat unpin auth-only-through-middleware
 ```
 
-**Still the lab:** `diedinchat measure` A/B-tests a coding-agent config
-against frozen tasks. Use it to prove tickets work (honor rate with vs
-without `.diedinchat/`), not as the homepage claim.
+Use `status --json` and `check --json` in scripts or CI. Optional Git hooks
+run the deterministic check without relying on an agent to remember it:
+
+```bash
+diedinchat install-hook --hook post-merge
+diedinchat install-hook --hook pre-commit
+```
+
+Hook installation is idempotent and preserves existing hook content inside a
+separate fenced block.
 
 **First evidence:** in a frozen Codex CLI run, tickets were honored in 9/9
 edits versus 5/9 without tickets: **+44 points, 95% CI +2 to +70**. This is a
 small, single-agent result, not a universal claim. Read the
 [raw records, manual audit, and report](benchmarks/2026-08-30-honor-rate/).
+
+**Still the lab:** `diedinchat measure` runs controlled coding-agent
+experiments. The lab remains supporting evidence, not the product pitch.
 
 If you are here to run the lab, skip to [Lab: measuring a config claim](#lab-measuring-a-config-claim).
 

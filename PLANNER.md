@@ -23,10 +23,10 @@ Do not rebuild these. Extend them.
 | Surface | Where | What it does |
 |---|---|---|
 | Ticket store | [`src/core/claims.ts`](src/core/claims.ts), [`src/types.ts`](src/types.ts) `FileClaim` | `.diedinchat/<id>.json`, hashes, walk dirs, `evaluateClaim` |
-| CLI | [`src/cli.ts`](src/cli.ts) | `pin` / `status` (default) / `check`. `measure` is explicit, not default |
+| CLI | [`src/cli.ts`](src/cli.ts) | `pin` / `status` (default) / `check` / `close` / `unpin`, JSON output, optional Git hooks. `measure` is explicit, not default |
 | MCP | [`src/mcp-server.ts`](src/mcp-server.ts) | `pin_claim`, `list_claims_for_file`, `check_claim` + the lab tools |
 | Install | [`src/core/install.ts`](src/core/install.ts), [`templates/diedinchat.md`](templates/diedinchat.md) | Writes pinning discipline into Claude / Cursor / Copilot / `AGENTS.md` / … |
-| Tests | [`test/claims.test.ts`](test/claims.test.ts), [`test/install.test.ts`](test/install.test.ts), [`test/mcp-server.test.ts`](test/mcp-server.test.ts) | 129 tests; `npm test` must stay green |
+| Tests | [`test/claims.test.ts`](test/claims.test.ts), [`test/hooks.test.ts`](test/hooks.test.ts), [`test/install.test.ts`](test/install.test.ts), [`test/mcp-server.test.ts`](test/mcp-server.test.ts), [`test/runner.test.ts`](test/runner.test.ts) | `npm test` must stay green |
 | Name | package `diedinchat`, bin `diedinchat`, GitHub `pawankumar94/diedinchat` | Old `claimcheck` URLs redirect |
 
 ```bash
@@ -88,17 +88,23 @@ victory on one trial or one agent.
 
 ---
 
-## Phase 2 — Ticket lifecycle the CLI is missing
+## Phase 2 — Ticket lifecycle (complete)
+
+**Completed 2026-08-30.** Closed tickets remain on disk and are hidden from
+default status; `--all` includes them. `unpin` removes one validated ticket.
+`status --json` and `check --json` expose the same evaluations used by the CLI.
+Optional idempotent `pre-commit` and `post-merge` hooks preserve existing hook
+content and run the deterministic check.
 
 `pin` / `status` / `check` are not a product yet. Agents and humans will
 need:
 
 | Verb | Behavior |
 |---|---|
-| `close <id>` | status `supported` is not “done”; closed tickets stay on disk, `status` hides them by default, `--all` shows them |
-| `unpin <id>` | delete `.diedinchat/<id>.json` |
-| `status --json` / `check --json` | machine output for MCP and CI |
-| `check` git hook | `diedinchat check` as a `pre-commit` or `post-merge` optional install, so pull-the-repo flips `stale` without anyone remembering |
+| `close <id>` | [x] Closed tickets stay on disk; `status` hides them and `--all` shows them |
+| `unpin <id>` | [x] Delete exactly one `.diedinchat/<id>.json` |
+| `status --json` / `check --json` | [x] Machine output for scripts and CI |
+| `check` git hook | [x] Optional idempotent `pre-commit` / `post-merge` installation |
 
 Keep the store a directory of JSON. No sqlite. Path safety stays
 `resolveInside` — do not relax it.
@@ -146,23 +152,17 @@ npm name `diedinchat` is reserved (0.1.0). That is **not** a launch.
 ## Phase 5 — IDE chrome (last)
 
 A stamp on a file in the Cursor / VS Code tree. Optional. Same
-`.diedinchat/` store, no second format. Do not start this while Phase 1
-is open — a marketplace listing without a honor-rate number is a skin.
+`.diedinchat/` store, no second format. Do not start this before Phase 3 is
+complete and the current CLI lifecycle has been used in this repository.
 
 ---
 
-## Phase 6 — Brand (paused)
+## Phase 6 — Brand (complete; now paused)
 
-Name is `diedinchat`. Current `brand/` is still the old stamp + files
-mark from `claimcheck`. When a human unpauses this:
-
-- New mark has to read at 16px and match the *name* (chat that is gone,
-  next agent doesn’t know). Not a robot mascot, not AI-generated slop,
-  not the old ticket/stamp.
-- Canonical files: `brand/svg/diedinchat-icon.svg`, favicon, social
-  `1280×640`, then rasterize PNGs. Update README `<img>` and
-  `brand/BRAND.md`.
-- Do not block Phases 1–3 on this.
+The human-approved drawer/archive system is in `brand/`, including the README
+hero, social preview, SVG, favicon, and raster sizes. Do not regenerate or
+revisit it unless a human explicitly reopens brand work. It does not block the
+remaining product phases.
 
 ---
 
@@ -177,8 +177,7 @@ mark from `claimcheck`. When a human unpauses this:
 
 ## Suggested order for the next agent
 
-1. Phase 1 (honor-rate example + scorer + one real run).
-2. Phase 2 (`close` / `unpin` / `--json`).
-3. Phase 3 (pin this repo).
-4. Stop and show the honor-rate number before publishing or building an
+1. Phase 3 (pin this repo).
+2. Replicate Phase 1 on a second authenticated agent when available.
+3. Stop and review both the honor-rate evidence and lifecycle UX before publishing or building an
    IDE extension.

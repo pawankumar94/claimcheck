@@ -13,9 +13,11 @@ import { buildCharts } from "./core/chart.js";
 import { detectAgents, explainNoAgent, pickDefaultAgent } from "./core/detect.js";
 import { analyze } from "./core/analysis.js";
 import { importBfclFromFiles } from "./core/import-bfcl.js";
-import { checkClaim, pinClaim, statusClaims } from "./core/claims.js";
+import { checkClaim, closeClaim, pinClaim, statusClaims, unpinClaim } from "./core/claims.js";
 import type { ClaimEvaluation } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
+import { installCheckHook } from "./core/hooks.js";
+import type { SupportedHook } from "./core/hooks.js";
 
 function collect(value: string, previous: string[]): string[] {
   return [...previous, value];
@@ -32,7 +34,7 @@ async function loadRawRecords(dir: string): Promise<RawRecord[]> {
 
 function printEvaluations(evals: ClaimEvaluation[]): void {
   if (evals.length === 0) {
-    console.log("No tickets. Pin one with:  diedinchat pin --text \"...\" --file src/...");
+    console.log("No active tickets. Use --all to include closed tickets, or pin one with:  diedinchat pin --text \"...\" --file src/...");
     return;
   }
   for (const e of evals) {
@@ -50,6 +52,11 @@ function printEvaluations(evals: ClaimEvaluation[]): void {
   }
 }
 
+function outputEvaluations(evals: ClaimEvaluation[], json: boolean): void {
+  if (json) console.log(JSON.stringify(evals, null, 2));
+  else printEvaluations(evals);
+}
+
 const program = new Command();
 program
   .name("diedinchat")
@@ -63,9 +70,11 @@ program
   .description("List tickets in this repo (default). Pass a path to see only tickets on that file or directory.")
   .argument("[path]", "file or directory to filter by")
   .option("--dir <path>", "project root", process.cwd())
+  .option("--all", "include closed tickets")
+  .option("--json", "emit machine-readable JSON")
   .action(async (path, opts) => {
-    const evals = await statusClaims(opts.dir, path);
-    printEvaluations(evals);
+    const evals = await statusClaims(opts.dir, path, opts.all);
+    outputEvaluations(evals, opts.json);
   });
 
 program
@@ -102,12 +111,36 @@ program
   .description("Re-evaluate one ticket (or all) against current file contents and hashes.")
   .argument("[id]", "ticket id; omit to check every ticket")
   .option("--dir <path>", "project root", process.cwd())
+  .option("--all", "include closed tickets when checking all")
+  .option("--json", "emit machine-readable JSON")
   .action(async (id, opts) => {
-    if (id) {
-      printEvaluations([await checkClaim(opts.dir, id)]);
-      return;
+    const evals = id ? [await checkClaim(opts.dir, id)] : await statusClaims(opts.dir, undefined, opts.all);
+    outputEvaluations(evals, opts.json);
+    if (evals.some((evaluation) => evaluation.status === "stale" || evaluation.status === "contradicted")) {
+      process.exitCode = 1;
     }
-    printEvaluations(await statusClaims(opts.dir));
+  });
+
+program
+  .command("close")
+  .description("Close a ticket without deleting its history. Closed tickets are hidden from status unless --all is used.")
+  .argument("<id>", "ticket id")
+  .option("--dir <path>", "project root", process.cwd())
+  .option("--json", "emit machine-readable JSON")
+  .action(async (id, opts) => {
+    outputEvaluations([await closeClaim(opts.dir, id)], opts.json);
+  });
+
+program
+  .command("unpin")
+  .description("Permanently remove a ticket from .diedinchat/.")
+  .argument("<id>", "ticket id")
+  .option("--dir <path>", "project root", process.cwd())
+  .option("--json", "emit machine-readable JSON")
+  .action(async (id, opts) => {
+    const removed = await unpinClaim(opts.dir, id);
+    if (opts.json) console.log(JSON.stringify(removed, null, 2));
+    else console.log(`removed ${removed.path}`);
   });
 
 program
@@ -257,6 +290,19 @@ program
       `\nDone. Your agent now pins assertions to files and checks tickets before editing.\n` +
         `Tickets: diedinchat pin / status / check. Lab: diedinchat measure. MCP: diedinchat mcp.`
     );
+  });
+
+program
+  .command("install-hook")
+  .description("Install an optional Git hook that runs diedinchat check. Repeat --hook to install both supported hooks.")
+  .option("--hook <name>", "pre-commit or post-merge (repeatable)", collect, [])
+  .option("--dir <path>", "project root", process.cwd())
+  .action(async (opts) => {
+    const hooks = (opts.hook.length > 0 ? opts.hook : ["post-merge"]) as SupportedHook[];
+    for (const hook of hooks) {
+      const result = await installCheckHook(opts.dir, hook);
+      console.log(`${result.action.padEnd(8)} ${result.path}`);
+    }
   });
 
 program

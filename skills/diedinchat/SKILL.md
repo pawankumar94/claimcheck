@@ -51,6 +51,9 @@ removes arithmetic.
 diedinchat pin --text "Auth only through middleware." --file src/middleware.ts
 diedinchat status src/middleware.ts
 diedinchat check auth-only-through-middleware
+diedinchat close auth-only-through-middleware
+diedinchat status --all
+diedinchat unpin auth-only-through-middleware
 ```
 
 MCP: `pin_claim`, `list_claims_for_file`, `check_claim`.

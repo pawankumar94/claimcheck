@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { join, relative, resolve, sep } from "node:path";
 import { scoreOne } from "./scorer.js";
 import type { AcceptanceCriterion, ClaimStatus, FileClaim } from "../types.js";
@@ -122,7 +122,8 @@ export async function evaluateClaim(root: string, claim: FileClaim): Promise<Cla
   }
 
   let status: ClaimStatus;
-  if (changed.size > 0) status = "stale";
+  if (claim.closed_at) status = "closed";
+  else if (changed.size > 0) status = "stale";
   else if (claim.evidence.length === 0) status = "open";
   else if (evidenceVerdict === "PASS") status = "supported";
   else status = "contradicted";
@@ -216,9 +217,10 @@ export async function refreshClaim(root: string, claim: FileClaim): Promise<Clai
   return evaluation;
 }
 
-export async function statusClaims(root: string, pathFilter?: string): Promise<ClaimEvaluation[]> {
+export async function statusClaims(root: string, pathFilter?: string, includeClosed = false): Promise<ClaimEvaluation[]> {
   const claims = await listClaims(root);
-  const filtered = pathFilter ? claims.filter((c) => ticketCoversPath(c, pathFilter)) : claims;
+  const visible = includeClosed ? claims : claims.filter((claim) => !claim.closed_at);
+  const filtered = pathFilter ? visible.filter((c) => ticketCoversPath(c, pathFilter)) : visible;
   const out: ClaimEvaluation[] = [];
   for (const claim of filtered) out.push(await refreshClaim(root, claim));
   return out;
@@ -227,4 +229,20 @@ export async function statusClaims(root: string, pathFilter?: string): Promise<C
 export async function checkClaim(root: string, id: string): Promise<ClaimEvaluation> {
   const claim = await loadClaim(root, id);
   return refreshClaim(root, claim);
+}
+
+export async function closeClaim(root: string, id: string): Promise<ClaimEvaluation> {
+  const claim = await loadClaim(root, id);
+  if (claim.closed_at) return evaluateClaim(root, claim);
+  const now = new Date().toISOString();
+  const closed: FileClaim = { ...claim, status: "closed", closed_at: now, updated_at: now };
+  await saveClaim(root, closed);
+  return evaluateClaim(root, closed);
+}
+
+export async function unpinClaim(root: string, id: string): Promise<{ id: string; path: string }> {
+  const path = claimPath(root, id);
+  await loadClaim(root, id);
+  await rm(path);
+  return { id, path };
 }

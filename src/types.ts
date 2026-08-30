@@ -186,7 +186,7 @@ export interface ScoredRecord extends RawRecord {
   missing_keywords: string[] | null;
 }
 
-export type ClaimStatus = "open" | "supported" | "contradicted" | "stale";
+export type ClaimStatus = "open" | "supported" | "contradicted" | "stale" | "closed";
 
 /**
  * An assertion pinned to paths in this repo. Lives in `.diedinchat/<id>.json` so
@@ -203,6 +203,8 @@ export interface FileClaim {
   /** sha256 of each file under `files` at pin time. Directory paths expand. */
   hashes: Record<string, string>;
   agent?: string;
+  /** Closed tickets remain auditable on disk but are hidden from default status. */
+  closed_at?: string;
   created_at: string;
   updated_at: string;
 }

@@ -37,8 +37,11 @@ export {
   loadClaim,
   statusClaims,
   checkClaim,
+  closeClaim,
+  unpinClaim,
   evaluateClaim,
   makeClaimId,
   ticketCoversPath,
 } from "./core/claims.js";
+export { installCheckHook, type SupportedHook } from "./core/hooks.js";
 export { importBfcl, importBfclFromFiles } from "./core/import-bfcl.js";

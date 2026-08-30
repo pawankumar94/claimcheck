@@ -4,10 +4,12 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   checkClaim,
+  closeClaim,
   makeClaimId,
   pinClaim,
   statusClaims,
   ticketCoversPath,
+  unpinClaim,
 } from "../src/core/claims.js";
 import type { FileClaim } from "../src/types.js";
 
@@ -180,5 +182,35 @@ describe("check / contradicted", () => {
       files: ["src/routes"],
     });
     expect(claim.status).toBe("open");
+  });
+});
+
+describe("close and unpin", () => {
+  it("hides closed tickets by default and includes them with --all semantics", async () => {
+    await pinClaim({ root, text: "Auth only through middleware.", files: ["src/middleware.ts"], id: "auth" });
+    const closed = await closeClaim(root, "auth");
+    expect(closed.status).toBe("closed");
+    expect(closed.claim.closed_at).toBeTruthy();
+    expect(await statusClaims(root)).toEqual([]);
+    const all = await statusClaims(root, undefined, true);
+    expect(all).toHaveLength(1);
+    expect(all[0]!.status).toBe("closed");
+  });
+
+  it("re-pinning a closed id reopens it", async () => {
+    await pinClaim({ root, text: "old", files: ["src/middleware.ts"], id: "auth" });
+    await closeClaim(root, "auth");
+    const { claim } = await pinClaim({ root, text: "new", files: ["src/middleware.ts"], id: "auth" });
+    expect(claim.status).toBe("open");
+    expect(claim.closed_at).toBeUndefined();
+    expect(await statusClaims(root)).toHaveLength(1);
+  });
+
+  it("unpins exactly one ticket and refuses unknown ids", async () => {
+    await pinClaim({ root, text: "one", files: ["src/middleware.ts"], id: "one" });
+    await pinClaim({ root, text: "two", files: ["src/routes"], id: "two" });
+    await unpinClaim(root, "one");
+    expect((await statusClaims(root)).map((entry) => entry.claim.id)).toEqual(["two"]);
+    await expect(unpinClaim(root, "missing")).rejects.toThrow(/No claim/);
   });
 });

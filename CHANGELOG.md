@@ -3,6 +3,17 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.12.0 — 2026-08-30
+
+### Added
+
+- **`diedinchat-mcp` binary.** npm-published MCP servers are expected to speak
+  the protocol when run with no arguments. Ours is a CLI whose default command
+  is `status`, so a host that deployed the npm package got a ticket listing on
+  stdout and a server that never spoke MCP at all. `diedinchat-mcp` starts the
+  server and does nothing else; `diedinchat mcp` still works for anyone invoking
+  it explicitly.
+
 ## 0.11.1 — 2026-08-30
 
 ### Changed

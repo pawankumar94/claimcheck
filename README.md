@@ -136,8 +136,20 @@ Set it: an MCP client starts the server in its own working directory rather than
 your repo, and without it every lookup comes back empty.
 
 Five tools: `list_claims_for_file` (call it before editing), `pin_claim`,
-`check_claim`, `close_claim`, `unpin_claim`. Running `diedinchat mcp` directly
-does the same thing and takes the root from wherever you launch it.
+`check_claim`, `close_claim`, `unpin_claim`.
+
+Configuring a client by hand instead? Point it at the dedicated MCP binary and
+set the root, since the client's working directory will not be your repo:
+
+```json
+{
+  "command": "npx",
+  "args": ["-y", "diedinchat", "diedinchat-mcp"],
+  "env": { "DIEDINCHAT_ROOT": "/absolute/path/to/your/repo" }
+}
+```
+
+`diedinchat mcp` does the same thing and takes the root from wherever you launch it.
 
 ## How it works
 

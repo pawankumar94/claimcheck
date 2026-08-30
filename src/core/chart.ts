@@ -5,18 +5,29 @@ import { analyze, type PolicyComparison } from "./analysis.js";
 /**
  * Dependency-free SVG charts, sized for GitHub markdown.
  *
- * Colours come from CSS variables with literal fallbacks so the charts stay
- * legible in both GitHub themes; GitHub strips <style> from markdown-embedded
- * SVG, so every fill is also set as an attribute rather than relying on CSS.
+ * GitHub strips <style> from markdown-embedded SVG and renders it via <img>,
+ * which makes the file an isolated document -- so `currentColor` resolves to
+ * black and every colour has to be a literal presentation attribute.
+ *
+ * An earlier palette solved that by painting a cream card behind near-black
+ * text. That is legible but it renders as a bright block on GitHub's dark
+ * theme. These values are contrast-measured against both #ffffff and #0d1117
+ * instead, so the background can stay transparent and the chart sits on
+ * whichever ground the reader is using.
  */
 
-const PAPER = "#F7F5EE";
-const INK = "#171713";
-const MUTED = "#625F57";
-const GRID = "#D8D4C8";
-const CANDIDATE = "#9BD627";
-const BASELINE = "#746C83";
-const ZERO = "#D34E3F";
+/** Transparent: the page supplies the background, in either theme. */
+const PAPER = "none";
+/** 4.55 on white, 4.16 on #0d1117. */
+const INK = "#6e7781";
+const MUTED = "#6e7781";
+/** Graphic separator, 3:1 on both. */
+const GRID = "#8c959f";
+/** Bars are graphics, so 3:1 is the bar; their value labels use INK. */
+const CANDIDATE = "#3fa06a";
+const BASELINE = "#7a7fd6";
+/** 4.35 on both -- the one hue carrying meaning. */
+const ZERO = "#d64550";
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -44,7 +55,7 @@ export function passRateChart(comparison: PolicyComparison): string {
 
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Pass rate by policy with 95% confidence interval on the difference">`,
-    `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="14" fill="${PAPER}" stroke="${GRID}"/>`,
+    `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="14" fill="${PAPER}"/>`,
     `<text x="${padL}" y="28" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="${INK}">${esc(comparison.agent)}: pass rate by policy</text>`,
   ];
 
@@ -64,9 +75,11 @@ export function passRateChart(comparison: PolicyComparison): string {
     parts.push(
       `<text x="${padL - 12}" y="${y + barH / 2 + 4}" font-family="system-ui,sans-serif" font-size="13" fill="${INK}" text-anchor="end">${esc(stat.policy)}</text>`,
       `<rect x="${padL}" y="${y}" width="${Math.max(2, x(stat.passRate) - padL)}" height="${barH}" fill="${color}" rx="3"/>`,
-      `<text x="${labelX}" y="${y + barH / 2 + 4}" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="${INK}"${
-        labelInside ? ' text-anchor="end"' : ""
-      }>${stat.passes}/${stat.n} (${stat.passRate.toFixed(0)}%)</text>`
+      // Ink on a filled bar is unreadable, so a label that has to sit inside one
+      // flips to white.
+      `<text x="${labelX}" y="${y + barH / 2 + 4}" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="${
+        labelInside ? "#ffffff" : INK
+      }"${labelInside ? ' text-anchor="end"' : ""}>${stat.passes}/${stat.n} (${stat.passRate.toFixed(0)}%)</text>`
     );
   });
 
@@ -108,7 +121,7 @@ export function perTaskChart(records: ScoredRecord[], comparison: PolicyComparis
 
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Per-task pass count by policy">`,
-    `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="14" fill="${PAPER}" stroke="${GRID}"/>`,
+    `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="14" fill="${PAPER}"/>`,
     `<text x="12" y="26" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="${INK}">Pass count per task (out of trials run)</text>`,
   ];
 

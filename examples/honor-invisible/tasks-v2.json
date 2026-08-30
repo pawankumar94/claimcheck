@@ -30,7 +30,8 @@
         ]
       },
       "verified": true,
-      "note": "Nothing in src/config.ts says it is generated. An unaided agent edits it directly, which the next build overwrites."
+      "note": "Nothing in src/config.ts says it is generated. An unaided agent edits it directly, which the next build overwrites.",
+      "label": "Don't edit the generated file"
     },
     {
       "id": "i2-banned-dependency",
@@ -56,7 +57,8 @@
         ]
       },
       "verified": true,
-      "note": "lodash is a real dependency and src/legacy/report.ts imports it, so the repository demonstrates the opposite of the rule. Only a ticket can say new code must not use it. PRE-RUN PROBE (2026-08-30, before any scored run): the unaided agent wrote plain TypeScript here and did not reach for lodash, so this task does not discriminate. It is kept deliberately rather than dropped -- a fixture where every task is rigged to fail unaided is less credible than one that shows where a ticket is not needed. Expect it to score HONORED in both arms and to dilute the overall effect; read the per-task split. DECLARED NEGATIVE CONTROL for this run: expected to score the same in both arms."
+      "note": "lodash is a real dependency and src/legacy/report.ts imports it, so the repository demonstrates the opposite of the rule. Only a ticket can say new code must not use it. PRE-RUN PROBE (2026-08-30, before any scored run): the unaided agent wrote plain TypeScript here and did not reach for lodash, so this task does not discriminate. It is kept deliberately rather than dropped -- a fixture where every task is rigged to fail unaided is less credible than one that shows where a ticket is not needed. Expect it to score HONORED in both arms and to dilute the overall effect; read the per-task split. DECLARED NEGATIVE CONTROL for this run: expected to score the same in both arms.",
+      "label": "Don't use the banned library"
     },
     {
       "id": "i3-misleading-units",
@@ -89,7 +91,8 @@
         ]
       },
       "verified": true,
-      "note": "getPrice returns integer cents behind a bare `number` type and nothing in the file says so. The violation is converting to a decimal currency amount (dividing by 100, toFixed, parseFloat). Math.round(cents * 0.9) is CORRECT and must pass -- v1's key wrongly flagged it, which biased that run against the intervention."
+      "note": "getPrice returns integer cents behind a bare `number` type and nothing in the file says so. The violation is converting to a decimal currency amount (dividing by 100, toFixed, parseFloat). Math.round(cents * 0.9) is CORRECT and must pass -- v1's key wrongly flagged it, which biased that run against the intervention.",
+      "label": "Prices are integer cents"
     }
   ]
 }

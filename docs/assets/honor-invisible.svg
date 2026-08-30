@@ -1,28 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" width="720" height="300" role="img" aria-label="Pass rate by policy with 95% confidence interval on the difference">
-<rect x="1" y="1" width="718" height="298" rx="14" fill="#F7F5EE" stroke="#D8D4C8"/>
-<text x="130" y="28" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="#171713">claude-vertex-honor-rate: pass rate by policy</text>
-<line x1="130" y1="52" x2="130" y2="180" stroke="#D8D4C8" stroke-width="1"/>
-<text x="130" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">0%</text>
-<line x1="267.5" y1="52" x2="267.5" y2="180" stroke="#D8D4C8" stroke-width="1"/>
-<text x="267.5" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">25%</text>
-<line x1="405" y1="52" x2="405" y2="180" stroke="#D8D4C8" stroke-width="1"/>
-<text x="405" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">50%</text>
-<line x1="542.5" y1="52" x2="542.5" y2="180" stroke="#D8D4C8" stroke-width="1"/>
-<text x="542.5" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">75%</text>
-<line x1="680" y1="52" x2="680" y2="180" stroke="#D8D4C8" stroke-width="1"/>
-<text x="680" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#625F57" text-anchor="middle">100%</text>
-<text x="118" y="83" font-family="system-ui,sans-serif" font-size="13" fill="#171713" text-anchor="end">with-tickets</text>
-<rect x="130" y="60" width="513.3333333333333" height="38" fill="#9BD627" rx="3"/>
-<text x="635.3333333333333" y="83" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#171713" text-anchor="end">28/30 (93%)</text>
-<text x="118" y="143" font-family="system-ui,sans-serif" font-size="13" fill="#171713" text-anchor="end">no-tickets</text>
-<rect x="130" y="120" width="183.33333333333337" height="38" fill="#746C83" rx="3"/>
-<text x="321.33333333333337" y="143" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#171713">10/30 (33%)</text>
-<text x="118" y="229" font-family="system-ui,sans-serif" font-size="13" fill="#171713" text-anchor="end">difference</text>
-<line x1="401.38729053744356" y1="224" x2="651.2597682860858" y2="224" stroke="#171713" stroke-width="3"/>
-<line x1="401.38729053744356" y1="217" x2="401.38729053744356" y2="231" stroke="#171713" stroke-width="3"/>
-<line x1="651.2597682860858" y1="217" x2="651.2597682860858" y2="231" stroke="#171713" stroke-width="3"/>
-<circle cx="550.5882352941176" cy="224" r="5" fill="#9BD627"/>
-<line x1="162.35294117647058" y1="204" x2="162.35294117647058" y2="244" stroke="#D34E3F" stroke-width="1.5" stroke-dasharray="4 3"/>
-<text x="162.35294117647058" y="258" font-family="system-ui,sans-serif" font-size="11" fill="#D34E3F" text-anchor="middle">no difference</text>
-<text x="130" y="290" font-family="system-ui,sans-serif" font-size="12" fill="#171713">+60 pts (95% CI 37 to 76) - excludes zero</text>
+<rect x="1" y="1" width="718" height="298" rx="14" fill="none"/>
+<text x="130" y="28" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="#6e7781">claude-vertex-honor-rate: pass rate by policy</text>
+<line x1="130" y1="52" x2="130" y2="180" stroke="#8c959f" stroke-width="1"/>
+<text x="130" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#6e7781" text-anchor="middle">0%</text>
+<line x1="267.5" y1="52" x2="267.5" y2="180" stroke="#8c959f" stroke-width="1"/>
+<text x="267.5" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#6e7781" text-anchor="middle">25%</text>
+<line x1="405" y1="52" x2="405" y2="180" stroke="#8c959f" stroke-width="1"/>
+<text x="405" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#6e7781" text-anchor="middle">50%</text>
+<line x1="542.5" y1="52" x2="542.5" y2="180" stroke="#8c959f" stroke-width="1"/>
+<text x="542.5" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#6e7781" text-anchor="middle">75%</text>
+<line x1="680" y1="52" x2="680" y2="180" stroke="#8c959f" stroke-width="1"/>
+<text x="680" y="196" font-family="system-ui,sans-serif" font-size="11" fill="#6e7781" text-anchor="middle">100%</text>
+<text x="118" y="83" font-family="system-ui,sans-serif" font-size="13" fill="#6e7781" text-anchor="end">with-tickets</text>
+<rect x="130" y="60" width="495" height="38" fill="#3fa06a" rx="3"/>
+<text x="617" y="83" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#ffffff" text-anchor="end">18/20 (90%)</text>
+<text x="118" y="143" font-family="system-ui,sans-serif" font-size="13" fill="#6e7781" text-anchor="end">no-tickets</text>
+<rect x="130" y="120" width="2" height="38" fill="#7a7fd6" rx="3"/>
+<text x="138" y="143" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#6e7781">0/20 (0%)</text>
+<text x="118" y="229" font-family="system-ui,sans-serif" font-size="13" fill="#6e7781" text-anchor="end">difference</text>
+<line x1="496.89147673738614" y1="224" x2="672.6323327864235" y2="224" stroke="#6e7781" stroke-width="3"/>
+<line x1="496.89147673738614" y1="217" x2="496.89147673738614" y2="231" stroke="#6e7781" stroke-width="3"/>
+<line x1="672.6323327864235" y1="217" x2="672.6323327864235" y2="231" stroke="#6e7781" stroke-width="3"/>
+<circle cx="627.6190476190477" cy="224" r="5" fill="#3fa06a"/>
+<line x1="156.1904761904762" y1="204" x2="156.1904761904762" y2="244" stroke="#d64550" stroke-width="1.5" stroke-dasharray="4 3"/>
+<text x="156.1904761904762" y="258" font-family="system-ui,sans-serif" font-size="11" fill="#d64550" text-anchor="middle">no difference</text>
+<text x="130" y="290" font-family="system-ui,sans-serif" font-size="12" fill="#6e7781">+90 pts (95% CI 65 to 99) - excludes zero</text>
 </svg>

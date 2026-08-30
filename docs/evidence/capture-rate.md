@@ -6,7 +6,7 @@ nothing downstream matters.
 
 ## Result
 
-Claude Sonnet 4.6 via Vertex, two tasks, three trials per arm, 12 invocations,
+Claude Code (claude-sonnet-4-6), two tasks, three trials per arm, 12 invocations,
 zero harness errors.
 
 | Arm | Constraint pinned |
@@ -75,8 +75,8 @@ evidence.
 
 ## Frozen design
 
-- Agent: Claude Sonnet 4.6 via Vertex AI (`claude-sonnet-5` returns 429 on this
-  project, which is why the model is pinned in the profile)
+- Agent: Claude Code, model `claude-sonnet-4-6`, pinned in the profile rather than
+  left to the CLI default
 - Arms differ only in whether the fixture carries the installed `AGENTS.md`
   block. Identical prompts, identical flags, fresh workspace per invocation.
 - Scored on the **ticket store**, never on prose. An agent replying "noted, I'll

@@ -6,7 +6,7 @@ pinned it got them right 18 times out of 20.
 
 ## Result
 
-Claude Sonnet 4.6 via Vertex AI, 3 tasks x 2 arms x 10 trials, 60 invocations,
+Claude Code (claude-sonnet-4-6), 3 tasks x 2 arms x 10 trials, 60 invocations,
 zero harness errors, $2.13 total.
 
 ### Primary comparison — pre-registered
@@ -26,7 +26,7 @@ The two constraints a probe showed an unaided agent gets wrong.
 
 ### Negative control — pre-registered
 
-`i2` is a constraint the agent already handles correctly unaided. Tickets should
+the banned-library rule is a constraint the agent already handles correctly unaided. Tickets should
 change nothing here, and a difference would suggest the intervention perturbs
 work it has no business touching.
 
@@ -49,12 +49,12 @@ alone.
 
 | Task | no ticket | ticket pinned |
 |---|---|---|
-| `i1-generated-config` | **0/10** | 9/10 |
-| `i3-misleading-units` | **0/10** | 9/10 |
-| `i2-banned-dependency` (control) | 10/10 | 10/10 |
+| **Don't edit the generated file** | **0/10** | 9/10 |
+| **Prices are integer cents** | **0/10** | 9/10 |
+| **Don't use the banned library** (control) | 10/10 | 10/10 |
 
 <p align="center">
-  <img src="../assets/honor-invisible-by-task.svg" width="720" alt="Per-task honored counts for the two conditions across ten trials">
+  <img src="../assets/what-the-agent-wrote.svg" width="100%" alt="For three rules, what the agent wrote with and without a pinned ticket, one dot per trial over ten trials each">
 </p>
 
 The effect is not carried by one dominating task. Both discriminating
@@ -77,13 +77,13 @@ on all 10 of the pricing trials.
 Written into [`tasks-v2.json`](../../examples/honor-invisible/tasks-v2.json)
 before this run:
 
-- Primary comparison is `i1` + `i3`.
-- `i2` is a negative control, expected to show no effect.
+- Primary comparison is the two rules an unaided agent breaks.
+- the banned-library rule is a negative control, expected to show no effect.
 - All three figures must be reported, not only the favourable one.
 
 ## Why this is v2
 
-An earlier run used the same fixture with a defective key: `i3`'s pattern
+An earlier run used the same fixture with a defective key: the integer-cents pattern
 flagged `Math.round(getPrice(sku) * 0.9)`, which is correct — multiplying
 integer cents by 0.9 and rounding yields integer cents.
 
@@ -100,10 +100,10 @@ every unaided run a violation.
 Both are with a ticket present, and both are honest misses rather than scoring
 artifacts:
 
-- `i1` trial 0 — the agent edited the generated file without consulting the
+- the generated-file rule, trial 0 — the agent edited the generated file without consulting the
   ticket. A retrieval miss: it did not look. This is the behavioural tier
   failing, and the reason `install-hook` exists.
-- `i3` trial 1 — converted to a decimal currency amount despite the pinned rule.
+- the integer-cents rule, trial 1 — converted to a decimal currency amount despite the pinned rule.
 
 At 90%, roughly one in ten invocations still misses. A ticket is not a
 guarantee; the git hook is the path that does not depend on the agent choosing
@@ -127,7 +127,7 @@ fifty tickets costs, which is M3 and has not been run.
 
 ## Limits
 
-- **One agent, one model.** Everything here is Claude Sonnet 4.6 on Vertex.
+- **One agent, one model.** Everything here is Claude Code (claude-sonnet-4-6).
   Copilot, Gemini, Cursor and cheaper tiers are untested, and instruction
   following is exactly where they would be expected to differ.
 - **Three constraints in a synthetic fixture.** Real repositories have more

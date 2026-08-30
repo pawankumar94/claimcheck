@@ -1,5 +1,5 @@
 {
-  "agent": "claude-sonnet-4-6 via Vertex",
+  "agent": "Claude Code (claude-sonnet-4-6)",
   "date": "2026-08-30",
   "arms": [
     "no-tickets",

@@ -46,7 +46,7 @@ general effect from a single task the agent reliably gets wrong unaided.
 
 ## M1 — the same question, unprompted, on a reproducible fixture
 
-Run 2026-08-30, Claude Sonnet 4.6 via Vertex, three arms over one task set and
+Run 2026-08-30, Claude Code (claude-sonnet-4-6), three arms over one task set and
 one scorer, 27 invocations, zero harness errors.
 
 | Arm | Honored |

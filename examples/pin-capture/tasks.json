@@ -31,7 +31,8 @@
         ]
       },
       "verified": true,
-      "note": "The require clause needs both: the work done AND a ticket in the store. An agent that pins but ignores the request, or does the work and only acknowledges the rule in prose, both count as VIOLATED. The fixture ships no .diedinchat/, so any ticket present came from this run."
+      "note": "The require clause needs both: the work done AND a ticket in the store. An agent that pins but ignores the request, or does the work and only acknowledges the rule in prose, both count as VIOLATED. The fixture ships no .diedinchat/, so any ticket present came from this run.",
+      "label": "Rule mentioned in passing"
     },
     {
       "id": "m2-explicit-rule",
@@ -58,7 +59,8 @@
         ]
       },
       "verified": true,
-      "note": "\"Remember this rule\" is the strongest possible signal short of naming the tool. If an installed agent does not pin here, it will not pin anywhere. The timeout criterion uses the stem form `timeout*`: an earlier draft said `timeout`, and word-boundary matching rejected a ticket whose text said \"timeouts\". Caught by the pre-run probe, before any scored run -- see scorer.ts on why the stem form exists."
+      "note": "\"Remember this rule\" is the strongest possible signal short of naming the tool. If an installed agent does not pin here, it will not pin anywhere. The timeout criterion uses the stem form `timeout*`: an earlier draft said `timeout`, and word-boundary matching rejected a ticket whose text said \"timeouts\". Caught by the pre-run probe, before any scored run -- see scorer.ts on why the stem form exists.",
+      "label": "Rule stated explicitly"
     }
   ]
 }

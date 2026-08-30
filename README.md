@@ -195,35 +195,32 @@ per client is in [docs/integrations.md](docs/integrations.md).
 
 ## Does it actually work?
 
-Four experiments, 117 agent invocations, every raw record committed. Two results
-exclude zero; two deliberately do not.
+Four experiments with Claude Code, 117 invocations, every raw record committed.
+Two results exclude zero; two deliberately do not.
 
 <p align="center">
-  <img src="docs/assets/evidence-summary.svg" width="100%" alt="Forest plot of four experiments: honor on constraints the code cannot express +90 points, capture +100, negative control +0, honor on inferable constraints +0, each with a 95 percent interval">
+  <img src="docs/assets/what-the-agent-wrote.svg" width="100%" alt="For three rules, what Claude Code wrote with and without a pinned ticket, one dot per trial over ten trials each">
 </p>
 
-**Yes — on constraints your code cannot express.** Claude Sonnet 4.6, three
-constraints an agent cannot infer, 60 invocations, zero harness errors:
+Same repository, same request, same agent. The only difference is whether the
+rule was pinned. Without a ticket the agent edited a generated file that the
+next build discards — **on all ten trials** — and treated a cents value as
+decimal currency on all ten of the pricing trials. With the rule pinned, it did
+neither.
 
-| | Constraint honored |
-|---|---|
-| ticket pinned | **18/20 (90%)** |
-| no ticket | **0/20 (0%)** |
+**18/20 versus 0/20. +90 points, 95% interval +65 to +99.**
 
-**+90 points, 95% interval +65 to +99.** Unaided, the agent edited a generated
-file on every single trial — a change the next build silently discards — and
-converted a cents value to decimal currency on every pricing trial. With the
-constraint pinned, it stopped.
+The third row is a control chosen before the run: a rule the agent already
+follows unaided. It scored 10/10 in **both** arms, +0 points, interval −22 to
++22. Tickets moved the two things that were broken and left the working one
+alone — which is what separates this from a fixture rigged to flatter the tool.
 
-<p align="center">
-  <img src="docs/assets/honor-invisible.svg" width="720" alt="Constraints honored in 18 of 20 runs with a ticket pinned and 0 of 20 without; the 95 percent interval on the difference excludes zero">
-</p>
-
-**And a negative control, specified before the run.** A third constraint the
-agent already gets right unaided scored 10/10 in *both* arms — +0 points,
-interval −22 to +22. Tickets moved the two things that were broken and left the
-working one alone. Full design, both remaining failures, and all 60 raw records:
+Full design, both remaining failures, and all 60 raw records:
 [docs/evidence/honor-invisible.md](docs/evidence/honor-invisible.md).
+
+<p align="center">
+  <img src="docs/assets/evidence-summary.svg" width="100%" alt="Forest plot of four experiments with 95 percent intervals: honor on constraints the code cannot express +90, capture +100, negative control +0, honor on inferable constraints +0">
+</p>
 
 **What it costs.** Tickets are not free: across the same 60 invocations, having
 them in the workspace raised mean cost per invocation from **$0.026 to $0.045
@@ -232,9 +229,9 @@ runs `status`, and that is real spend. On these short tasks the overhead is a
 large fraction of a small number; on longer work it amortises. Measure it on
 your own repo before pinning hundreds.
 
-**Agents also write the tickets themselves.** With the convention installed,
-constraints stated in passing were pinned 6/6; without it, 0/6. +100 points,
-interval +43 to +107. [docs/evidence/capture-rate.md](docs/evidence/capture-rate.md).
+**Agents also write the tickets themselves.** With the convention installed, a
+rule mentioned in passing was pinned 6/6; without it, 0/6. +100 points, interval
++43 to +107. [docs/evidence/capture-rate.md](docs/evidence/capture-rate.md).
 
 ### What to pin
 
@@ -271,8 +268,8 @@ Known gaps, in the order they will bite you:
   can create tickets it can't retire.
 - **A ticket is not a guarantee.** At 90%, roughly one invocation in ten still
   misses. `install-hook` is the path that does not depend on the agent looking.
-- **One agent, one model.** Everything measured so far is Claude Sonnet 4.6.
-  Copilot, Gemini and cheaper tiers are untested.
+- **One agent, one model.** Everything measured so far is Claude Code on
+  `claude-sonnet-4-6`. Copilot, Cursor, Gemini and cheaper tiers are untested.
 
 ## Documentation
 

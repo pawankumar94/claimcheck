@@ -44,6 +44,12 @@ export interface Task {
    * `metrics.workspace_text`. Required for honor scoring: what the agent
    * *wrote to the files* is the evidence, not what it said in chat.
    */
+  /**
+   * Human-readable name for reports and charts. Task ids are stable slugs meant
+   * for filenames and joins; a reader of a chart should see the rule, not
+   * `i1-generated-config`.
+   */
+  label?: string;
   inspect?: string[];
   /**
    * Append the repo's ticket store to `metrics.workspace_text` after the run.

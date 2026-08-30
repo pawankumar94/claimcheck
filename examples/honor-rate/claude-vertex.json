@@ -1,6 +1,6 @@
 {
-  "name": "claude-vertex-honor-rate",
-  "description": "Claude Code via Vertex AI for the honor-rate edit experiment. Write access lives in extraArgs so every arm is invoked identically -- the only thing that differs between conditions is what the seeded workspace contains.",
+  "name": "claude-code",
+  "description": "Claude Code for the ticket experiments. Routed through Vertex AI in our runs, which is deployment configuration rather than a different agent -- swap the environment variables and the same profile drives a first-party install.",
   "command": "claude",
   "baseArgs": [
     "--bare",

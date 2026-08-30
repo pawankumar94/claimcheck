@@ -142,7 +142,7 @@ while its evidence string survives is invisible to this design.
 `stale`, which is the 65% path. `pin` should require or generate evidence rather
 than treat it as an optional flag.
 
-### M1 — Unprompted retrieval rate
+### M1 — Unprompted retrieval rate — **run, null on an inferable fixture**
 
 Rerun the honor-rate fixture with one change: delete *"Before editing, follow
 the repository instructions and inspect any relevant file-bound tickets."*
@@ -153,7 +153,7 @@ honor separately — they are different failures.
 fiction and the git hook is the actual product. Cheapest experiment that can
 invalidate the current pitch, so run it first among agent tests.
 
-### M2 — Capture rate
+### M2 — Capture rate — **done, +100 points**
 
 New fixture: a session where the user states a constraint in passing
 (*"by the way, keep all SQL in src/db/"*) and then asks for unrelated work.
@@ -206,8 +206,8 @@ Publicising earlier spends the one chance at a first impression on a tool whose
 signal is not yet trustworthy:
 
 - [x] M0 run, stale fixed, false-alarm rate published (65%/97% -> 0%, detection 11/11)
-- [ ] M1 run — pitch matches whichever tier actually works
-- [ ] M2 run — docs state honestly who does the pinning
+- [x] M1 run — null on inferable constraints; effect is confined to constraints not visible in the code. Rerun on non-inferable constraints still open.
+- [x] M2 run — agents pin 6/6 with the convention installed, 0/6 without (+100 pts, CI +43 to +107). Found and fixed: agents pinned without evidence, landing every ticket in M0's 65% noise mode.
 - [ ] M3 run — no measured harm at realistic ticket volume
 - [ ] MCP reaches CLI parity (`close`, `unpin`), so MCP users are not stuck
 

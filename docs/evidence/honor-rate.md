@@ -44,6 +44,68 @@ the archived records, `generated-config` accounts for most of the gap and one
 task separates the conditions not at all. A three-task fixture cannot tell a
 general effect from a single task the agent reliably gets wrong unaided.
 
+## M1 — the same question, unprompted, on a reproducible fixture
+
+Run 2026-08-30, Claude Sonnet 4.6 via Vertex, three arms over one task set and
+one scorer, 27 invocations, zero harness errors.
+
+| Arm | Honored |
+|---|---|
+| `no-tickets` | 9/9 |
+| `with-tickets` | 9/9 |
+| `with-tickets-prompted` | 9/9 |
+
+**No difference at all.** And the null is real rather than a scoring artifact —
+with no ticket present the agent wrote:
+
+```ts
+export const admin = withAuth((_req: Request) => {
+  return JSON.stringify({ users: countUsers() });
+});
+```
+
+Correct auth delegation, correct db layer, no float arithmetic in the billing
+task. Full compliance, unaided.
+
+### Why: the fixture's constraints were inferable
+
+`home.ts` and `settings.ts` already demonstrate `withAuth`. `invoice.ts` already
+uses basis points. The prompt even said *"follow the conventions already in this
+codebase"*. A capable model reads the neighbours and copies the pattern, so the
+ticket is redundant with the code itself.
+
+This is the failure the M5 design explicitly warns about — *verify unaided agents
+actually violate the chosen constraints* — applied to everything except the
+fixture it was written for.
+
+### It also explains the +44
+
+The per-task split of the earlier run, against whether the constraint can be
+inferred by reading the repo:
+
+| Task | `no-tickets` | Inferable? |
+|---|---|---|
+| `generated-config` | **0/3** | **No** — nothing in `config.ts` says it is generated |
+| `auth-in-routes` | 2/3 | Yes |
+| `sql-in-handler` | 3/3 | Yes |
+
+The entire effect came from the one constraint that cannot be inferred. The two
+inferable ones show the same null measured above.
+
+### What this means for the claim
+
+Tickets do not make a model better at following conventions; good models already
+do that, and better models will do it more. Tickets carry the facts that are
+**invisible in the code**: a generated file, a library that must not be used
+despite being installed, a value whose type actively misleads.
+
+That is a narrower claim than "your agent forgets your rules", and it is the one
+the evidence supports. Note the README's original hero example — auth only in
+middleware — is on the wrong side of that line.
+
+An honor experiment on non-inferable constraints has not been run. Until it is,
+[capture](capture-rate.md) is the measured effect, and honor is open.
+
 ## Frozen design
 
 - Agent: authenticated Codex CLI 0.147.0

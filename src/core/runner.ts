@@ -83,6 +83,23 @@ async function captureWorkspace(workDir: string, inspect: string[]): Promise<str
 }
 
 /**
+ * Reads the ticket store back after the run. Used by capture experiments,
+ * where the measured outcome is whether the agent wrote a ticket at all.
+ */
+async function captureTickets(workDir: string): Promise<string> {
+  const dir = join(workDir, ".diedinchat");
+  if (!existsSync(dir)) return "--- .diedinchat/ --- (no tickets)";
+  const { readdir } = await import("node:fs/promises");
+  const names = (await readdir(dir)).filter((f) => f.endsWith(".json")).sort();
+  if (names.length === 0) return "--- .diedinchat/ --- (no tickets)";
+  const parts: string[] = [];
+  for (const n of names) {
+    parts.push(`--- .diedinchat/${n} ---\n${await readFile(join(dir, n), "utf-8")}`);
+  }
+  return parts.join("\n");
+}
+
+/**
  * Runs every task x agent x policy x trial. Clones the pinned repo fresh per
  * invocation so state never leaks between runs (an agent with edit access
  * could otherwise mutate the checkout other trials see).
@@ -132,8 +149,15 @@ export async function runEvaluation(opts: RunOptions): Promise<RawRecord[]> {
                       result_text: result.resultText ?? "",
                       cost: result.cost ?? null,
                       session_id: result.sessionId ?? null,
-                      ...(task.inspect?.length
-                        ? { workspace_text: await captureWorkspace(workDir, task.inspect) }
+                      ...(task.inspect?.length || task.inspect_tickets
+                        ? {
+                            workspace_text: [
+                              task.inspect?.length ? await captureWorkspace(workDir, task.inspect) : "",
+                              task.inspect_tickets ? await captureTickets(workDir) : "",
+                            ]
+                              .filter(Boolean)
+                              .join("\n"),
+                          }
                         : {}),
                     },
                   }

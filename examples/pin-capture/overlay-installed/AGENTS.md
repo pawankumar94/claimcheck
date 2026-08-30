@@ -1,3 +1,4 @@
+<!-- diedinchat:start -->
 # diedinchat: file-bound tickets
 
 Use this whenever you assert something about files in this repo — a constraint,
@@ -71,3 +72,5 @@ MCP: `pin_claim`, `list_claims_for_file`, `check_claim`.
 Config A/B (`diedinchat measure`) is the lab for when the claim itself is
 “this setup is better.” Freeze keys, repeat trials, report the interval,
 never call “not distinguishable” a win. Underpowered is not equivalent.
+
+<!-- diedinchat:end -->

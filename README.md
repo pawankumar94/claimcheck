@@ -193,22 +193,43 @@ diedinchat install-hook --hook pre-commit
 That last one is the only path that holds no matter what the agent does. Setup
 per client is in [docs/integrations.md](docs/integrations.md).
 
-## Does it change what agents do?
+## Does it actually work?
 
-Early signal, honestly bounded: Codex CLI honored **9 of 9 edits with tickets
-present and 5 of 9 without** — a +44 point difference, 95% interval +2 to +70,
-excluding zero. Scored on the git diff of the workspace, not on what the agent
-said it did.
+**Yes for capture — the sentence gets written down.** Claude Sonnet 4.6, two
+tasks, three trials per arm, 12 invocations, zero harness errors:
 
-Two caveats you should have before citing that: those prompts told the agent to
-consult tickets, so it measures whether tickets change the edits of an agent
-*that looks*, not whether one looks unprompted. And the effect is concentrated —
-on one of the three constraints the agent got it right unaided either way.
-Design, raw records and limits: [docs/evidence/honor-rate.md](docs/evidence/honor-rate.md).
+| | Constraint pinned |
+|---|---|
+| convention installed | **6/6 (100%)** |
+| not installed | **0/6 (0%)** |
 
-A paired run on real repository issues is the next measurement, designed in
-[PLANNER.md](PLANNER.md). Until then, treat the argument above as the reason to
-try this, and that number as a mechanism check rather than a promise.
+**+100 points, 95% interval +43 to +107**, excluding zero. Scored on the ticket
+store, not on prose — an agent saying "noted, I'll remember" counts as a
+failure. Full design and limits: [docs/evidence/capture-rate.md](docs/evidence/capture-rate.md).
+
+That is the gap model capability does not close. However good the model gets,
+the sentence still leaves with the session.
+
+**And a limit worth knowing before you adopt this.** A separate run found that
+tickets made *no difference* to whether an agent obeyed constraints it could
+already infer from surrounding code — 9/9 in every arm, with and without.
+Modern models read the neighbouring files and copy the pattern.
+
+So pin what an agent **cannot** infer:
+
+| Worth pinning | Not worth pinning |
+|---|---|
+| "`config.ts` is generated — edit the schema" | "handlers use `withAuth`" (the other handlers show it) |
+| "don't use lodash, it's installed but banned" | "SQL lives in `src/db/`" (`src/db/` is right there) |
+| "this returns cents despite the `number` type" | anything the code already demonstrates |
+
+Details of that null: [docs/evidence/honor-rate.md](docs/evidence/honor-rate.md).
+
+**Third measured result:** `stale` used to fire on 65% of commits for a
+file-pinned ticket and 97% for a directory-pinned one — a signal that is always
+on. Frozen evidence now decides the outcome, taking that to 0% while still
+catching 11/11 injected breakages.
+[docs/evidence/stale-noise.md](docs/evidence/stale-noise.md).
 
 ## Status
 
@@ -224,7 +245,11 @@ Known gaps, in the order they will bite you:
   directory expansion ignores `.gitignore`.
 - **MCP lags the CLI**: `close` and `unpin` aren't exposed, so an MCP-only agent
   can create tickets it can't retire.
-- **No developer-value benchmark yet.** See above.
+- **Honor on non-inferable constraints is unmeasured.** Capture is measured;
+  whether a later session obeys a pinned constraint it could not have inferred
+  is the open question.
+- **One agent, one model.** Everything measured so far is Claude Sonnet 4.6.
+  Copilot, Gemini and cheaper tiers are untested.
 
 ## Documentation
 

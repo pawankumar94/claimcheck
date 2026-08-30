@@ -1,0 +1,168 @@
+{
+  "before_template_fix": [
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "installed",
+      "trial": 0,
+      "ok": true,
+      "latency_ms": 31888,
+      "cost": 0.044317199999999994,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/all-http-timeouts-live-in-src-config-schema-ts-a.json ---\n{\n  \"id\": \"all-http-timeouts-live-in-src-config-schema-ts-a\",\n  \"text\": \"All HTTP timeouts live in src/config.schema.ts and nowhere else.\",\n  \"files\": [\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [],\n  \"status\": \"open\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\"\n  },\n  \"created_at\": \"2026-08-30T11:21:20.769Z\",\n  \"updated_at\": \"2026-08-30T11:21:20.769Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "installed",
+      "trial": 1,
+      "ok": true,
+      "latency_ms": 35311,
+      "cost": 0.046733399999999994,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/all-http-timeouts-live-in-src-config-schema-ts-a.json ---\n{\n  \"id\": \"all-http-timeouts-live-in-src-config-schema-ts-a\",\n  \"text\": \"All HTTP timeouts live in src/config.schema.ts and nowhere else.\",\n  \"files\": [\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [],\n  \"status\": \"open\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\"\n  },\n  \"created_at\": \"2026-08-30T11:21:57.391Z\",\n  \"updated_at\": \"2026-08-30T11:21:57.391Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "installed",
+      "trial": 2,
+      "ok": true,
+      "latency_ms": 26369,
+      "cost": 0.0350043,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/all-http-timeouts-must-be-declared-in-src-config.json ---\n{\n  \"id\": \"all-http-timeouts-must-be-declared-in-src-config\",\n  \"text\": \"All HTTP timeouts must be declared in src/config.schema.ts and nowhere else. No other file may define or hard-code a timeout value.\",\n  \"files\": [\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [],\n  \"status\": \"open\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\"\n  },\n  \"created_at\": \"2026-08-30T11:22:27.798Z\",\n  \"updated_at\": \"2026-08-30T11:22:27.798Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "not-installed",
+      "trial": 0,
+      "ok": true,
+      "latency_ms": 19549,
+      "cost": 0.02326305,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/ --- (no tickets)"
+    },
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "not-installed",
+      "trial": 1,
+      "ok": true,
+      "latency_ms": 20722,
+      "cost": 0.02662875,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/ --- (no tickets)"
+    },
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "not-installed",
+      "trial": 2,
+      "ok": true,
+      "latency_ms": 34549,
+      "cost": 0.04315545,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/ --- (no tickets)"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "installed",
+      "trial": 0,
+      "ok": true,
+      "latency_ms": 37760,
+      "cost": 0.047392500000000004,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/src-config-ts-is-generated-from-src-config-schem.json ---\n{\n  \"id\": \"src-config-ts-is-generated-from-src-config-schem\",\n  \"text\": \"src/config.ts is generated from src/config.schema.ts on every build — never edit it directly. All changes must go through src/config.schema.ts.\",\n  \"files\": [\n    \"src/config.ts\",\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [],\n  \"status\": \"open\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\",\n    \"src/config.ts\": \"05860a878fea7b180e64d570c8e26f61a6483bce80dbde7dbecd58eb55806a90\"\n  },\n  \"created_at\": \"2026-08-30T11:19:39.788Z\",\n  \"updated_at\": \"2026-08-30T11:19:39.788Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "installed",
+      "trial": 1,
+      "ok": true,
+      "latency_ms": 43435,
+      "cost": 0.052098149999999996,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/src-config-ts-is-auto-generated-from-src-config-.json ---\n{\n  \"id\": \"src-config-ts-is-auto-generated-from-src-config-\",\n  \"text\": \"src/config.ts is auto-generated from src/config.schema.ts on every build. Never edit src/config.ts directly; edit src/config.schema.ts instead.\",\n  \"files\": [\n    \"src/config.ts\",\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [],\n  \"status\": \"open\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\",\n    \"src/config.ts\": \"05860a878fea7b180e64d570c8e26f61a6483bce80dbde7dbecd58eb55806a90\"\n  },\n  \"created_at\": \"2026-08-30T11:20:23.914Z\",\n  \"updated_at\": \"2026-08-30T11:20:23.914Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "installed",
+      "trial": 2,
+      "ok": true,
+      "latency_ms": 30427,
+      "cost": 0.0388668,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/src-config-ts-is-generated-from-src-config-schem.json ---\n{\n  \"id\": \"src-config-ts-is-generated-from-src-config-schem\",\n  \"text\": \"src/config.ts is generated from src/config.schema.ts on every build and must never be edited directly. Edit src/config.schema.ts instead.\",\n  \"files\": [\n    \"src/config.ts\",\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [],\n  \"status\": \"open\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\",\n    \"src/config.ts\": \"05860a878fea7b180e64d570c8e26f61a6483bce80dbde7dbecd58eb55806a90\"\n  },\n  \"created_at\": \"2026-08-30T11:20:58.059Z\",\n  \"updated_at\": \"2026-08-30T11:20:58.059Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "not-installed",
+      "trial": 0,
+      "ok": true,
+      "latency_ms": 23443,
+      "cost": 0.0301182,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/ --- (no tickets)"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "not-installed",
+      "trial": 1,
+      "ok": true,
+      "latency_ms": 14493,
+      "cost": 0.01776465,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/ --- (no tickets)"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "not-installed",
+      "trial": 2,
+      "ok": true,
+      "latency_ms": 15732,
+      "cost": 0.01897725,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/ --- (no tickets)"
+    }
+  ],
+  "after_template_fix": [
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "installed",
+      "trial": 0,
+      "ok": true,
+      "latency_ms": 39819,
+      "cost": 0.04550325000000001,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/all-http-timeouts-live-in-src-config-schema-ts-a.json ---\n{\n  \"id\": \"all-http-timeouts-live-in-src-config-schema-ts-a\",\n  \"text\": \"All HTTP timeouts live in src/config.schema.ts and nowhere else.\",\n  \"files\": [\n    \"src/config.schema.ts\",\n    \"src/routes/home.ts\",\n    \"src/routes/status.ts\",\n    \"src/server.ts\",\n    \"src/config.ts\"\n  ],\n  \"evidence\": [\n    \"timeoutMs\"\n  ],\n  \"status\": \"supported\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\",\n    \"src/config.ts\": \"05860a878fea7b180e64d570c8e26f61a6483bce80dbde7dbecd58eb55806a90\",\n    \"src/routes/home.ts\": \"aae6152a317f1f2f5103d32d19b2dc16f69caafdaab6aaaa16d7b0378be96a17\",\n    \"src/routes/status.ts\": \"44117bc9075396a646e74fe16dd394c5e5c0ddd1c5031fe5446edba3cda664e4\",\n    \"src/server.ts\": \"a40f1d319c11d0e7f73d410531c555ecfaa2935373737acac97b1035adc12a1b\"\n  },\n  \"created_at\": \"2026-08-30T11:26:32.031Z\",\n  \"updated_at\": \"2026-08-30T11:26:32.031Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "installed",
+      "trial": 1,
+      "ok": true,
+      "latency_ms": 30704,
+      "cost": 0.0408312,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/all-http-timeouts-live-in-src-config-schema-ts-a.json ---\n{\n  \"id\": \"all-http-timeouts-live-in-src-config-schema-ts-a\",\n  \"text\": \"All HTTP timeouts live in src/config.schema.ts and nowhere else.\",\n  \"files\": [\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [\n    \"timeoutMs\"\n  ],\n  \"status\": \"supported\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\"\n  },\n  \"created_at\": \"2026-08-30T11:27:06.510Z\",\n  \"updated_at\": \"2026-08-30T11:27:06.510Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-explicit-rule",
+      "policy": "installed",
+      "trial": 2,
+      "ok": true,
+      "latency_ms": 32861,
+      "cost": 0.04262415,
+      "workspace_text": "--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- src/routes/status.ts ---\nexport const status = () => \"up\";\n\n--- .diedinchat/all-http-timeouts-live-in-src-config-schema-ts-a.json ---\n{\n  \"id\": \"all-http-timeouts-live-in-src-config-schema-ts-a\",\n  \"text\": \"All HTTP timeouts live in src/config.schema.ts and nowhere else.\",\n  \"files\": [\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [\n    \"timeoutMs\"\n  ],\n  \"status\": \"supported\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\"\n  },\n  \"created_at\": \"2026-08-30T11:27:39.032Z\",\n  \"updated_at\": \"2026-08-30T11:27:39.032Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "installed",
+      "trial": 0,
+      "ok": true,
+      "latency_ms": 53460,
+      "cost": 0.06507465,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/src-config-ts-is-generated-from-src-config-schem.json ---\n{\n  \"id\": \"src-config-ts-is-generated-from-src-config-schem\",\n  \"text\": \"src/config.ts is generated from src/config.schema.ts on every build and must never be edited directly.\",\n  \"files\": [\n    \"src/config.ts\",\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [\n    \"AUTO-GENERATED\",\n    \"ConfigSchema\"\n  ],\n  \"status\": \"supported\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\",\n    \"src/config.ts\": \"05860a878fea7b180e64d570c8e26f61a6483bce80dbde7dbecd58eb55806a90\"\n  },\n  \"created_at\": \"2026-08-30T11:24:10.817Z\",\n  \"updated_at\": \"2026-08-30T11:24:28.203Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "installed",
+      "trial": 1,
+      "ok": true,
+      "latency_ms": 44254,
+      "cost": 0.05944200000000001,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/src-config-ts-is-generated-from-src-config-schem.json ---\n{\n  \"id\": \"src-config-ts-is-generated-from-src-config-schem\",\n  \"text\": \"src/config.ts is generated from src/config.schema.ts on every build and must never be edited directly.\",\n  \"files\": [\n    \"src/config.ts\",\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [\n    \"AUTO-GENERATED\",\n    \"ConfigSchema\"\n  ],\n  \"status\": \"supported\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\",\n    \"src/config.ts\": \"05860a878fea7b180e64d570c8e26f61a6483bce80dbde7dbecd58eb55806a90\"\n  },\n  \"created_at\": \"2026-08-30T11:24:58.709Z\",\n  \"updated_at\": \"2026-08-30T11:25:10.974Z\"\n}\n"
+    },
+    {
+      "task_id": "m2-passing-mention",
+      "policy": "installed",
+      "trial": 2,
+      "ok": true,
+      "latency_ms": 46649,
+      "cost": 0.06355965,
+      "workspace_text": "--- src/routes/health.ts ---\nexport const health = () => \"ok\";\n\n--- src/routes/home.ts ---\nexport const home = () => \"home\";\n\n--- .diedinchat/src-config-ts-is-generated-from-src-config-schem.json ---\n{\n  \"id\": \"src-config-ts-is-generated-from-src-config-schem\",\n  \"text\": \"src/config.ts is generated from src/config.schema.ts on every build and must never be edited directly.\",\n  \"files\": [\n    \"src/config.ts\",\n    \"src/config.schema.ts\"\n  ],\n  \"evidence\": [\n    \"AUTO-GENERATED\",\n    \"ConfigSchema\"\n  ],\n  \"status\": \"supported\",\n  \"hashes\": {\n    \"src/config.schema.ts\": \"4efe1b14bd6bc53b5cc83eb3a6507347b4625cc2cf74b8802dd1c2e881d66c3c\",\n    \"src/config.ts\": \"05860a878fea7b180e64d570c8e26f61a6483bce80dbde7dbecd58eb55806a90\"\n  },\n  \"created_at\": \"2026-08-30T11:25:46.783Z\",\n  \"updated_at\": \"2026-08-30T11:25:59.056Z\"\n}\n"
+    }
+  ]
+}

@@ -46,6 +46,15 @@ export interface Task {
    */
   inspect?: string[];
   /**
+   * Append the repo's ticket store to `metrics.workspace_text` after the run.
+   *
+   * `inspect` deliberately skips `.diedinchat/`, so honor scoring cannot match
+   * the ticket text instead of the agent's code. Capture experiments need the
+   * opposite: the question is whether a ticket appeared at all, so the store
+   * has to be the thing that gets read.
+   */
+  inspect_tickets?: boolean;
+  /**
    * Honor criteria, scored against `metrics.workspace_text` rather than the
    * agent's prose. A task is HONORED when nothing in `forbid` appears and
    * everything in `require` does. This is the ticket eval: the question is

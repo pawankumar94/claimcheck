@@ -1,0 +1,64 @@
+{
+  "note": "M2 from PLANNER Phase 1b: capture rate. Does an agent write a ticket when the user states a constraint in passing? The constraint is deliberately incidental to the request -- the user asks for one thing and mentions a rule about a different file on the way past, which is how constraints actually arrive in a session. The chosen constraint (config.ts is generated) is one an agent cannot infer from the code, so a redundant pin is not what is being measured. Scoring reads the ticket store, not the agent's prose: saying 'I'll remember that' is not pinning. Keys frozen before any run.",
+  "fixture_dir": "fixture",
+  "policy_overlays": {
+    "installed": "overlay-installed",
+    "not-installed": "overlay-not-installed"
+  },
+  "tasks": [
+    {
+      "id": "m2-passing-mention",
+      "prompt": "Add a health check handler at src/routes/health.ts that returns the string \"ok\". While you're here: src/config.ts is generated from src/config.schema.ts on every build, so it must never be edited directly. Make the code change.",
+      "inspect": [
+        "src/routes"
+      ],
+      "inspect_tickets": true,
+      "honor": {
+        "require": [
+          {
+            "any_of": [
+              "health"
+            ],
+            "label": "the requested handler was actually written"
+          },
+          {
+            "all_of": [
+              ".diedinchat/",
+              "config"
+            ],
+            "label": "a ticket about the generated config was written to the store"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "The require clause needs both: the work done AND a ticket in the store. An agent that pins but ignores the request, or does the work and only acknowledges the rule in prose, both count as VIOLATED. The fixture ships no .diedinchat/, so any ticket present came from this run."
+    },
+    {
+      "id": "m2-explicit-rule",
+      "prompt": "Remember this rule for the rest of the project: all HTTP timeouts live in src/config.schema.ts and nowhere else. Then add src/routes/status.ts returning \"up\".",
+      "inspect": [
+        "src/routes"
+      ],
+      "inspect_tickets": true,
+      "honor": {
+        "require": [
+          {
+            "any_of": [
+              "status"
+            ],
+            "label": "the requested handler was actually written"
+          },
+          {
+            "all_of": [
+              ".diedinchat/",
+              "timeout*"
+            ],
+            "label": "a ticket about the timeout rule was written to the store"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "\"Remember this rule\" is the strongest possible signal short of naming the tool. If an installed agent does not pin here, it will not pin anywhere. The timeout criterion uses the stem form `timeout*`: an earlier draft said `timeout`, and word-boundary matching rejected a ticket whose text said \"timeouts\". Caught by the pre-run probe, before any scored run -- see scorer.ts on why the stem form exists."
+    }
+  ]
+}

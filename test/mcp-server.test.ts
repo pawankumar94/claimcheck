@@ -1,11 +1,20 @@
 import { describe, expect, it, afterAll } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CLI = join(__dirname, "..", "dist", "cli.js");
+
+// This suite is the one that needs a build: it drives the real server over
+// stdio rather than importing it. Without this guard the failure surfaces as
+// "Not connected" from the MCP client, which says nothing about the cause --
+// it cost a CI run to diagnose once already.
+if (!existsSync(CLI)) {
+  throw new Error(`${CLI} is missing. Run \`npm run build\` before \`npm test\`.`);
+}
 
 describe("MCP server", () => {
   let client: Client;

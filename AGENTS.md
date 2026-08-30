@@ -134,7 +134,7 @@ diedinchat unpin auth-only-through-middleware
 diedinchat install-hook --hook post-merge
 ```
 
-MCP: `pin_claim`, `list_claims_for_file`, `check_claim`.
+MCP: `pin_claim`, `list_claims_for_file`, `check_claim`, `close_claim`, `unpin_claim`.
 
 Config A/B (`diedinchat measure`) is the lab for when the claim itself is
 “this setup is better.” Freeze keys, repeat trials, report the interval,

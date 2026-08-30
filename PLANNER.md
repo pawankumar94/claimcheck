@@ -24,7 +24,7 @@ Do not rebuild these. Extend them.
 |---|---|---|
 | Ticket store | [`src/core/claims.ts`](src/core/claims.ts), [`src/types.ts`](src/types.ts) `FileClaim` | `.diedinchat/<id>.json`, hashes, walk dirs, `evaluateClaim` |
 | CLI | [`src/cli.ts`](src/cli.ts) | `pin` / `status` (default) / `check` / `close` / `unpin`, JSON output, optional Git hooks. `measure` is explicit, not default |
-| MCP | [`src/mcp-server.ts`](src/mcp-server.ts) | `pin_claim`, `list_claims_for_file`, `check_claim` + the lab tools |
+| MCP | [`src/mcp-server.ts`](src/mcp-server.ts) | `pin_claim`, `list_claims_for_file`, `check_claim`, `close_claim`, `unpin_claim` + the lab tools |
 | Install | [`src/core/install.ts`](src/core/install.ts), [`templates/diedinchat.md`](templates/diedinchat.md) | Writes pinning discipline into Claude / Cursor / Copilot / `AGENTS.md` / … |
 | Tests | [`test/claims.test.ts`](test/claims.test.ts), [`test/hooks.test.ts`](test/hooks.test.ts), [`test/install.test.ts`](test/install.test.ts), [`test/mcp-server.test.ts`](test/mcp-server.test.ts), [`test/runner.test.ts`](test/runner.test.ts) | `npm test` must stay green |
 | Name | package `diedinchat`, bin `diedinchat`, GitHub `pawankumar94/diedinchat` | Old `claimcheck` URLs redirect |
@@ -209,7 +209,7 @@ signal is not yet trustworthy:
 - [x] M1 run — null on inferable constraints. On invisible ones (M1b-v2, 60 invocations, pre-registered): 18/20 vs 0/20, +90 pts CI +65 to +99, with a negative control at +0 CI -22 to +22. Conclusive for one agent on this fixture; cross-agent replication is the open item.
 - [x] M2 run — agents pin 6/6 with the convention installed, 0/6 without (+100 pts, CI +43 to +107). Found and fixed: agents pinned without evidence, landing every ticket in M0's 65% noise mode.
 - [ ] M3 run — no measured harm at realistic ticket volume
-- [ ] MCP reaches CLI parity (`close`, `unpin`), so MCP users are not stuck
+- [x] MCP reaches CLI parity — `close_claim` and `unpin_claim` added, plus `includeClosed` on the listing, with a round-trip test that pins, closes and unpins over the wire
 
 M4 and M5 can follow public release. M0 through M3 cannot: each can change what
 the product *is*, and all four are cheap.
@@ -269,10 +269,6 @@ with `--dry-run`.
 
 Still open:
 
-- **MCP is behind the CLI.** `close`, `unpin`, and `--json` landed on the CLI
-  but the server still exposes only `pin_claim`, `list_claims_for_file`, and
-  `check_claim`. An agent that reaches diedinchat only over MCP can create
-  tickets and never retire them. Close that gap before advertising MCP.
 - Smithery: verify [`smithery.yaml`](smithery.yaml) after a real listing. Do
   not submit the directory until a stranger can pin a ticket without reading
   this file.

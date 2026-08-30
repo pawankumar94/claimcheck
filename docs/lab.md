@@ -163,7 +163,7 @@ Two paths are exposed today. **In-agent** (`start_run`, `submit_answers`,
 `compare_runs`) has the agent you are already talking to answer the tasks
 itself. **Subprocess** (`list_agent_profiles`, `run_evaluation`,
 `score_results`, `generate_report`) drives an external agent CLI through a
-profile. Ticket verbs (`pin_claim`, `list_claims_for_file`, `check_claim`)
+profile. Ticket verbs (`pin_claim`, `list_claims_for_file`, `check_claim`, `close_claim`, `unpin_claim`)
 are on this same server; the lab tools remain.
 
 Per-client setup for Claude Code, Cursor, VS Code, Gemini CLI, and Codex is in

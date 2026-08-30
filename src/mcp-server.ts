@@ -13,7 +13,7 @@ import { runEvaluation } from "./core/runner.js";
 import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { loadRun, sessionToRecords, startRun, submitAnswers } from "./core/session.js";
-import { checkClaim, pinClaim, statusClaims } from "./core/claims.js";
+import { checkClaim, closeClaim, pinClaim, statusClaims, unpinClaim } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
 
 
@@ -99,10 +99,14 @@ export function createServer(): McpServer {
       inputSchema: {
         path: z.string().optional().describe("File or directory to filter by"),
         root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+        includeClosed: z
+          .boolean()
+          .optional()
+          .describe("Include closed tickets. Closed tickets are hidden by default."),
       },
     },
-    async ({ path, root }) => {
-      const evals = await statusClaims(root ?? process.cwd(), path);
+    async ({ path, root, includeClosed }) => {
+      const evals = await statusClaims(root ?? process.cwd(), path, includeClosed ?? false);
       return {
         content: [
           {
@@ -115,6 +119,7 @@ export function createServer(): McpServer {
                 status: e.status,
                 changed: e.changed,
                 missingEvidence: e.missingEvidence,
+                closedAt: e.claim.closed_at ?? null,
               })),
               null,
               2
@@ -166,6 +171,61 @@ export function createServer(): McpServer {
   // ---------------------------------------------------------------------
   // In-agent evaluation (lab). The calling agent answers the tasks itself.
   // ---------------------------------------------------------------------
+
+  server.registerTool(
+    "close_claim",
+    {
+      title: "Close a ticket without deleting it",
+      description:
+        "Retires a ticket whose job is done, or one that turned out to be wrong. The file and its " +
+        "history stay on disk; it is hidden from list_claims_for_file unless includeClosed is set. " +
+        "Prefer this over unpin_claim: a closed ticket still records that the constraint once held.",
+      inputSchema: {
+        id: z.string().describe("Ticket id, as returned by list_claims_for_file"),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ id, root }) => {
+      const evaluated = await closeClaim(root ?? process.cwd(), id);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify(
+              {
+                id: evaluated.claim.id,
+                status: evaluated.status,
+                closedAt: evaluated.claim.closed_at ?? null,
+                text: evaluated.claim.text,
+              },
+              null,
+              2
+            ),
+          },
+        ],
+      };
+    }
+  );
+
+  server.registerTool(
+    "unpin_claim",
+    {
+      title: "Delete a ticket permanently",
+      description:
+        "Removes .diedinchat/<id>.json. Irreversible outside git. Use close_claim instead unless the " +
+        "ticket was pinned in error and should leave no trace.",
+      inputSchema: {
+        id: z.string().describe("Ticket id, as returned by list_claims_for_file"),
+        root: z.string().optional().describe("Project root. Defaults to the current working directory."),
+      },
+    },
+    async ({ id, root }) => {
+      const removed = await unpinClaim(root ?? process.cwd(), id);
+      return {
+        content: [{ type: "text", text: JSON.stringify({ removed: removed.id, path: removed.path }, null, 2) }],
+      };
+    }
+  );
 
   server.registerTool(
     "start_run",

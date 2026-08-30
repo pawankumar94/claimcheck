@@ -3,6 +3,58 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.4.0 — 2026-08-30
+
+The release where the claims got measured. Four experiments, 117 agent
+invocations, every raw record published.
+
+### Fixed
+
+- **`stale` no longer fires on churn.** Frozen evidence now decides a ticket's
+  status whenever it exists; a changed hash only produces `stale` when there was
+  nothing frozen to check against. Replaying real commit history showed the old
+  behaviour firing on **65% of commits for a file-pinned ticket and 97% for a
+  directory-pinned one** — a directory ticket went red after a single commit.
+  Now 0%, while still catching 11/11 injected breakages, with a deliberately
+  muted control scoring 0/11 to prove the harness measures detection and not
+  silence. If you are on 0.3.x, this is the reason to upgrade.
+- **A profile may declare no `policyArgs`.** Validation rejected an empty map,
+  so a profile whose conditions are realized by the workspace could not load at
+  all.
+
+### Added
+
+- `Task.label` — human-readable names in reports and charts instead of task ids.
+- `Task.inspect_tickets` — capture the ticket store after a run, for experiments
+  that measure whether a ticket was written rather than whether one was obeyed.
+- `examples/honor-invisible/` and `examples/pin-capture/` — the fixtures behind
+  the published results, re-runnable against your own agent.
+
+### Changed
+
+- **`install` now teaches `--evidence`.** Agents were pinning without it, which
+  put every agent-created ticket in the noisy mode above. After the template
+  change, evidence went from 0/6 to 6/6 of auto-pinned tickets and their status
+  from `open` to `supported`.
+- Charts render on a transparent background with contrast-measured colours, so
+  they read on GitHub's dark theme instead of painting a light card.
+- The package no longer ships raw experiment JSON — 193 kB of audit data that
+  belongs on GitHub, where the docs' relative links resolve anyway. 635 kB to
+  464 kB unpacked.
+
+### Measured
+
+| | |
+|---|---|
+| Agents follow a rule they cannot infer from the code | **18/20 with a ticket, 0/20 without** (+90 pts, CI +65 to +99) |
+| Agents write the ticket themselves when told the convention | 6/6 vs 0/6 (+100 pts, CI +43 to +107) |
+| Negative control — a rule they already follow | 10/10 vs 10/10 (+0 pts, CI −22 to +22) |
+| Rules the code already demonstrates | no effect, 9/9 in both arms |
+
+Full design, both failure cases, and the raw records are in `docs/evidence/`.
+Everything above is Claude Code on `claude-sonnet-4-6`; other agents are
+untested.
+
 ## 0.3.1 — 2026-08-30
 
 A correctness fix in how status is derived, plus the documentation catching up

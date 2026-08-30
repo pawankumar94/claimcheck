@@ -1,3 +1,4 @@
+import { isPass } from "./scorer.js";
 import type { ScoredRecord } from "../types.js";
 import { analyze, type PolicyComparison } from "./analysis.js";
 
@@ -123,7 +124,7 @@ export function perTaskChart(records: ScoredRecord[], comparison: PolicyComparis
     );
     policies.forEach((policy, i) => {
       const cell = records.filter((r) => r.task_id === taskId && r.policy_name === policy);
-      const passes = cell.filter((r) => r.score.startsWith("PASS")).length;
+      const passes = cell.filter((r) => isPass(r.score)).length;
       const trackW = plotW / 2 - 62;
       const barW = (passes / maxTrials) * trackW;
       const bx = padL + i * (plotW / 2);

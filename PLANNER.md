@@ -50,28 +50,41 @@ same constraint lived only in a prior chat (i.e. is absent).
 
 **Build**
 
-1. New example, not a mutation of `examples/claim-001-tool-count/` or
-   `examples/bfcl-tool-count/`:
-   `examples/honor-rate/`
-   - `tasks.json` — tasks that *violate* a file-bound rule if the agent
-     never sees it (auth-in-routes, SQL-in-handlers, edit-the-generated-file).
-     Freeze `expected_keywords` / acceptance from the source, then run.
-   - Two conditions, same tasks: `with-tickets/` (a `.diedinchat/` fixture)
-     vs `no-tickets/` (empty).
-2. A profile-agnostic way to seed the fixture into the worktree the agent
-   sees (`src/core/runner.ts` already copies a repo; put tickets there).
-3. Score **honor**, not generic task success: did the agent avoid the
-   forbidden pattern / touch the declared file. Reuse
-   [`src/core/scorer.ts`](src/core/scorer.ts) with criteria that encode the
-   rule, or a thin honor scorer next to it if keyword match is too weak.
-4. One real multi-trial run against at least one verified agent profile.
-   Write `benchmarks/YYYY-MM-DD-honor-rate/` with raw + scored + report.
-   Honor rate with tickets vs without is the headline; do not fold `ERROR`
-   rows into the pass rate.
+1. ~~New example `examples/honor-rate/`: tasks that *violate* a file-bound
+   rule if the agent never sees it, two conditions over the same tasks.~~
+   **Done.** Fixture app with three rules (auth-in-middleware,
+   SQL-under-`src/db/`, money-in-cents), three tasks that each invite the
+   violation, keys frozen from the fixture before any run. See
+   [`examples/honor-rate/README.md`](examples/honor-rate/README.md).
+2. ~~A profile-agnostic way to seed the fixture into the worktree.~~
+   **Done.** `TasksDoc.fixture_dir` plus `policy_overlays` in
+   [`src/core/runner.ts`](src/core/runner.ts): the fixture is copied into a
+   fresh temp dir per invocation and the policy's overlay goes on top, so
+   `with-tickets` gets a `.diedinchat/` and `no-tickets` gets nothing. An
+   arm realized this way needs no `policyArgs`, so no profile needs editing.
+3. ~~Score **honor**, not generic task success.~~ **Done.** `Task.inspect`
+   captures the post-run contents of the declared paths into
+   `metrics.workspace_text`, and `scoreHonor` in
+   [`src/core/scorer.ts`](src/core/scorer.ts) matches `forbid` / `require`
+   against *that*, not against the agent's prose. `isPass` is now the one
+   definition of a pass, so `HONORED` counts everywhere.
+4. **Open.** One real multi-trial run against at least one verified agent
+   profile. Write `benchmarks/YYYY-MM-DD-honor-rate/` with raw + scored +
+   report. Honor rate with tickets vs without is the headline; do not fold
+   `ERROR` rows into the pass rate.
+
+   Blocker to clear first: this is the only task set that needs the agent to
+   **write files**. A read-only invocation scores `VIOLATED` in both arms,
+   which reads as a null result and is not one. No profile is verified for
+   write access here. Confirm on one trial that the files actually changed
+   before paying for three.
 
 **Done when**
 
-- `npm test` covers fixture load + honor scoring on a fake agent.
+- ~~`npm test` covers fixture load + honor scoring on a fake agent.~~
+  **Done**, [`test/honor.test.ts`](test/honor.test.ts) — including a guard
+  that the untouched fixture scores `VIOLATED` on every task, which already
+  caught one key that a do-nothing agent would have passed.
 - A report exists that a skeptic can read without running anything.
 - README “Still the lab” links that report, not BFCL.
 

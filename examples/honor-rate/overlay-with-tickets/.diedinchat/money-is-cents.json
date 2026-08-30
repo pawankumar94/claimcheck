@@ -1,0 +1,19 @@
+{
+  "id": "money-is-cents",
+  "text": "All money is integer cents via src/money.ts helpers. No float arithmetic on a price anywhere, including src/billing/.",
+  "files": [
+    "src/money.ts",
+    "src/billing"
+  ],
+  "evidence": [
+    "Cents"
+  ],
+  "status": "supported",
+  "hashes": {
+    "src/billing/invoice.ts": "e427cc9eb6f178c6e1c0006c4bd59bf1d06604bfe3ce945384b9631ff5bb4af5",
+    "src/money.ts": "4feec263aeb88a32b48153a371633592c21d32091da5137707d2f5a09e719755"
+  },
+  "agent": "authored-by-hand",
+  "created_at": "2026-08-30T08:35:18.856Z",
+  "updated_at": "2026-08-30T08:35:18.856Z"
+}

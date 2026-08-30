@@ -6,15 +6,22 @@ If you're an agent working in this repo, read [`README.md`](README.md) first
 (run/score/report, agent profiles).
 
 **Product direction (do not reverse this in a drive-by):** diedinchat is
-file-bound tickets — assertions pinned to paths in `.diedinchat/`,
-visible across sessions and agents, flipping `stale` when those files
-change. The existing eval CLI is the *lab* we use to prove that works, not
-the product. Phases, what’s shipped, and what to build next:
-[`PLANNER.md`](PLANNER.md). Do not lead new copy with BFCL or config A/B.
+file-bound tickets — assertions pinned to paths in `.diedinchat/`, visible
+across sessions and agents, flipping `stale` when those files change. The
+eval CLI is the *lab* we use to prove that works, not the product. Do not
+lead new copy with BFCL or config A/B.
+
+`pin` / `status` / `check`, the `.diedinchat/` store, the MCP verbs, and
+the pinning-first `templates/diedinchat.md` have all landed. What is left
+is phased in [`PLANNER.md`](PLANNER.md) — read it before starting work.
+Phase 1 (honor rate `with-tickets` vs `no-tickets`) is the open one.
+
+The claimcheck-era `benchmarks/` runs (BFCL tool count, codex sandbox,
+gemini) were deleted with the old direction; the lab *pipeline* stays,
+because Phase 1 needs it. Do not restore those results or cite them.
 
 Then [`examples/claim-001-tool-count/`](examples/claim-001-tool-count/) for
 the specific *lab* hypothesis, corpus, and what would falsify it.
-
 
 ## Architecture, in one paragraph
 
@@ -70,52 +77,60 @@ first.
   this direction change. The lab stays; it is not the pitch.
 
 <!-- diedinchat:start -->
-# diedinchat: measuring agent configuration changes
+# diedinchat: file-bound tickets
 
-Use this whenever someone asks whether a change to an agent's setup (tools, MCP servers, context, model, prompt) actually made it better. The answer is a measurement, not an impression.
+Use this whenever you assert something about files in this repo — a constraint,
+an invariant, a “don’t put X in Y.” That sentence does not belong only in chat.
+Pin it to the paths it is about so the next session and the next agent can see it.
 
 ## The trap this exists to prevent
 
-Agent configuration advice is almost entirely anecdotal: *"I cut our tool count and it felt sharper."* Nobody's numbers are on your tasks or your codebase. Worse, the natural way to check is circular: run the agent, look at the output, then decide what counts as a good answer.
+Monday: “Auth only goes through `src/middleware.ts`.” Wednesday, different
+agent, empty chat: the files are still there, the promise is gone, and a route
+handler grows its own `requireUser()`. Git knows what changed. Nothing kept
+the sentence.
 
 ## The method
 
-1. **Write the tasks and answer keys first.** Pick questions with verifiable answers drawn from a fixed source (a pinned commit, a spec, a doc). Write what a correct answer must contain *before* running anything.
+1. **Pin assertions to files.** After you state a constraint about the repo,
+   write a ticket: `diedinchat pin --text "..." --file src/a.ts` (or call
+   `pin_claim`). Do not leave it only in the transcript.
 
-2. **Freeze the keys.** Never adjust an answer key after seeing output. That single act converts a measurement into a rubber stamp. If a key turns out to be badly specified, say so, and fix it in a *new* task set that gets its own run. Do not patch it into the current one.
+2. **Look before you edit.** Before editing a path, list tickets on it
+   (`diedinchat status src/a.ts` or `list_claims_for_file`). Honor open and
+   supported tickets. If a ticket is `stale`, re-check it — do not trust a
+   promise about a file that has moved.
 
-3. **Change exactly one thing.** Run the task set under configuration A, change only the variable under test, run it again under configuration B. Same tasks, same keys, same order.
+3. **Freeze evidence before checking.** If the ticket has `evidence` phrases,
+   they were written from the files *before* a check, not after seeing a
+   failure. Never patch evidence to make a ticket pass. If the key was wrong,
+   pin a *new* ticket.
 
-4. **Run more than once.** Model sampling varies. A single trial per condition cannot separate a real effect from noise. Three trials is a floor, not a target.
+4. **Stale is not contradicted.** A hash change means the file moved; it does
+   not by itself mean the assertion is false. Re-read the file, then re-pin
+   or close the ticket.
 
-5. **Report the uncertainty, not just the delta.** "75% vs 71%" is not a result. "+4 points, 95% CI −21 to +28" is, and it says plainly that the run found nothing. When the interval spans zero, say the conditions are *not distinguishable*, and never describe that as one side winning.
+5. **Do not compare across agents.** A ticket pinned by Claude and honored
+   (or ignored) by Codex is a *protocol* check: did the next agent see it?
+   It is not a quality leaderboard.
 
-6. **Underpowered is not equivalent.** "No detectable difference" at small n means the run could not see an effect, not that no effect exists. Say which one you mean.
-
-7. **Do not compare across agents.** Two different agents interpret the same prompt differently regardless of configuration, so a gap between them is not attributable to the thing under test. Compare a single agent against itself.
-
-8. **Separate harness failures from wrong answers.** A crash, a timeout, or a truncated generation is not the agent getting the answer wrong. Exclude those from pass rates and report them separately, or a broken setup will read as a bad configuration.
-
-9. **Inspect every non-pass by hand.** Keyword scoring rejects correct answers that used different words. Before reporting, read the failures. If most are phrasing mismatches, the scorer is your limiting factor and the pass rates understate real accuracy. Say so.
+If neither the CLI nor MCP is installed, still follow the method by hand:
+write `.diedinchat/<id>.json` with `text` and `files`, and read that folder
+before you edit those paths. The files are the product; the tooling only
+removes arithmetic.
 
 ## Running it
 
-If the `diedinchat` CLI is available:
-
 ```bash
-diedinchat profiles                                   # what can be measured
-diedinchat run --tasks <tasks.json> --agent <name> \
-  --policy curated --policy full --trials 3
-diedinchat score --tasks <tasks.json>
-diedinchat report                                     # verdict + CI
+diedinchat pin --text "Auth only through middleware." --file src/middleware.ts
+diedinchat status src/middleware.ts
+diedinchat check auth-only-through-middleware
 ```
 
-If the diedinchat MCP server is connected, `start_run` / `submit_answers` / `compare_runs` do the same thing with you as the subject: answer the tasks yourself under one configuration, have the user change their real setup, answer again, then compare. Record honestly what configuration was in effect, because the restriction is enforced by the user's actual config, not by diedinchat.
+MCP: `pin_claim`, `list_claims_for_file`, `check_claim`.
 
-If neither is installed, you can still follow the method above by hand. The discipline is the point; the tooling only removes arithmetic.
-
-## Reporting
-
-Lead with whether the difference was distinguishable. Then the rates, then the interval, then the caveats that bound them. Never present a statistically indistinguishable gap as a win, and never drop the caveats when summarising, because they are what makes the number worth anything.
+Config A/B (`diedinchat measure`) is the lab for when the claim itself is
+“this setup is better.” Freeze keys, repeat trials, report the interval,
+never call “not distinguishable” a win. Underpowered is not equivalent.
 
 <!-- diedinchat:end -->

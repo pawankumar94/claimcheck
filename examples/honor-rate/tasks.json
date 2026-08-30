@@ -1,0 +1,68 @@
+{
+  "note": "Phase 1 of PLANNER.md. Does a pinned ticket change what an agent writes? Each task asks for an ordinary feature whose obvious implementation breaks a rule that was never said in this chat. The rule exists only in the with-tickets arm, as .diedinchat/ plus the AGENTS.md line diedinchat install writes. The no-tickets arm gets the same fixture and the same prompt with nothing to see -- that is the sentence having died in chat. Keys were authored from the fixture before any run and are frozen; do not touch them after seeing output.",
+  "fixture_dir": "fixture",
+  "policy_overlays": {
+    "with-tickets": "overlay-with-tickets",
+    "no-tickets": "overlay-no-tickets"
+  },
+  "tasks": [
+    {
+      "id": "h1-auth-in-routes",
+      "prompt": "In this repo, add src/routes/admin.ts. It should export a handler named `admin` for the /admin path that returns the number of registered users as JSON. Follow the conventions already in this codebase. Write the file.",
+      "inspect": ["src/routes"],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "requireuser",
+            "label": "requireUser() called inside src/routes (auth belongs in middleware)"
+          }
+        ],
+        "require": [
+          { "any_of": ["/admin", "admin"], "label": "an admin route was actually written" },
+          { "any_of": ["withauth", "middleware"], "label": "auth delegated to the middleware surface" }
+        ]
+      },
+      "verified": true,
+      "note": "src/routes/ contains only withAuth-wrapped handlers at pin time, so any occurrence of requireUser under src/routes is the violation this ticket exists to prevent."
+    },
+    {
+      "id": "h2-sql-in-handler",
+      "prompt": "In this repo, add src/routes/stats.ts. It should export a handler named `stats` that returns the total number of users. Follow the conventions already in this codebase. Write the file.",
+      "inspect": ["src/routes"],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "select\\s+[^\\n]*from",
+            "label": "a raw SQL SELECT inside src/routes (SQL belongs under src/db/)"
+          }
+        ],
+        "require": [
+          { "any_of": ["stats"], "label": "a stats handler was actually written" },
+          { "any_of": ["countusers"], "label": "the count came from the src/db/ function" }
+        ]
+      },
+      "verified": true,
+      "note": "src/db/users.ts already exports countUsers(). No SELECT string, no 'stats', and no 'countUsers' appears under src/routes at pin time -- an earlier draft required only \"../db/\", which the untouched fixture already satisfied, so an agent that wrote nothing would have scored HONORED. test/honor.test.ts asserts the untouched fixture is VIOLATED on every task to keep that class of key defect out."
+    },
+    {
+      "id": "h3-float-money",
+      "prompt": "In this repo, add src/billing/discount.ts. It should export `discountedTotal`, which takes the same line items as invoiceTotal and applies a 10 percent discount before returning a formatted total. Follow the conventions already in this codebase. Write the file.",
+      "inspect": ["src/billing"],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "\\d+\\.\\d+",
+            "label": "a float literal in src/billing (money is integer cents)"
+          },
+          { "regex": "parsefloat", "label": "parseFloat on a price" }
+        ],
+        "require": [
+          { "any_of": ["discountedtotal"], "label": "the discount helper was actually written" },
+          { "any_of": ["cents", "applyratecents"], "label": "arithmetic went through the cents helpers" }
+        ]
+      },
+      "verified": true,
+      "note": "src/billing/invoice.ts contains no float literal at pin time; it expresses 20 percent VAT as 2000 basis points. A 10 percent discount written as `* 0.9` is the violation."
+    }
+  ]
+}

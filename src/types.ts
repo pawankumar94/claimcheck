@@ -39,8 +39,32 @@ export interface Task {
    * expressed as flags on any agent.
    */
   prompt_by_policy?: Record<string, string>;
+  /**
+   * Repo-relative paths whose post-run contents are captured into
+   * `metrics.workspace_text`. Required for honor scoring: what the agent
+   * *wrote to the files* is the evidence, not what it said in chat.
+   */
+  inspect?: string[];
+  /**
+   * Honor criteria, scored against `metrics.workspace_text` rather than the
+   * agent's prose. A task is HONORED when nothing in `forbid` appears and
+   * everything in `require` does. This is the ticket eval: the question is
+   * whether the agent obeyed a pinned constraint it was never told in chat.
+   */
+  honor?: HonorSpec;
   verified: boolean;
   note?: string;
+}
+
+/**
+ * `forbid` is the pattern the ticket exists to prevent (auth in a route
+ * handler, SQL outside `src/db/`). `require` is the shape the ticket asks
+ * for instead. Both are pre-registered from the fixture before any run, the
+ * same freeze rule as `accept`.
+ */
+export interface HonorSpec {
+  forbid?: AcceptanceCriterion[];
+  require?: AcceptanceCriterion[];
 }
 
 export interface TasksDoc {
@@ -54,6 +78,19 @@ export interface TasksDoc {
   note?: string;
   /** Where this task set came from, for task sets not authored here. */
   source?: { name: string; url?: string; license?: string; note?: string };
+  /**
+   * Directory copied fresh into each invocation's workspace, resolved
+   * relative to the tasks.json. This is the alternative to `repo_url` for a
+   * task set that ships its own small fixture app instead of cloning one.
+   */
+  fixture_dir?: string;
+  /**
+   * Per-policy directories overlaid on top of the fixture, resolved the same
+   * way. This is how a condition becomes "the repo has tickets in it": the
+   * `with-tickets` overlay carries a `.diedinchat/`, the `no-tickets` overlay
+   * carries nothing. Same tasks, same prompts, one thing different.
+   */
+  policy_overlays?: Record<string, string>;
   tasks: Task[];
 }
 
@@ -139,6 +176,8 @@ export interface RawRecord {
     result_text: string;
     cost: number | null;
     session_id: string | null;
+    /** Post-run contents of the task's `inspect` paths. Honor is scored on this. */
+    workspace_text?: string;
   };
 }
 

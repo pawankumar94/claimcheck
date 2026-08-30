@@ -125,7 +125,10 @@ describe("status and stale", () => {
       evidence: ["export function auth"],
       id: "auth-surface",
     });
-    await writeFile(join(root, "src", "middleware.ts"), "changed\n");
+    await writeFile(
+      join(root, "src", "middleware.ts"),
+      "export function auth() { return true }\n// implementation moved\n"
+    );
     expect((await statusClaims(root))[0]!.status).toBe("stale");
     await writeFile(join(root, "src", "middleware.ts"), "export function auth() { return true }\n");
     expect((await statusClaims(root))[0]!.status).toBe("supported");
@@ -146,7 +149,7 @@ describe("status and stale", () => {
 });
 
 describe("check / contradicted", () => {
-  it("marks contradicted when frozen evidence is gone but hashes match", async () => {
+  it("marks contradicted when frozen evidence is removed from a changed file", async () => {
     await pinClaim({
       root,
       text: "home route exists",
@@ -154,24 +157,10 @@ describe("check / contradicted", () => {
       evidence: ["export const home"],
       id: "home-route",
     });
-    // Same bytes length isn't required — rewrite with different content but we
-    // must keep the hash matching, so this is: pin, then manually edit the
-    // stored hash to the new file's hash after stripping the evidence phrase.
     await writeFile(join(root, "src", "routes", "home.ts"), "export const other = 1\n");
-    // File changed → stale, not contradicted. Re-pin hashes by writing the
-    // ticket hashes to the new content without updating evidence.
-    const { claim } = await pinClaim({
-      root,
-      text: "home route exists",
-      files: ["src/routes/home.ts"],
-      evidence: ["export const home"],
-      id: "home-route",
-    });
-    // pin recomputes hashes AND re-evaluates, so this pin against missing
-    // evidence should already be contradicted.
-    expect(claim.status).toBe("contradicted");
     const checked = await checkClaim(root, "home-route");
     expect(checked.status).toBe("contradicted");
+    expect(checked.changed).toContain("src/routes/home.ts");
     expect(checked.missingEvidence.length).toBeGreaterThan(0);
   });
 

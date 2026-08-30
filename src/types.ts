@@ -191,7 +191,8 @@ export type ClaimStatus = "open" | "supported" | "contradicted" | "stale" | "clo
 /**
  * An assertion pinned to paths in this repo. Lives in `.diedinchat/<id>.json` so
  * it survives session end and agent-switch. `status` is derived from file
- * hashes (stale) and frozen evidence (supported / contradicted); `open` means
+ * hashes (stale) and frozen evidence (supported / contradicted). Missing
+ * evidence is contradicted even when the cited file also changed; `open` means
  * the files have not moved and no evidence was registered to check.
  */
 export interface FileClaim {
@@ -208,4 +209,3 @@ export interface FileClaim {
   created_at: string;
   updated_at: string;
 }
-

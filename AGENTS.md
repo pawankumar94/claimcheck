@@ -108,9 +108,10 @@ the sentence.
    failure. Never patch evidence to make a ticket pass. If the key was wrong,
    pin a *new* ticket.
 
-4. **Stale is not contradicted.** A hash change means the file moved; it does
-   not by itself mean the assertion is false. Re-read the file, then re-pin
-   or close the ticket.
+4. **Stale is not contradicted.** A hash change with the frozen evidence still
+   present means the file moved and the assertion needs review. Missing frozen
+   evidence is contradicted, even when that edit also changed the hash. Re-read
+   the file, then re-pin or close the ticket.
 
 5. **Do not compare across agents.** A ticket pinned by Claude and honored
    (or ignored) by Codex is a *protocol* check: did the next agent see it?

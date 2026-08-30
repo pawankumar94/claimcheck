@@ -166,10 +166,20 @@ For example, `preserve-path-containment` is pinned to
 `diedinchat status` at the repository root to inspect all four, or
 `diedinchat status src/core/claims.ts` to route only the relevant tickets.
 
-**First evidence:** in a frozen Codex CLI run, tickets were honored in 9/9
-edits versus 5/9 without tickets: **+44 points, 95% CI +2 to +70**. This is a
-small, single-agent result, not a universal claim. Read the
-[raw records, manual audit, and report](benchmarks/2026-08-30-honor-rate/).
+### What we still need to prove
+
+<p align="center">
+  <img src="docs/assets/benchmark-design.svg" width="100%" alt="Paired public benchmark design: the same coding agent solves the same real repository tasks with and without diedinchat tickets">
+</p>
+
+The first fixture run showed that tickets can change Codex's edits. That is a
+[preliminary mechanism check](docs/evidence/honor-rate.md), not yet the
+developer-value claim.
+
+The public comparison must use real repository issues and answer three useful
+questions: does diedinchat increase official test-passing task resolution,
+reduce repeated constraint violations, and reduce rework? Same task, commit,
+agent, model, prompt, and permissions; only the repository tickets change.
 
 **Still the lab:** `diedinchat measure` runs controlled coding-agent
 experiments. The lab remains supporting evidence, not the product pitch.
@@ -208,10 +218,10 @@ retired with the old direction. The run that matters for this product is honor
 rate `with-tickets` vs `no-tickets`, same tasks, keys frozen first.
 
 The task set, fixture, and honor scorer are in
-[examples/honor-rate/](examples/honor-rate/). The first real result is in
-[benchmarks/2026-08-30-honor-rate/](benchmarks/2026-08-30-honor-rate/), with
-all raw records committed. It is evidence for one agent on three tasks, not a
-claim that every coding agent will behave the same way.
+[examples/honor-rate/](examples/honor-rate/). Its first result is retained as
+a [compact preliminary record](docs/evidence/honor-rate.md). It proves the
+harness can detect changed behavior; it does not show the gain developers will
+see on real issues.
 
 ### Teach your agent the method
 

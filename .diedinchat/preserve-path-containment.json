@@ -9,9 +9,9 @@
   ],
   "status": "supported",
   "hashes": {
-    "src/core/claims.ts": "88671ef6916f6119795612adc5cde1bea1d5e53b19506bc86dda5822fd9b51a7"
+    "src/core/claims.ts": "184fdef7ba3a3bce88fe26aefd23b3fd85be6a43d636849e4e18698ca04dad8c"
   },
   "agent": "codex",
   "created_at": "2026-08-30T09:17:17.973Z",
-  "updated_at": "2026-08-30T09:17:17.973Z"
+  "updated_at": "2026-08-30T09:48:25.668Z"
 }

@@ -7,9 +7,10 @@ dist/
 .claude/
 .cursor/
 .codex/
-# Scratch output from a local lab run. Published results are curated by hand
-# into benchmarks/<date>-<agent>/. File tickets live in .diedinchat/ and ARE
-# committed — that is how they survive agent-switch.
+# Scratch output from a local lab run. A reviewed result may be promoted into
+# docs/evidence/ as one compact record plus stable SVGs; per-invocation dumps
+# do not belong at the repository root. File tickets live in .diedinchat/ and
+# ARE committed — that is how they survive agent-switch.
 results/
 __pycache__/
 *.pyc

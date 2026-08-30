@@ -4,10 +4,9 @@ This is [PLANNER.md](../../PLANNER.md) Phase 1. Everything else in this repo
 asserts that file-bound tickets help. This is the thing that could show they
 do not.
 
-**There is no number yet.** The task set, the fixture, and the scorer are
-here; the run against a real agent CLI has not happened. Do not cite this
-directory as evidence of anything until `benchmarks/YYYY-MM-DD-honor-rate/`
-exists.
+The first small Codex run is retained as
+[`docs/evidence/honor-rate.md`](../../docs/evidence/honor-rate.md). It is a
+mechanism check, not the developer-value benchmark or a cross-agent result.
 
 ## The hypothesis
 
@@ -104,9 +103,11 @@ by flags, so any profile can run them unedited.
 
 ## Publishing a result
 
-Write `benchmarks/YYYY-MM-DD-honor-rate/` with the raw records, the scored
-JSON, and the report. Headline is honor rate with tickets vs without, with the
-interval. `ERROR` rows are harness failures and stay out of the rate. Then
-point the README's "Still the lab" line at it.
+Keep per-invocation output under ignored `results/`. Promote a reviewed run as
+one compact record and stable SVGs under `docs/evidence/` and `docs/assets/`;
+do not create dated benchmark directories at repository root. Headline is the
+paired difference with its interval. `ERROR` rows are harness failures and
+stay out of the rate.
 
-One agent and one run is a direction, not a finding. Say which one you have.
+One agent and one fixture run is a mechanism check, not a developer-gain
+finding. The public comparison is specified in PLANNER Phase 1b.

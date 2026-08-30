@@ -123,10 +123,10 @@ export async function evaluateClaim(root: string, claim: FileClaim): Promise<Cla
 
   let status: ClaimStatus;
   if (claim.closed_at) status = "closed";
+  else if (claim.evidence.length > 0 && evidenceVerdict !== "PASS") status = "contradicted";
   else if (changed.size > 0) status = "stale";
   else if (claim.evidence.length === 0) status = "open";
-  else if (evidenceVerdict === "PASS") status = "supported";
-  else status = "contradicted";
+  else status = "supported";
 
   return { claim, status, changed: [...changed].sort(), missingEvidence, evidenceVerdict };
 }

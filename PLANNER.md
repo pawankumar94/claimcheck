@@ -73,7 +73,7 @@ same constraint lived only in a prior chat (i.e. is absent).
    **Done.** Codex CLI 0.147.0 honored 9/9 edits with tickets and 5/9 without,
    a +44 point difference (95% CI +2 to +70), with zero harness errors. Raw
    records, scored output, report, and manual audit are committed in
-   [`benchmarks/2026-08-30-honor-rate/`](benchmarks/2026-08-30-honor-rate/).
+   [`docs/evidence/honor-rate.md`](docs/evidence/honor-rate.md).
 
 **Done when**
 
@@ -89,13 +89,46 @@ victory on one trial or one agent.
 
 ---
 
+## Phase 1b — Public developer-gain benchmark (next proof)
+
+The fixture result proves mechanism sensitivity, not developer value. Do not
+use 9/9 versus 5/9 as the README headline.
+
+Build a paired, [SWE-bench](https://github.com/SWE-bench/SWE-bench)-derived
+handoff evaluation on real GitHub issues:
+
+1. Select a preregistered constraint-relevant subset from public tasks. Freeze
+   repository commits, official tests, task selection, and source-backed
+   file constraints before running an agent.
+2. Run the same task, agent, model, prompt, permissions, and trial count in
+   both arms. The only variable is whether the fresh workspace contains the
+   relevant `.diedinchat/` ticket.
+3. Primary metric: official test-passing issue resolution. Secondary metrics:
+   repeated constraint violations, rework, tokens, latency, and harness errors.
+4. Compare each agent against itself with at least three trials and a paired
+   interval. Test cross-agent ticket handoff separately; it is a protocol test,
+   not an agent leaderboard.
+5. Publish one stable explanation page under `docs/evidence/`, compact result
+   data, and README SVGs. Never restore dated raw-run folders at repository root.
+
+Call this **SWE-bench-derived**, not an official SWE-bench leaderboard result:
+the ticket intervention and constraint-relevant subset are ours.
+
+**Done when** the README can state a developer gain such as resolved-task lift
+or repeated-mistake reduction on public tasks, with an interval and raw-enough
+compact evidence to audit it.
+
+---
+
 ## Phase 2 — Ticket lifecycle (complete)
 
 **Completed 2026-08-30.** Closed tickets remain on disk and are hidden from
 default status; `--all` includes them. `unpin` removes one validated ticket.
 `status --json` and `check --json` expose the same evaluations used by the CLI.
 Optional idempotent `pre-commit` and `post-merge` hooks preserve existing hook
-content and run the deterministic check.
+content and run the deterministic check. Missing frozen evidence evaluates as
+`contradicted` even when the edit also changed the file hash; a hash-only change
+that preserves evidence remains `stale`.
 
 `pin` / `status` / `check` are not a product yet. Agents and humans will
 need:
@@ -111,8 +144,6 @@ Keep the store a directory of JSON. No sqlite. Path safety stays
 `resolveInside` — do not relax it.
 
 Tests go in `test/claims.test.ts` (store) and `test/cli` only if you add a
-CLI harness; otherwise keep asserting through the functions.
-
 **Done when** an agent can pin, list, close, unpin, and a hook can mark
 stale after `middleware.ts` changes, all without MCP.
 
@@ -198,7 +229,9 @@ remaining product phases.
 
 ## Suggested order for the next agent
 
-1. Replicate Phase 1 on a second authenticated agent when available.
-2. Review the honor-rate evidence and lifecycle UX before expanding the public listing beyond the npm name hold.
-3. Do not build an
-   IDE extension.
+1. Fix stale thrash, add gitignore-aware path matching, and close MCP lifecycle
+   parity. These are product prerequisites, not benchmark work.
+2. Build and preregister Phase 1b on a public constraint-relevant task subset.
+3. Run the paired comparison on one agent, then repeat the handoff on a second.
+4. Review the developer-gain result before expanding listings or building IDE
+   chrome.

@@ -10,11 +10,13 @@ import { analyze, type PolicyComparison } from "./analysis.js";
  * SVG, so every fill is also set as an attribute rather than relying on CSS.
  */
 
-const INK = "#57606a";
-const GRID = "#d0d7de";
-const CANDIDATE = "#0969da";
-const BASELINE = "#8250df";
-const ZERO = "#cf222e";
+const PAPER = "#F7F5EE";
+const INK = "#171713";
+const MUTED = "#625F57";
+const GRID = "#D8D4C8";
+const CANDIDATE = "#9BD627";
+const BASELINE = "#746C83";
+const ZERO = "#D34E3F";
 
 function esc(s: string): string {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -42,6 +44,7 @@ export function passRateChart(comparison: PolicyComparison): string {
 
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Pass rate by policy with 95% confidence interval on the difference">`,
+    `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="14" fill="${PAPER}" stroke="${GRID}"/>`,
     `<text x="${padL}" y="28" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="${INK}">${esc(comparison.agent)}: pass rate by policy</text>`,
   ];
 
@@ -49,17 +52,21 @@ export function passRateChart(comparison: PolicyComparison): string {
   for (let p = 0; p <= 100; p += 25) {
     parts.push(
       `<line x1="${x(p)}" y1="${top - 8}" x2="${x(p)}" y2="${top + bars.length * (barH + gap)}" stroke="${GRID}" stroke-width="1"/>`,
-      `<text x="${x(p)}" y="${top + bars.length * (barH + gap) + 16}" font-family="system-ui,sans-serif" font-size="11" fill="${INK}" text-anchor="middle">${p}%</text>`
+      `<text x="${x(p)}" y="${top + bars.length * (barH + gap) + 16}" font-family="system-ui,sans-serif" font-size="11" fill="${MUTED}" text-anchor="middle">${p}%</text>`
     );
   }
 
   bars.forEach((stat, i) => {
     const y = top + i * (barH + gap);
     const color = i === 0 ? CANDIDATE : BASELINE;
+    const labelInside = stat.passRate > 88;
+    const labelX = labelInside ? x(stat.passRate) - 8 : x(stat.passRate) + 8;
     parts.push(
       `<text x="${padL - 12}" y="${y + barH / 2 + 4}" font-family="system-ui,sans-serif" font-size="13" fill="${INK}" text-anchor="end">${esc(stat.policy)}</text>`,
       `<rect x="${padL}" y="${y}" width="${Math.max(2, x(stat.passRate) - padL)}" height="${barH}" fill="${color}" rx="3"/>`,
-      `<text x="${x(stat.passRate) + 8}" y="${y + barH / 2 + 4}" font-family="system-ui,sans-serif" font-size="12" fill="${INK}">${stat.passes}/${stat.n} (${stat.passRate.toFixed(0)}%)</text>`
+      `<text x="${labelX}" y="${y + barH / 2 + 4}" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="${INK}"${
+        labelInside ? ' text-anchor="end"' : ""
+      }>${stat.passes}/${stat.n} (${stat.passRate.toFixed(0)}%)</text>`
     );
   });
 
@@ -101,6 +108,7 @@ export function perTaskChart(records: ScoredRecord[], comparison: PolicyComparis
 
   const parts: string[] = [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Per-task pass count by policy">`,
+    `<rect x="1" y="1" width="${W - 2}" height="${H - 2}" rx="14" fill="${PAPER}" stroke="${GRID}"/>`,
     `<text x="12" y="26" font-family="system-ui,sans-serif" font-size="15" font-weight="600" fill="${INK}">Pass count per task (out of trials run)</text>`,
   ];
 

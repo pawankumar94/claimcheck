@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" width="1200" height="500" role="img" aria-label="Paired benchmark design comparing the same coding agent on the same public repository tasks with and without diedinchat tickets">
+  <rect x="1" y="1" width="1198" height="498" rx="24" fill="#F7F5EE" stroke="#D8D4C8"/>
+  <text x="60" y="58" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#171713">Does diedinchat improve real coding work?</text>
+  <text x="60" y="88" font-family="system-ui,sans-serif" font-size="15" fill="#625F57">Same public issue · same repository commit · same agent and model · tickets are the only variable</text>
+
+  <rect x="60" y="126" width="250" height="108" rx="16" fill="#FFFFFF" stroke="#D8D4C8"/>
+  <text x="84" y="158" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#625F57">PUBLIC TASK</text>
+  <text x="84" y="189" font-family="system-ui,sans-serif" font-size="19" font-weight="700" fill="#171713">Real GitHub issue</text>
+  <text x="84" y="215" font-family="system-ui,sans-serif" font-size="14" fill="#625F57">Official tests decide success</text>
+
+  <path d="M310 180 H362" stroke="#625F57" stroke-width="3"/>
+  <path d="M350 171 L362 180 L350 189" fill="none" stroke="#625F57" stroke-width="3"/>
+  <path d="M336 180 V345 H362" fill="none" stroke="#625F57" stroke-width="3"/>
+  <path d="M350 336 L362 345 L350 354" fill="none" stroke="#625F57" stroke-width="3"/>
+
+  <rect x="370" y="112" width="470" height="142" rx="18" fill="#FFFFFF" stroke="#D8D4C8"/>
+  <rect x="370" y="112" width="14" height="142" rx="7" fill="#746C83"/>
+  <text x="410" y="145" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#746C83">WITHOUT DIEDINCHAT</text>
+  <text x="410" y="178" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#171713">Fresh session, prior constraint is gone</text>
+  <text x="410" y="208" font-family="system-ui,sans-serif" font-size="15" fill="#625F57">Agent edits the repository with an empty handoff.</text>
+  <text x="410" y="232" font-family="system-ui,sans-serif" font-size="15" fill="#625F57">The earlier chat cannot influence the patch.</text>
+
+  <rect x="370" y="274" width="470" height="142" rx="18" fill="#F0F8DC" stroke="#B8DD62"/>
+  <rect x="370" y="274" width="14" height="142" rx="7" fill="#9BD627"/>
+  <text x="410" y="307" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#50730B">WITH DIEDINCHAT</text>
+  <text x="410" y="340" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#171713">Fresh session, claim travels with the files</text>
+  <text x="410" y="370" font-family="system-ui,sans-serif" font-size="15" fill="#625F57">Same agent reads the pinned constraint before editing.</text>
+  <text x="410" y="394" font-family="system-ui,sans-serif" font-size="15" fill="#625F57">No prompt hint and no previous chat transcript.</text>
+
+  <path d="M840 183 H892" stroke="#625F57" stroke-width="3"/>
+  <path d="M880 174 L892 183 L880 192" fill="none" stroke="#625F57" stroke-width="3"/>
+  <path d="M840 345 H892" stroke="#625F57" stroke-width="3"/>
+  <path d="M880 336 L892 345 L880 354" fill="none" stroke="#625F57" stroke-width="3"/>
+
+  <rect x="900" y="126" width="240" height="290" rx="18" fill="#171713"/>
+  <text x="928" y="161" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#9BD627">DEVELOPER GAIN</text>
+  <text x="928" y="202" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">More issues resolved</text>
+  <text x="928" y="226" font-family="system-ui,sans-serif" font-size="14" fill="#C9C6BC">Official test pass rate</text>
+  <line x1="928" y1="247" x2="1110" y2="247" stroke="#45453F"/>
+  <text x="928" y="281" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">Fewer repeat mistakes</text>
+  <text x="928" y="305" font-family="system-ui,sans-serif" font-size="14" fill="#C9C6BC">Constraint violation rate</text>
+  <line x1="928" y1="326" x2="1110" y2="326" stroke="#45453F"/>
+  <text x="928" y="360" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#FFFFFF">Less rework</text>
+  <text x="928" y="384" font-family="system-ui,sans-serif" font-size="14" fill="#C9C6BC">Tokens, time, and edits</text>
+
+  <text x="60" y="464" font-family="system-ui,sans-serif" font-size="14" font-weight="600" fill="#171713">Report the paired difference and 95% interval. Do not compare one agent against another.</text>
+</svg>

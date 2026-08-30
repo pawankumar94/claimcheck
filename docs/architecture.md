@@ -1,5 +1,9 @@
 # Architecture
 
+This document is the **lab** — the pipeline that measures whether tickets change
+agent behavior. For the ticket product itself, see
+[how-it-works.md](how-it-works.md).
+
 Internals and extension points. For what diedinchat is and how to run it,
 see [README.md](../README.md); for the rules that keep results trustworthy,
 see [AGENTS.md](../AGENTS.md).

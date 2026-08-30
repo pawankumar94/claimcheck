@@ -2,6 +2,7 @@
 
 If you're an agent working in this repo, read [`README.md`](README.md) first
 — the problem statement and product direction live there. Then
+[`docs/how-it-works.md`](docs/how-it-works.md) for how tickets work, and
 [`docs/architecture.md`](docs/architecture.md) for the lab internals
 (run/score/report, agent profiles).
 

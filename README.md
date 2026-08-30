@@ -373,6 +373,7 @@ you can validate changes without spending API budget.
 
 | Doc | Covers |
 |---|---|
+| [docs/how-it-works.md](docs/how-it-works.md) | How tickets work: the handoff, status derivation, and what is actually guaranteed |
 | [docs/architecture.md](docs/architecture.md) | Internals and extension points |
 | [docs/integrations.md](docs/integrations.md) | Per-client setup, library usage |
 | [AGENTS.md](AGENTS.md) | Entry point for coding agents working in this repo |

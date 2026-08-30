@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 348" width="720" height="348" role="img" aria-label="Status is recomputed on every read: closed, then stale if hashes changed, then open without evidence, then supported or contradicted.">
+  <title>How a ticket's status is derived</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6e7781"/></marker><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#d64550"/></marker></defs>
+  <line x1="180" y1="48" x2="180" y2="296" stroke="#6e7781" stroke-width="1.5" opacity="0.7"/>
+  <text x="24" y="34" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781" font-weight="600">re-hash every file the ticket names</text>
+  <text x="24" y="68" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">closed_at set?</text>
+  <circle cx="180" cy="64" r="4" fill="#6e7781"/>
+  <path d="M184 64 H 252" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="218" y="57" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
+  <rect x="260" y="47" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="345" y="69" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">closed</text>
+  <text x="24" y="124" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">file hash changed?</text>
+  <circle cx="180" cy="120" r="4" fill="#6e7781"/>
+  <path d="M184 120 H 252" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="218" y="113" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
+  <rect x="260" y="103" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="345" y="125" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">stale</text>
+  <text x="24" y="180" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">evidence declared?</text>
+  <circle cx="180" cy="176" r="4" fill="#6e7781"/>
+  <path d="M184 176 H 252" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="218" y="169" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">no</text>
+  <rect x="260" y="159" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="345" y="181" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">open</text>
+  <text x="24" y="236" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11.5" fill="#6e7781">evidence still holds?</text>
+  <circle cx="180" cy="232" r="4" fill="#6e7781"/>
+  <path d="M184 232 H 252" fill="none" stroke="#6e7781" stroke-width="1.5" marker-end="url(#a)"/>
+  <text x="218" y="225" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">yes</text>
+  <rect x="260" y="215" width="170" height="34" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="345" y="237" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">supported</text>
+  <path d="M180 296 H 252" fill="none" stroke="#d64550" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="218" y="289" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#d64550">no</text>
+  <rect x="260" y="279" width="170" height="34" rx="6" fill="none" stroke="#d64550" stroke-width="2"/>
+  <text x="345" y="301" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#d64550" font-weight="600">contradicted</text>
+  <text x="24" y="332" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781" font-style="italic">Derived on every read, from file hashes alone. No model participates.</text>
+</svg>

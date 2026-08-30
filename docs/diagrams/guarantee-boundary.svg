@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 290" width="720" height="290" role="img" aria-label="Three tiers of consumption: deterministic paths need no cooperation, adapter-backed paths guarantee delivery only, behavioral paths depend on the agent choosing to look.">
+  <title>The guarantee boundary</title>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#6e7781"/></marker><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#d64550"/></marker></defs>
+  <text x="24" y="26" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12" fill="#6e7781" font-weight="600">What still holds when the agent does not cooperate?</text>
+  <rect x="24" y="42" width="430" height="58" rx="6" fill="none" stroke="#d64550" stroke-width="2"/>
+  <text x="44" y="67" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#d64550" font-weight="600">Deterministic</text>
+  <text x="44" y="87" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781">the store · git hook · CI</text>
+  <rect x="478" y="42" width="218" height="58" rx="6" fill="none" stroke="#d64550" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="587" y="76" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#d64550">holds anyway</text>
+  <rect x="24" y="114" width="430" height="58" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="44" y="139" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">Adapter-backed</text>
+  <text x="44" y="159" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781">MCP tools</text>
+  <rect x="478" y="114" width="218" height="58" rx="6" fill="none" stroke="#6e7781" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="587" y="148" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781">arrives, may be ignored</text>
+  <rect x="24" y="186" width="430" height="58" rx="6" fill="none" stroke="#6e7781" stroke-width="1.5"/>
+  <text x="44" y="211" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12.5" fill="#6e7781" font-weight="600">Behavioral</text>
+  <text x="44" y="231" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781">AGENTS.md · editor rules</text>
+  <rect x="478" y="186" width="218" height="58" rx="6" fill="none" stroke="#6e7781" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="587" y="220" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781">nothing forces a look</text>
+  <text x="24" y="274" text-anchor="start" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" fill="#6e7781" font-style="italic">Most agents live in the bottom tier. Never document it as a guarantee.</text>
+</svg>

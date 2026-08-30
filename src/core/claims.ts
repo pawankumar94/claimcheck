@@ -176,6 +176,48 @@ export async function listClaims(root: string): Promise<FileClaim[]> {
   return claims;
 }
 
+/** Text reduced to comparable words, so wording differences do not hide a duplicate. */
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s/._-]/g, " ")
+    .split(/\s+/)
+    // Trailing punctuation would otherwise make "src/mw.ts." a different token
+    // from "src/mw.ts", which is exactly the difference this is meant to ignore.
+    .map((w) => w.replace(/^[._-]+|[._-]+$/g, ""))
+    .filter((w) => w && !["the", "a", "an", "is", "are", "to", "in", "of", "and", "or", "must", "should", "never", "always", "do", "not", "only", "it", "this", "that"].includes(w))
+    .sort()
+    .join(" ");
+}
+
+/** True when two tickets name exactly the same set of paths. */
+function sameScope(a: string[], b: string[]): boolean {
+  return a.length === b.length && [...a].sort().join("|") === [...b].sort().join("|");
+}
+
+/** True when two tickets address any of the same paths. */
+function scopesOverlap(a: string[], b: string[]): boolean {
+  return a.some((x) => b.some((y) => x === y || x.startsWith(y + "/") || y.startsWith(x + "/")));
+}
+
+/**
+ * An existing open ticket that already says this about these paths.
+ *
+ * Agents re-pin: the same constraint arrives phrased slightly differently in a
+ * later session, and without this the store fills with near-duplicates that all
+ * surface on the same write. Matching is on normalized wording AND overlapping
+ * scope, so the same sentence about a different directory is still a new ticket.
+ */
+export async function findDuplicate(root: string, text: string, files: string[]): Promise<FileClaim | null> {
+  const wanted = normalizeText(text);
+  const scope = files.map(normalizeRel);
+  for (const claim of await listClaims(root)) {
+    if (claim.closed_at) continue;
+    if (normalizeText(claim.text) === wanted && scopesOverlap(scope, claim.files.map(normalizeRel))) return claim;
+  }
+  return null;
+}
+
 export interface PinInput {
   root: string;
   text: string;
@@ -183,6 +225,8 @@ export interface PinInput {
   evidence?: AcceptanceCriterion[];
   id?: string;
   agent?: string;
+  /** Pin even if an equivalent ticket already covers these paths. */
+  allowDuplicate?: boolean;
 }
 
 export async function pinClaim(input: PinInput): Promise<{ claim: FileClaim; path: string; action: "created" | "updated" }> {
@@ -195,7 +239,32 @@ export async function pinClaim(input: PinInput): Promise<{ claim: FileClaim; pat
     if (!existsSync(abs)) throw new Error(`Cannot pin: ${rel} does not exist.`);
   }
 
-  const id = input.id ?? makeClaimId(input.text);
+  if (!input.allowDuplicate && !input.id) {
+    const existing = await findDuplicate(input.root, input.text, files);
+    if (existing) {
+      const err = new Error(
+        `A ticket already says this about these paths: "${existing.id}". ` +
+        `Nothing pinned. Use --id to pin a distinct one anyway, or edit the existing ticket.`
+      );
+      (err as Error & { duplicateOf?: string }).duplicateOf = existing.id;
+      throw err;
+    }
+  }
+
+  // Ids are derived from the text, so the same sentence about a *different*
+  // directory would collide and silently replace the first ticket's scope --
+  // losing the original paths. A colliding id with a different scope gets a
+  // suffix instead; a colliding id with the same scope is a genuine re-pin.
+  let id = input.id ?? makeClaimId(input.text);
+  if (!input.id) {
+    for (let n = 2; n < 100; n++) {
+      const at = claimPath(input.root, id);
+      if (!existsSync(at)) break;
+      const other = await loadClaim(input.root, id);
+      if (sameScope(other.files.map(normalizeRel), files)) break;
+      id = `${makeClaimId(input.text)}-${n}`;
+    }
+  }
   const existing = existsSync(claimPath(input.root, id)) ? await loadClaim(input.root, id) : null;
   const hashes = await computeHashes(input.root, files);
   const now = new Date().toISOString();

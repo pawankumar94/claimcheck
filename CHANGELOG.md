@@ -3,6 +3,34 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.9.0 — 2026-08-30
+
+The hook worked; the integration around it did the same job twice.
+
+### Fixed
+
+- **`install-agent-hook` now rewrites that agent's rule file.** The default rule
+  tells the agent to look rules up before editing — work the pre-write hook has
+  already done. The agent was running `status` itself, re-reading the file,
+  pinning a duplicate, then re-checking after the edit. Those extra CLI turns and
+  model round-trips, not the ~180 ms lookup, are what made it feel slow. The
+  hook-aware rule says plainly: the hook does the lookup, do not repeat it, and
+  run `check` only when an edit touched frozen evidence.
+- **`pin` refuses a duplicate.** Matching is normalized wording plus overlapping
+  file scope, so a reworded restatement of an existing rule is caught. It catches
+  restatements, not paraphrases — deciding that two different sentences mean the
+  same thing needs a model, and nothing here uses one. `--allow-duplicate` or an
+  explicit `--id` overrides it.
+- **Pinning the same wording about a different scope no longer eats the first
+  ticket.** Ids derive from the text, so two rules with the same sentence about
+  different directories collided and the second silently replaced the first's
+  paths. A colliding id with a different scope now gets a suffix; a colliding id
+  with the same scope is still a re-pin.
+
+### Added
+
+- `pin --quiet` — no output on success, for hooks and scripts.
+
 ## 0.8.0 — 2026-08-30
 
 ### Added

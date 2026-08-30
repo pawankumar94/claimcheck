@@ -4,6 +4,7 @@ import { existsSync } from "node:fs";
 import { copyFile } from "node:fs/promises";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { PACKAGE_ROOT, VERSION } from "./resolve.js";
+import { findTarget, installTarget, loadTemplate } from "./install.js";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -75,6 +76,8 @@ interface HostSpec {
   merge: (settings: Record<string, any>, scriptRel: string) => Record<string, any>;
   ignoreDir: string;
   note: string;
+  /** The install target whose rule file must switch to the hook-aware wording. */
+  ruleTarget: string;
 }
 
 const HOSTS: Record<AgentHost, HostSpec> = {
@@ -84,6 +87,7 @@ const HOSTS: Record<AgentHost, HostSpec> = {
     settingsPath: (root) => join(root, ".claude", "settings.json"),
     ignoreDir: ".claude",
     note: "PreToolUse on Edit|Write|MultiEdit",
+    ruleTarget: "claude-code",
     merge(settings, scriptRel) {
       settings.hooks ??= {};
       settings.hooks.PreToolUse ??= [];
@@ -105,6 +109,7 @@ const HOSTS: Record<AgentHost, HostSpec> = {
     settingsPath: (root) => join(root, ".cursor", "hooks.json"),
     ignoreDir: ".cursor",
     note: "preToolUse",
+    ruleTarget: "cursor",
     merge(settings, scriptRel) {
       // Cursor's hooks.json is versioned and keyed by hook name, with no
       // matcher: the adapter filters on tool_input itself.
@@ -135,7 +140,7 @@ export async function installAgentHook(
   root: string,
   host: AgentHost,
   opts: { failClosed?: boolean; version?: string } = {}
-): Promise<{ host: AgentHost; script: string; settings: string; note: string; action: "created" | "updated" }> {
+): Promise<{ host: AgentHost; script: string; settings: string; note: string; rule?: string; action: "created" | "updated" }> {
   const spec = HOSTS[host];
   if (!spec) throw new Error(`Unsupported agent "${host}". Today: ${AGENT_HOSTS.join(", ")}.`);
 
@@ -163,7 +168,19 @@ export async function installAgentHook(
 
   await mkdir(dirname(settingsPath), { recursive: true });
   await writeFile(settingsPath, JSON.stringify(merged, null, 2) + "\n");
-  return { host, script, settings: settingsPath, note: spec.note, action: hadOurs ? "updated" : "created" };
+  // Swap that host's rule file to the hook-aware wording. Leaving the default
+  // in place tells the agent to look rules up before editing, which the hook has
+  // already done -- the redundant turns cost far more than the lookup.
+  let rule: string | undefined;
+  try {
+    const target = findTarget(spec.ruleTarget);
+    const outcome = await installTarget(target, root, await loadTemplate({ hooked: true }), { force: true });
+    rule = outcome.path;
+  } catch {
+    // A host without a rule target still gets a working hook.
+  }
+
+  return { host, script, settings: settingsPath, note: spec.note, rule, action: hadOurs ? "updated" : "created" };
 }
 
 export function agentHookIgnoreDir(host: AgentHost): string {

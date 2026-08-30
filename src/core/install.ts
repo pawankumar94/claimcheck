@@ -111,8 +111,18 @@ export function detectTargets(projectRoot: string): InstallTarget[] {
   return TARGETS.filter((t) => t.detect.some((p) => existsSync(join(projectRoot, p))));
 }
 
-export async function loadTemplate(): Promise<string> {
-  return readFile(join(PACKAGE_ROOT, "templates", "diedinchat.md"), "utf-8");
+/**
+ * The methodology written into each agent's instruction file.
+ *
+ * The `hooked` variant matters for latency, not wording. Without it the rule
+ * still tells the agent to look rules up before editing -- work the pre-write
+ * hook has already done -- so the agent spends extra CLI turns and model
+ * round-trips repeating it. Those round-trips, not the ~180ms lookup, are what
+ * makes the integration feel slow.
+ */
+export async function loadTemplate(opts: { hooked?: boolean } = {}): Promise<string> {
+  const file = opts.hooked ? "diedinchat-hooked.md" : "diedinchat.md";
+  return readFile(join(PACKAGE_ROOT, "templates", file), "utf-8");
 }
 
 const MARKER_START = "<!-- diedinchat:start -->";

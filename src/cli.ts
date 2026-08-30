@@ -87,6 +87,8 @@ program
   .option("--id <id>", "ticket id; default is a slug of --text")
   .option("--evidence <keyword>", "frozen phrase that must remain in the files (repeatable)", collect, [])
   .option("--agent <name>", "which agent is pinning this")
+  .option("--allow-duplicate", "pin even if an equivalent ticket already covers these paths")
+  .option("--quiet", "print nothing on success; for hooks and scripts")
   .option("--dir <path>", "project root", process.cwd())
   .action(async (opts) => {
     const files = opts.file as string[];
@@ -95,17 +97,26 @@ program
       process.exitCode = 1;
       return;
     }
-    const { claim, path, action } = await pinClaim({
-      root: opts.dir,
-      text: opts.text,
-      files,
-      ...(opts.id ? { id: opts.id } : {}),
-      ...(opts.agent ? { agent: opts.agent } : {}),
-      ...(opts.evidence.length > 0 ? { evidence: opts.evidence } : {}),
-    });
-    console.log(`${action} ${path}`);
-    console.log(`${claim.status}  ${claim.id}`);
-    console.log(claim.text);
+    let pinned;
+    try {
+      pinned = await pinClaim({
+        root: opts.dir,
+        text: opts.text,
+        files,
+        ...(opts.id ? { id: opts.id } : {}),
+        ...(opts.agent ? { agent: opts.agent } : {}),
+        ...(opts.evidence.length > 0 ? { evidence: opts.evidence } : {}),
+        ...(opts.allowDuplicate ? { allowDuplicate: true } : {}),
+      });
+    } catch (err) {
+      console.error((err as Error).message);
+      process.exitCode = 1;
+      return;
+    }
+    if (opts.quiet) return;
+    console.log(`${pinned.action} ${pinned.path}`);
+    console.log(`${pinned.claim.status}  ${pinned.claim.id}`);
+    console.log(pinned.claim.text);
   });
 
 program
@@ -422,6 +433,7 @@ program
     const out = await installAgentHook(opts.dir, opts.agent as AgentHost, { failClosed: opts.failClosed });
     console.log(`  ${out.action.padEnd(9)} ${out.script}`);
     console.log(`  ${out.action.padEnd(9)} ${out.settings}   (${out.note})`);
+    if (out.rule) console.log(`  ${out.action.padEnd(9)} ${out.rule}   (rule updated: the hook does the lookup)`);
     console.log(
       "\nThe agent now sees rules covering a file before it writes, and is denied when one is\n" +
       "contradicted. The hook resolves diedinchat from node_modules, then npx -- no global\n" +

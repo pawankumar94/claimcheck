@@ -6,6 +6,7 @@ import {
   checkClaim,
   closeClaim,
   makeClaimId,
+  listClaims,
   pinClaim,
   statusClaims,
   ticketCoversPath,
@@ -222,5 +223,47 @@ describe("close and unpin", () => {
     await unpinClaim(root, "one");
     expect((await statusClaims(root)).map((entry) => entry.claim.id)).toEqual(["two"]);
     await expect(unpinClaim(root, "missing")).rejects.toThrow(/No claim/);
+  });
+});
+
+describe("duplicate and scope handling on pin", () => {
+  let root: string;
+  beforeEach(async () => {
+    root = await mkdtemp(join(tmpdir(), "dup-"));
+    await mkdir(join(root, "src", "routes"), { recursive: true });
+    await writeFile(join(root, "src", "mw.ts"), "export const withAuth = 1;\n");
+    await writeFile(join(root, "src", "routes", "h.ts"), "export const h = 1;\n");
+  });
+  afterEach(async () => rm(root, { recursive: true, force: true }));
+
+  it("refuses a differently-worded ticket that means the same thing about the same paths", async () => {
+    // Agents re-pin: the same constraint arrives reworded in a later session,
+    // producing a different id, and the store fills with near-duplicates that
+    // all fire on one write. An identical id is a re-pin and updates in place;
+    // this is about the case that would create a second file.
+    await pinClaim({ root, text: "Auth only goes through src/mw.ts", files: ["src/mw.ts"] });
+    await expect(
+      pinClaim({ root, text: "auth goes only through src/mw.ts.", files: ["src/mw.ts"] })
+    ).rejects.toThrow(/already says this/);
+    expect(await listClaims(root)).toHaveLength(1);
+  });
+
+  it("allows the same wording about a different scope, without eating the first ticket", async () => {
+    // Ids derive from the text, so this once collided and silently replaced the
+    // first ticket's files -- losing the original paths entirely.
+    await pinClaim({ root, text: "Keep this thin", files: ["src/mw.ts"] });
+    await pinClaim({ root, text: "Keep this thin", files: ["src/routes"] });
+    const claims = await listClaims(root);
+    expect(claims).toHaveLength(2);
+    expect(claims.flatMap((c) => c.files).sort()).toEqual(["src/mw.ts", "src/routes"]);
+  });
+
+  it("lets an explicit --id override the duplicate refusal", async () => {
+    await pinClaim({ root, text: "Auth only goes through src/mw.ts", files: ["src/mw.ts"] });
+    const { claim } = await pinClaim({
+      root, text: "Auth only goes through src/mw.ts", files: ["src/mw.ts"], id: "auth-v2",
+    });
+    expect(claim.id).toBe("auth-v2");
+    expect(await listClaims(root)).toHaveLength(2);
   });
 });

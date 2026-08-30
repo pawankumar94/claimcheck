@@ -4,7 +4,7 @@
   "description": "File-bound tickets for coding agents. Pin a constraint to the paths it is about; it lives in git, survives session end and tool switches, and flips stale when those files change. CLI, MCP server, and install targets for Claude, Cursor, Copilot, Codex, Gemini and AGENTS.md.",
   "type": "module",
   "bin": {
-    "diedinchat": "./dist/cli.js"
+    "diedinchat": "dist/cli.js"
   },
   "main": "./dist/index.js",
   "exports": {

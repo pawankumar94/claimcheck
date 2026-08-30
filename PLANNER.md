@@ -206,7 +206,7 @@ Publicising earlier spends the one chance at a first impression on a tool whose
 signal is not yet trustworthy:
 
 - [x] M0 run, stale fixed, false-alarm rate published (65%/97% -> 0%, detection 11/11)
-- [x] M1 run — null on inferable constraints. Rerun on invisible ones (M1b): 4/6 vs 0/6 on the two discriminating tasks, +67 pts CI +9 to +91; all three tasks +44 CI -2 to +75, spanning zero. Directional, not conclusive. A larger run is the open item.
+- [x] M1 run — null on inferable constraints. On invisible ones (M1b-v2, 60 invocations, pre-registered): 18/20 vs 0/20, +90 pts CI +65 to +99, with a negative control at +0 CI -22 to +22. Conclusive for one agent on this fixture; cross-agent replication is the open item.
 - [x] M2 run — agents pin 6/6 with the convention installed, 0/6 without (+100 pts, CI +43 to +107). Found and fixed: agents pinned without evidence, landing every ticket in M0's 65% noise mode.
 - [ ] M3 run — no measured harm at realistic ticket volume
 - [ ] MCP reaches CLI parity (`close`, `unpin`), so MCP users are not stuck

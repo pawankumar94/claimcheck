@@ -1,107 +1,138 @@
-# M1b — honor on constraints the code cannot reveal
+# Does a pinned ticket change what an agent writes?
 
-[M1](honor-rate.md) found no effect at all, because its constraints were
-demonstrated by neighbouring code and a capable model simply copied the pattern.
-This is the same question on constraints a model **cannot** infer: the
-repository is either silent about them or actively shows the opposite.
+Yes, for constraints the code cannot reveal. On three such constraints, an
+unaided agent got two of them wrong **every single time**; with the constraint
+pinned it got them right 18 times out of 20.
 
-## The constraints
+## Result
 
-| Ticket | Why it is invisible |
+Claude Sonnet 4.6 via Vertex AI, 3 tasks x 2 arms x 10 trials, 60 invocations,
+zero harness errors, $2.13 total.
+
+### Primary comparison — pre-registered
+
+The two constraints a probe showed an unaided agent gets wrong.
+
+| | Honored |
+|---|---|
+| ticket pinned | **18/20 (90%)** |
+| no ticket | **0/20 (0%)** |
+
+**+90 percentage points, 95% Agresti-Caffo interval +65 to +99.** Excludes zero.
+
+<p align="center">
+  <img src="../assets/honor-invisible.svg" width="720" alt="Constraints honored in 18 of 20 runs with a ticket pinned and 0 of 20 without; the 95 percent interval on the difference excludes zero">
+</p>
+
+### Negative control — pre-registered
+
+`i2` is a constraint the agent already handles correctly unaided. Tickets should
+change nothing here, and a difference would suggest the intervention perturbs
+work it has no business touching.
+
+| | Honored |
+|---|---|
+| ticket pinned | 10/10 |
+| no ticket | 10/10 |
+
+**+0 points, 95% interval −22 to +22.** Spans zero, as specified in advance.
+
+This is what separates the result from "tickets change everything". The
+intervention moves the two things that were broken and leaves the working one
+alone.
+
+### All three tasks
+
+28/30 versus 10/30. **+60 points, 95% interval +37 to +76.**
+
+### Per task
+
+| Task | no ticket | ticket pinned |
+|---|---|---|
+| `i1-generated-config` | **0/10** | 9/10 |
+| `i3-misleading-units` | **0/10** | 9/10 |
+| `i2-banned-dependency` (control) | 10/10 | 10/10 |
+
+<p align="center">
+  <img src="../assets/honor-invisible-by-task.svg" width="720" alt="Per-task honored counts for the two conditions across ten trials">
+</p>
+
+The effect is not carried by one dominating task. Both discriminating
+constraints go from never right to nearly always right.
+
+## What the constraints were, and why the code cannot express them
+
+| Ticket | Why an agent cannot infer it |
 |---|---|
 | `src/config.ts` is generated from the schema | no marker comment; the file looks hand-written |
 | lodash is banned in new code | `src/legacy/report.ts` imports lodash, so the repo demonstrates the opposite |
 | `getPrice` returns integer cents behind a bare `number` | nothing in the file states the unit |
 
-## Pre-run probe
+Unaided, the agent edited the generated file on all 10 trials — a change the
+next build silently discards — and converted cents to a decimal currency amount
+on all 10 of the pricing trials.
 
-Before any scored run, one unaided trial per task established which constraints
-an agent actually gets wrong:
+## Pre-registration
 
-| Task | Unaided |
-|---|---|
-| `i1-generated-config` | **violated** — edited the generated file |
-| `i3-misleading-units` | **violated** — float arithmetic on a cents value |
-| `i2-banned-dependency` | honored — wrote plain TypeScript, never reached for lodash |
+Written into [`tasks-v2.json`](../../examples/honor-invisible/tasks-v2.json)
+before this run:
 
-`i2` was kept rather than dropped. A fixture where every task is rigged to fail
-unaided is less credible than one that shows where a ticket is not needed. The
-probe outcome was written into the frozen task set before the run.
+- Primary comparison is `i1` + `i3`.
+- `i2` is a negative control, expected to show no effect.
+- All three figures must be reported, not only the favourable one.
 
-## Result
+## Why this is v2
 
-Claude Sonnet 4.6 via Vertex, 3 tasks x 2 arms x 3 trials, 18 invocations, zero
-harness errors.
+An earlier run used the same fixture with a defective key: `i3`'s pattern
+flagged `Math.round(getPrice(sku) * 0.9)`, which is correct — multiplying
+integer cents by 0.9 and rounding yields integer cents.
 
-| | Honored |
-|---|---|
-| `with-tickets` | 7/9 (78%) |
-| `no-tickets` | 3/9 (33%) |
+That key was **not edited in place after seeing output.** It was corrected in a
+new task set with its own fresh run, which is the rule this project applies to
+everyone else. The v1 record stands unchanged in
+[`honor-invisible-results.json`](honor-invisible-results.json), and the
+corrected key was validated by re-scoring v1's data: it flipped exactly the one
+false negative and left all six other observations unchanged, including keeping
+every unaided run a violation.
 
-**+44 points, 95% Agresti-Caffo interval −2 to +75.** The interval **spans
-zero**: across all three tasks, at this sample size, the run cannot distinguish
-the arms.
+## The two remaining failures
 
-Restricted to the two tasks the probe showed discriminate:
+Both are with a ticket present, and both are honest misses rather than scoring
+artifacts:
 
-| | Honored |
-|---|---|
-| `with-tickets` | 4/6 |
-| `no-tickets` | **0/6** |
+- `i1` trial 0 — the agent edited the generated file without consulting the
+  ticket. A retrieval miss: it did not look. This is the behavioural tier
+  failing, and the reason `install-hook` exists.
+- `i3` trial 1 — converted to a decimal currency amount despite the pinned rule.
 
-**+67 points, 95% interval +9 to +91**, excluding zero.
+At 90%, roughly one in ten invocations still misses. A ticket is not a
+guarantee; the git hook is the path that does not depend on the agent choosing
+to look.
 
-<p align="center">
-  <img src="../assets/honor-invisible-by-task.svg" width="720" alt="Per-task honor counts for the with-tickets and no-tickets conditions">
-</p>
+## Limits
 
-That subgroup was specified before the run rather than discovered in the data,
-but it is still a subgroup of six observations per arm. Treat it as
-**directional evidence, not a proven effect.** The honest summary is: on
-constraints an agent gets wrong unaided, a pinned ticket moved compliance from
-0/6 to 4/6, and a larger run is needed to put a tight interval on that.
+- **One agent, one model.** Everything here is Claude Sonnet 4.6 on Vertex.
+  Copilot, Gemini, Cursor and cheaper tiers are untested, and instruction
+  following is exactly where they would be expected to differ.
+- **Three constraints in a synthetic fixture.** Real repositories have more
+  constraints, more noise, and more competing context.
+- **Nothing here measures cost.** Token overhead and latency with many tickets
+  present is M3, which has not been run.
+- **This is honor, not capture.** Whether an agent writes the ticket in the first
+  place is [capture-rate.md](capture-rate.md).
 
-## Two failures worth reading
+## Data
 
-**Retrieval miss.** `i1` trial 0: the agent edited the generated file and never
-mentioned the ticket. It did not look. This is the behavioural tier failing —
-the same gap the git hook exists to cover.
+Fixture and task sets: [`examples/honor-invisible/`](../../examples/honor-invisible/).
+All 60 invocations with prompts, agent prose, resulting workspace and frozen
+scores: [`honor-invisible-v2-results.json`](honor-invisible-v2-results.json).
 
-**An answer-key defect, not an agent error.** `i3` trial 1: the agent read the
-ticket, wrote *"in integer cents"* in its own comment, and produced
+Reproduce:
 
-```ts
-return Math.round(getPrice(sku) * 0.9);
+```bash
+diedinchat run --tasks examples/honor-invisible/tasks-v2.json \
+  --agent examples/honor-rate/claude-vertex.json \
+  --policy no-tickets --policy with-tickets --trials 10 --out-dir ./results/v2
+diedinchat score --tasks examples/honor-invisible/tasks-v2.json --raw-dir ./results/v2
+diedinchat report --baseline no-tickets --candidate with-tickets
 ```
-
-which is correct — multiplying cents by 0.9 and rounding yields integer cents.
-The `forbid` pattern flags any `* 0.9` and scored it a violation.
-
-**The key was not changed after seeing this.** Editing an answer key once output
-is visible converts a measurement into a rubber stamp. The defect is recorded
-here and belongs to a new task set with its own run. Under a corrected key the
-measured effect would be larger, and that number is deliberately not stated —
-it has not been measured.
-
-## What this supports, and what it does not
-
-Supported: tickets carry facts the code cannot express, and that changes what an
-agent writes. `i1` unaided edited a generated file every time — a change the
-next build silently discards.
-
-Not supported: any claim about magnitude. n=6 per arm on the discriminating
-tasks, one agent, one model, and a known key defect biasing against the
-intervention.
-
-Also confirmed from the other side: `i2` behaved identically in both arms.
-Tickets do not make a model better at things it already does correctly.
-
-## Frozen design
-
-Fixture and task set: [`examples/honor-invisible/`](../../examples/honor-invisible/).
-Raw records for all 18 invocations, including agent prose and resulting
-workspace: [`honor-invisible-results.json`](honor-invisible-results.json).
-
-Arms differ only in whether the workspace carries `.diedinchat/` plus the
-installed `AGENTS.md` block. Identical prompts, identical flags, fresh workspace
-per invocation. Scored on the files the agent left behind, never on its prose.

@@ -195,45 +195,38 @@ per client is in [docs/integrations.md](docs/integrations.md).
 
 ## Does it actually work?
 
-**Yes for capture — the sentence gets written down.** Claude Sonnet 4.6, two
-tasks, three trials per arm, 12 invocations, zero harness errors:
+**Yes — on constraints your code cannot express.** Claude Sonnet 4.6, three
+constraints an agent cannot infer, 60 invocations, zero harness errors:
 
-| | Constraint pinned |
+| | Constraint honored |
 |---|---|
-| convention installed | **6/6 (100%)** |
-| not installed | **0/6 (0%)** |
+| ticket pinned | **18/20 (90%)** |
+| no ticket | **0/20 (0%)** |
 
-**+100 points, 95% interval +43 to +107**, excluding zero. Scored on the ticket
-store, not on prose — an agent saying "noted, I'll remember" counts as a
-failure. Full design and limits: [docs/evidence/capture-rate.md](docs/evidence/capture-rate.md).
+**+90 points, 95% interval +65 to +99.** Unaided, the agent edited a generated
+file on every single trial — a change the next build silently discards — and
+converted a cents value to decimal currency on every pricing trial. With the
+constraint pinned, it stopped.
 
-That is the gap model capability does not close. However good the model gets,
-the sentence still leaves with the session.
+<p align="center">
+  <img src="docs/assets/honor-invisible.svg" width="720" alt="Constraints honored in 18 of 20 runs with a ticket pinned and 0 of 20 without; the 95 percent interval on the difference excludes zero">
+</p>
 
-**Directional on honor — tickets change what gets written, when the constraint
-is one the code cannot reveal.** Three constraints an agent cannot infer (a
-generated file with no marker, a banned-but-installed dependency, a value that is
-cents behind a `number` type), 18 invocations:
+**And a negative control, specified before the run.** A third constraint the
+agent already gets right unaided scored 10/10 in *both* arms — +0 points,
+interval −22 to +22. Tickets moved the two things that were broken and left the
+working one alone. Full design, both remaining failures, and all 60 raw records:
+[docs/evidence/honor-invisible.md](docs/evidence/honor-invisible.md).
 
-| | Honored |
-|---|---|
-| ticket pinned | 4/6 |
-| no ticket | **0/6** |
+**Agents also write the tickets themselves.** With the convention installed,
+constraints stated in passing were pinned 6/6; without it, 0/6. +100 points,
+interval +43 to +107. [docs/evidence/capture-rate.md](docs/evidence/capture-rate.md).
 
-Unaided, the agent edited the generated file **every time** — a change the next
-build silently discards. With the constraint pinned, it stopped.
+### What to pin
 
-Read the caveats before citing this: across all three tasks the interval spans
-zero (+44, −2 to +75), the result above is the two tasks a pre-run probe showed
-discriminate, n is 6 per arm, and one scored failure was a defect in our own
-answer key rather than an agent error. Full design, both failures, and raw
-records: [docs/evidence/honor-invisible.md](docs/evidence/honor-invisible.md).
-
-**And the limit that tells you what to pin.** A separate run found tickets made
-*no difference* for constraints an agent can infer from surrounding code — 9/9
-in every arm. Modern models read the neighbouring files and copy the pattern.
-
-So pin what an agent **cannot** infer:
+Tickets do not make a model better at what it already does well — a separate run
+found **no effect at all** for constraints inferable from surrounding code, 9/9
+in every arm. Pin what the code cannot tell it:
 
 | Worth pinning | Not worth pinning |
 |---|---|
@@ -241,12 +234,11 @@ So pin what an agent **cannot** infer:
 | "don't use lodash, it's installed but banned" | "SQL lives in `src/db/`" (`src/db/` is right there) |
 | "this returns cents despite the `number` type" | anything the code already demonstrates |
 
-Details of that null: [docs/evidence/honor-rate.md](docs/evidence/honor-rate.md).
+That null is measured too: [docs/evidence/honor-rate.md](docs/evidence/honor-rate.md).
 
-**Third measured result:** `stale` used to fire on 65% of commits for a
-file-pinned ticket and 97% for a directory-pinned one — a signal that is always
-on. Frozen evidence now decides the outcome, taking that to 0% while still
-catching 11/11 injected breakages.
+**One more.** `stale` used to fire on 65% of commits for a file-pinned ticket and
+97% for a directory-pinned one. Frozen evidence now decides the outcome: 0%
+false alarms, still catching 11/11 injected breakages.
 [docs/evidence/stale-noise.md](docs/evidence/stale-noise.md).
 
 ## Status
@@ -263,8 +255,8 @@ Known gaps, in the order they will bite you:
   directory expansion ignores `.gitignore`.
 - **MCP lags the CLI**: `close` and `unpin` aren't exposed, so an MCP-only agent
   can create tickets it can't retire.
-- **Honor evidence is directional, not conclusive.** 6 observations per arm on
-  the tasks that discriminate. A larger run is needed for a tight interval.
+- **A ticket is not a guarantee.** At 90%, roughly one invocation in ten still
+  misses. `install-hook` is the path that does not depend on the agent looking.
 - **One agent, one model.** Everything measured so far is Claude Sonnet 4.6.
   Copilot, Gemini and cheaper tiers are untested.
 

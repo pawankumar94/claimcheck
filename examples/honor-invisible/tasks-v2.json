@@ -1,0 +1,95 @@
+{
+  "note": "M1b-v2. Same fixture and same three constraints as tasks.json, with one answer key corrected and more trials. PRE-REGISTERED ANALYSIS, fixed before this run: the primary comparison is i1 + i3, the two tasks a probe showed an unaided agent gets wrong. i2 is a declared NEGATIVE CONTROL -- an unaided agent already handles it correctly, so tickets should change nothing there; a difference on i2 would suggest the intervention perturbs work it should not touch. Reporting must give the primary comparison, the negative control, and the all-task figure. WHY v2 EXISTS: in the first run, i3's forbid pattern flagged Math.round(getPrice(sku) * 0.9), which is correct -- multiplying integer cents by 0.9 and rounding yields integer cents. That key was not edited in place after seeing output; it is corrected here, in a new task set with its own run, per the method in the README.",
+  "fixture_dir": "fixture",
+  "policy_overlays": {
+    "with-tickets": "overlay-with-tickets",
+    "no-tickets": "overlay-no-tickets"
+  },
+  "tasks": [
+    {
+      "id": "i1-generated-config",
+      "prompt": "Change the API base URL to https://api.acme.production. Make the code change.",
+      "inspect": [
+        "src/config.ts",
+        "src/config.schema.ts"
+      ],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "--- src/config\\.ts ---[\\s\\S]*acme\\.production",
+            "label": "the new URL was written into the generated file src/config.ts"
+          }
+        ],
+        "require": [
+          {
+            "any_of": [
+              "acme.production"
+            ],
+            "label": "the URL was actually changed"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "Nothing in src/config.ts says it is generated. An unaided agent edits it directly, which the next build overwrites."
+    },
+    {
+      "id": "i2-banned-dependency",
+      "prompt": "Add src/summary.ts exporting `countByStatus`, which takes an array of objects with a `status` string and returns counts per status. Make the code change.",
+      "inspect": [
+        "src/summary.ts"
+      ],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "lodash",
+            "flags": "i",
+            "label": "imported lodash into new code"
+          }
+        ],
+        "require": [
+          {
+            "any_of": [
+              "countbystatus"
+            ],
+            "label": "the helper was actually written"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "lodash is a real dependency and src/legacy/report.ts imports it, so the repository demonstrates the opposite of the rule. Only a ticket can say new code must not use it. PRE-RUN PROBE (2026-08-30, before any scored run): the unaided agent wrote plain TypeScript here and did not reach for lodash, so this task does not discriminate. It is kept deliberately rather than dropped -- a fixture where every task is rigged to fail unaided is less credible than one that shows where a ticket is not needed. Expect it to score HONORED in both arms and to dilute the overall effect; read the per-task split. DECLARED NEGATIVE CONTROL for this run: expected to score the same in both arms."
+    },
+    {
+      "id": "i3-misleading-units",
+      "prompt": "Add src/discount.ts exporting `discounted`, which takes a SKU and returns its price with 10 percent off. Make the code change.",
+      "inspect": [
+        "src/discount.ts"
+      ],
+      "honor": {
+        "forbid": [
+          {
+            "regex": "/\\s*100|\\.tofixed|parsefloat",
+            "label": "converted cents into a decimal currency amount"
+          }
+        ],
+        "require": [
+          {
+            "any_of": [
+              "discounted"
+            ],
+            "label": "the helper was actually written"
+          },
+          {
+            "any_of": [
+              "math.round",
+              "math.floor",
+              "math.trunc"
+            ],
+            "label": "the result is forced back to integer cents"
+          }
+        ]
+      },
+      "verified": true,
+      "note": "getPrice returns integer cents behind a bare `number` type and nothing in the file says so. The violation is converting to a decimal currency amount (dividing by 100, toFixed, parseFloat). Math.round(cents * 0.9) is CORRECT and must pass -- v1's key wrongly flagged it, which biased that run against the intervention."
+    }
+  ]
+}

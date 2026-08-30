@@ -17,6 +17,7 @@ import { checkClaim, closeClaim, pinClaim, statusClaims, unpinClaim } from "./co
 import type { ClaimEvaluation } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
 import { AGENT_HOSTS, agentHookIgnoreDir, installAgentHook, installCheckHook } from "./core/hooks.js";
+import { reviewDiff, reviewMarkdown } from "./core/review.js";
 import type { AgentHost } from "./core/hooks.js";
 import type { SupportedHook } from "./core/hooks.js";
 
@@ -196,6 +197,49 @@ program
   });
 
 program
+  .command("review")
+  .description(
+    "Which pinned rules does this change touch, and are any contradicted? " +
+    "Editor-independent: works for an agent, a teammate, or a hand edit."
+  )
+  .option("--base <ref>", "compare against this ref; defaults to the merge base with your default branch")
+  .option("--dir <path>", "project root", process.cwd())
+  .option("--json", "emit machine-readable JSON")
+  .option("--markdown", "emit a PR comment")
+  .action(async (opts) => {
+    const review = await reviewDiff(opts.dir, opts.base);
+
+    if (opts.json) {
+      console.log(JSON.stringify(review, null, 2));
+    } else if (opts.markdown) {
+      console.log(reviewMarkdown(review));
+    } else if (review.claims.length === 0) {
+      console.log(
+        `No pinned rules cover the ${review.changedFiles.length} file(s) changed against ${review.base}.`
+      );
+    } else {
+      console.log(
+        `${review.claims.length} rule(s) apply to this change ` +
+          `(${review.changedFiles.length} file(s) vs ${review.base})\n`
+      );
+      for (const { evaluation: e, touched } of review.claims) {
+        console.log(`${e.status.padEnd(13)} ${e.claim.id}`);
+        console.log(`              ${e.claim.text}`);
+        console.log(`              touches: ${touched.join(", ")}`);
+        if (e.missingEvidence.length > 0) {
+          console.log(`              evidence gone: ${e.missingEvidence.join(", ")}`);
+        }
+        console.log();
+      }
+    }
+
+    // Only a contradiction fails the build. `stale` means files moved with
+    // nothing frozen to check, which fired on 65% of real commits -- a review
+    // that is usually red is a review nobody reads.
+    if (review.contradicted > 0) process.exitCode = 1;
+  });
+
+program
   .command("measure")
   .description("Lab: measure whether trimming your agent's tool surface changes task success. Needs no files: tasks, answer keys, and agent profiles all ship with diedinchat.")
   .option("--agent <name>", "agent to measure; auto-detected from what is installed if omitted")
@@ -365,6 +409,7 @@ program
     "agent edits it, and denies the write when one is contradicted."
   )
   .option("--agent <name>", `which agent: ${AGENT_HOSTS.join(" | ")}`, "claude-code")
+  .option("--fail-closed", "deny the write when diedinchat itself cannot be run (policy over usability)")
   .option("--dir <path>", "project root", process.cwd())
   .action(async (opts) => {
     if (!AGENT_HOSTS.includes(opts.agent)) {
@@ -374,12 +419,18 @@ program
       process.exitCode = 1;
       return;
     }
-    const out = await installAgentHook(opts.dir, opts.agent as AgentHost);
+    const out = await installAgentHook(opts.dir, opts.agent as AgentHost, { failClosed: opts.failClosed });
     console.log(`  ${out.action.padEnd(9)} ${out.script}`);
     console.log(`  ${out.action.padEnd(9)} ${out.settings}   (${out.note})`);
     console.log(
       "\nThe agent now sees rules covering a file before it writes, and is denied when one is\n" +
-      "contradicted. Requires `diedinchat` on PATH."
+      "contradicted. The hook resolves diedinchat from node_modules, then npx -- no global\n" +
+      "install needed, though `npm i -D diedinchat` avoids a network round trip."
+    );
+    console.log(
+      opts.failClosed
+        ? "Fail-closed: a write is denied if diedinchat cannot be run."
+        : "Fail-open: if diedinchat cannot be run the write proceeds. Use --fail-closed to invert that."
     );
     const dir = agentHookIgnoreDir(opts.agent as AgentHost);
     if (await isGitIgnored(opts.dir, dir)) {

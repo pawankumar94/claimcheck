@@ -103,3 +103,60 @@ describe("pre-write adapters", () => {
     await rm(root, { recursive: true, force: true });
   });
 });
+
+describe("adapter scripts", () => {
+  const ADAPTERS = ["claude-code-pretooluse.mjs", "cursor-pretooluse.mjs"];
+
+  it("are syntactically valid once rendered", async () => {
+    // A regex-based edit once left `result` undefined in both adapters, so they
+    // crashed instead of failing open -- which a hook must never do. Checking
+    // the rendered artifact, not the template, is the point.
+    const root = await mkdtemp(join(tmpdir(), "adapter-syntax-"));
+    for (const host of ["claude-code", "cursor"] as const) {
+      const out = await installAgentHook(root, host);
+      await expect(
+        execFileAsync(process.execPath, ["--check", out.script]),
+        `${host} adapter must parse`
+      ).resolves.toBeTruthy();
+    }
+    await rm(root, { recursive: true, force: true });
+  });
+
+  it("carry the placeholders the installer substitutes", async () => {
+    for (const a of ADAPTERS) {
+      const src = await readFile(join(process.cwd(), "templates", "adapters", a), "utf-8");
+      expect(src, `${a} must be templated, not copied verbatim`).toContain("__DIEDINCHAT_VERSION__");
+      expect(src).toContain("__FAIL_CLOSED__");
+    }
+  });
+
+  it("resolve the CLI without assuming a global install", async () => {
+    for (const a of ADAPTERS) {
+      const src = await readFile(join(process.cwd(), "templates", "adapters", a), "utf-8");
+      expect(src, `${a} must try node_modules first`).toContain("node_modules");
+      expect(src, `${a} must fall back to npx`).toContain("npx");
+    }
+  });
+
+  it("are rendered with no placeholders left, and honour --fail-closed", async () => {
+    const root = await mkdtemp(join(tmpdir(), "adapter-render-"));
+    const open = await installAgentHook(root, "cursor");
+    let src = await readFile(open.script, "utf-8");
+    expect(src).not.toContain("__DIEDINCHAT_VERSION__");
+    expect(src).toContain("const FAIL_CLOSED = false");
+
+    const closed = await installAgentHook(root, "cursor", { failClosed: true });
+    src = await readFile(closed.script, "utf-8");
+    expect(src).toContain("const FAIL_CLOSED = true");
+    await rm(root, { recursive: true, force: true });
+  });
+
+  it("cursor's hook entry carries a matcher, so it does not spawn on every tool call", async () => {
+    const root = await mkdtemp(join(tmpdir(), "adapter-matcher-"));
+    const out = await installAgentHook(root, "cursor");
+    const entry = JSON.parse(await readFile(out.settings, "utf-8")).hooks.preToolUse[0];
+    expect(entry.matcher).toBeTruthy();
+    expect(entry.matcher).toContain("Write");
+    await rm(root, { recursive: true, force: true });
+  });
+});

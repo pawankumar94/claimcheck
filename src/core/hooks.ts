@@ -3,7 +3,7 @@ import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { copyFile } from "node:fs/promises";
 import { dirname, join, relative, resolve, sep } from "node:path";
-import { PACKAGE_ROOT } from "./resolve.js";
+import { PACKAGE_ROOT, VERSION } from "./resolve.js";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -111,7 +111,8 @@ const HOSTS: Record<AgentHost, HostSpec> = {
       settings.version ??= 1;
       settings.hooks ??= {};
       settings.hooks.preToolUse ??= [];
-      const entry = { command: `node ./${scriptRel}`, timeout: 10 };
+      // Without a matcher this spawns before every tool call and then exits.
+      const entry = { command: `node ./${scriptRel}`, timeout: 10, matcher: "Write|Delete|Edit" };
       const at = settings.hooks.preToolUse.findIndex(
         (h: any) => typeof h?.command === "string" && h.command.includes("diedinchat-gate")
       );
@@ -132,14 +133,22 @@ export const AGENT_HOSTS = Object.keys(HOSTS) as AgentHost[];
  */
 export async function installAgentHook(
   root: string,
-  host: AgentHost
+  host: AgentHost,
+  opts: { failClosed?: boolean; version?: string } = {}
 ): Promise<{ host: AgentHost; script: string; settings: string; note: string; action: "created" | "updated" }> {
   const spec = HOSTS[host];
   if (!spec) throw new Error(`Unsupported agent "${host}". Today: ${AGENT_HOSTS.join(", ")}.`);
 
   const script = spec.scriptPath(root);
   await mkdir(dirname(script), { recursive: true });
-  await copyFile(join(PACKAGE_ROOT, "templates", "adapters", spec.adapter), script);
+
+  // The adapter is templated rather than copied: it has to know which version
+  // to fall back to via npx, and whether an unavailable CLI should deny.
+  const source = await readFile(join(PACKAGE_ROOT, "templates", "adapters", spec.adapter), "utf8");
+  const rendered = source
+    .replace("__DIEDINCHAT_VERSION__", opts.version ?? VERSION)
+    .replace("__FAIL_CLOSED__", String(opts.failClosed ?? false));
+  await writeFile(script, rendered);
   await chmod(script, 0o755);
 
   const settingsPath = spec.settingsPath(root);

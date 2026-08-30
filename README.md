@@ -165,7 +165,9 @@ answers, in increasing strength:
 ```bash
 diedinchat install-agent-hook --agent claude-code
 diedinchat install-agent-hook --agent cursor
-diedinchat install-hook --hook pre-commit     # works regardless of editor
+diedinchat install-agent-hook --agent cursor --fail-closed   # deny if diedinchat can't run
+diedinchat install-hook --hook pre-commit                    # any editor, any human
+diedinchat review --markdown                                 # what this PR touches
 ```
 
 The agent hook runs *before* an edit: it puts the rules covering that file in

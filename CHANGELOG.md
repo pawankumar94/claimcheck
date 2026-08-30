@@ -3,6 +3,35 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.8.0 — 2026-08-30
+
+### Added
+
+- **`diedinchat review`** — which pinned rules a change touches, and whether any
+  lost their evidence. Editor-independent: it needs no hook and no cooperation
+  from whatever wrote the code, so it covers an agent, a teammate, or a hand
+  edit equally. `--markdown` emits a PR comment, `--json` feeds CI, and it exits
+  non-zero only on a contradiction. Untracked files are included, because the
+  canonical failure is an agent *adding* a file that breaks a rule and `git
+  diff` never sees a new file.
+
+### Fixed
+
+Three things that made the pre-write hooks look production-ready without being
+so:
+
+- **The adapters assumed `diedinchat` was on `PATH`.** Someone who ran
+  `npx diedinchat install-agent-hook` has no global binary and no local
+  dependency, so the hook installed cleanly and did nothing. Adapters now
+  resolve `node_modules/.bin`, then `PATH`, then `npx -y diedinchat@<version>`
+  pinned to the version that generated them.
+- **Cursor's hook entry had no `matcher`**, so it spawned a process before every
+  agent tool call and exited for non-file ones. Now scoped to `Write|Delete|Edit`.
+- **`--fail-closed`.** Adapters fail open by default, which keeps people working
+  but is not enforcement. Teams that need the guarantee can now deny the write
+  when diedinchat itself cannot be run. Neither default is silently correct, so
+  it is a decision made at install time and printed back on install.
+
 ## 0.7.0 — 2026-08-30
 
 ### Added

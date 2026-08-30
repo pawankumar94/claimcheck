@@ -1,6 +1,6 @@
 {
   "name": "diedinchat",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "File-bound rules for coding agents. Pin a constraint to the paths it is about; it lives in git, survives session end and tool switches, and re-checks itself. Measured: agents followed pinned rules 18/20 times versus 0/20 without.",
   "type": "module",
   "bin": {

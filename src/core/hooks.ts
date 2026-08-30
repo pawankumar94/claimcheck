@@ -1,7 +1,9 @@
 import { execFile } from "node:child_process";
 import { chmod, mkdir, readFile, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { copyFile } from "node:fs/promises";
+import { dirname, join, resolve } from "node:path";
+import { PACKAGE_ROOT } from "./resolve.js";
 import { promisify } from "node:util";
 
 const execFileAsync = promisify(execFile);
@@ -59,4 +61,45 @@ export async function installCheckHook(
   await writeFile(path, next);
   await chmod(path, 0o755);
   return { hook, path, action };
+}
+
+
+/**
+ * Installs the Claude Code PreToolUse adapter: the script, plus the settings
+ * entry that fires it before Edit/Write/MultiEdit.
+ *
+ * Merged into settings.json rather than overwriting it, and matched on our own
+ * command string so re-running is idempotent and someone else's hooks survive.
+ */
+export async function installClaudeCodeHook(
+  root: string
+): Promise<{ script: string; settings: string; action: "created" | "updated" }> {
+  const scriptDir = join(root, ".claude", "hooks");
+  const script = join(scriptDir, "diedinchat-gate.mjs");
+  await mkdir(scriptDir, { recursive: true });
+  await copyFile(join(PACKAGE_ROOT, "templates", "adapters", "claude-code-pretooluse.mjs"), script);
+  await chmod(script, 0o755);
+
+  const settingsPath = join(root, ".claude", "settings.json");
+  const settings: Record<string, any> = existsSync(settingsPath)
+    ? JSON.parse(await readFile(settingsPath, "utf8"))
+    : {};
+  settings.hooks ??= {};
+  settings.hooks.PreToolUse ??= [];
+
+  const command = "$CLAUDE_PROJECT_DIR/.claude/hooks/diedinchat-gate.mjs";
+  const entry = {
+    matcher: "Edit|Write|MultiEdit|NotebookEdit",
+    hooks: [{ type: "command", command: `node ${command}`, timeout: 10 }],
+  };
+
+  const existing = settings.hooks.PreToolUse.findIndex((g: any) =>
+    (g?.hooks ?? []).some((h: any) => typeof h?.command === "string" && h.command.includes("diedinchat-gate"))
+  );
+  const action = existing >= 0 ? "updated" : "created";
+  if (existing >= 0) settings.hooks.PreToolUse[existing] = entry;
+  else settings.hooks.PreToolUse.push(entry);
+
+  await writeFile(settingsPath, JSON.stringify(settings, null, 2) + "\n");
+  return { script, settings: settingsPath, action };
 }

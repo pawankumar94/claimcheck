@@ -8,7 +8,7 @@ import { scoreRecords } from "./core/scorer.js";
 import { buildReport } from "./core/reporter.js";
 import { startMcpServer } from "./mcp-server.js";
 import { VERSION, builtinExampleTasksPath, describeBuiltinProfiles, listBuiltinExamples, resolveAgentProfile } from "./core/resolve.js";
-import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "./core/install.js";
+import { TARGETS, detectTargets, findTarget, installTarget, isGitIgnored, loadTemplate } from "./core/install.js";
 import { buildCharts } from "./core/chart.js";
 import { detectAgents, explainNoAgent, pickDefaultAgent } from "./core/detect.js";
 import { analyze } from "./core/analysis.js";
@@ -16,7 +16,7 @@ import { importBfclFromFiles } from "./core/import-bfcl.js";
 import { checkClaim, closeClaim, pinClaim, statusClaims, unpinClaim } from "./core/claims.js";
 import type { ClaimEvaluation } from "./core/claims.js";
 import type { RawRecord } from "./types.js";
-import { installCheckHook } from "./core/hooks.js";
+import { installCheckHook, installClaudeCodeHook } from "./core/hooks.js";
 import type { SupportedHook } from "./core/hooks.js";
 
 function collect(value: string, previous: string[]): string[] {
@@ -141,6 +141,57 @@ program
     const removed = await unpinClaim(opts.dir, id);
     if (opts.json) console.log(JSON.stringify(removed, null, 2));
     else console.log(`removed ${removed.path}`);
+  });
+
+program
+  .command("gate")
+  .description(
+    "Resolve the rules covering a path and say whether a write should proceed. " +
+    "The primitive every adapter projects over: pre-write hooks, git hooks, and CI all call this."
+  )
+  .requiredOption("--path <path>", "the file about to be written")
+  .option("--dir <path>", "project root", process.cwd())
+  .option("--json", "emit machine-readable JSON")
+  .action(async (opts) => {
+    const evals = await statusClaims(opts.dir, opts.path);
+
+    // Only `contradicted` blocks, and reaching it requires frozen evidence that
+    // is now gone -- a checkable failure. `stale` never blocks: it means files
+    // moved with nothing frozen to verify, which fired on 65% of real commits
+    // (docs/evidence/stale-noise.md). Blocking on that would stop people's work
+    // for noise, and a gate that cries wolf gets switched off.
+    const blocking = evals.filter((e) => e.status === "contradicted");
+    const advisory = evals.filter((e) => e.status === "supported" || e.status === "open" || e.status === "stale");
+
+    if (opts.json) {
+      console.log(
+        JSON.stringify(
+          {
+            path: opts.path,
+            decision: blocking.length > 0 ? "block" : "allow",
+            blocking: blocking.map((e) => ({ id: e.claim.id, text: e.claim.text, missingEvidence: e.missingEvidence })),
+            rules: advisory.map((e) => ({ id: e.claim.id, text: e.claim.text, status: e.status })),
+          },
+          null,
+          2
+        )
+      );
+    } else if (evals.length === 0) {
+      console.log(`No rules cover ${opts.path}.`);
+    } else {
+      for (const e of blocking) {
+        console.log(`BLOCKED  ${e.claim.id}: ${e.claim.text}`);
+        console.log(`         evidence gone: ${e.missingEvidence.join(", ")}`);
+      }
+      for (const e of advisory) {
+        console.log(`${e.status.padEnd(8)} ${e.claim.id}: ${e.claim.text}`);
+      }
+    }
+
+    // 0 allow, 2 block. Reserved 1 for the crash case so a hook can tell "this
+    // write breaks a rule" from "diedinchat itself failed" -- a broken tool must
+    // not silently read as permission to proceed.
+    if (blocking.length > 0) process.exitCode = 2;
   });
 
 program
@@ -302,6 +353,36 @@ program
           ignoredPaths.map((p) => `         ${p}`).join("\n") +
           `\n       Teammates and CI will not get it, and a fresh clone starts with nothing.\n` +
           `       Un-ignore it, or run: diedinchat install --target agents-md`
+      );
+    }
+  });
+
+program
+  .command("install-agent-hook")
+  .description(
+    "Install a pre-write gate for a coding agent. Surfaces the rules covering a file before the " +
+    "agent edits it, and denies the write when one is contradicted."
+  )
+  .option("--agent <name>", "claude-code", "claude-code")
+  .option("--dir <path>", "project root", process.cwd())
+  .action(async (opts) => {
+    if (opts.agent !== "claude-code") {
+      console.error(`Unsupported agent "${opts.agent}". Today: claude-code. Cursor is next.`);
+      process.exitCode = 1;
+      return;
+    }
+    const out = await installClaudeCodeHook(opts.dir);
+    console.log(`  ${out.action.padEnd(9)} ${out.script}`);
+    console.log(`  ${out.action.padEnd(9)} ${out.settings}   (PreToolUse on Edit|Write|MultiEdit)`);
+    console.log(
+      "\nThe agent now sees rules covering a file before it writes, and is denied when one is\n" +
+      "contradicted. Requires `diedinchat` on PATH."
+    );
+    if (await isGitIgnored(opts.dir, ".claude")) {
+      console.warn(
+        "\n[warn] git ignores .claude/, so this hook will not travel with your repo.\n" +
+        "       It protects you and nobody else. Un-ignore it, or rely on:\n" +
+        "       diedinchat install-hook --hook pre-commit"
       );
     }
   });

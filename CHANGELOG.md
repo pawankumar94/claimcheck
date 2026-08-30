@@ -3,6 +3,46 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.6.0 — 2026-08-30
+
+Constraints now arrive *before* the write, instead of relying on the agent to
+remember a lookup.
+
+### Added
+
+- **`diedinchat gate --path <file>`** — resolves the rules covering a path and
+  says whether a write should proceed. Exit 0 allows, exit 2 blocks, stdout
+  carries the rules as a card to inject. This is the one primitive every adapter
+  projects over: pre-write hooks, git hooks and CI all call the same command, so
+  nine hosts cannot drift into nine answers about which rules cover a path.
+- **`diedinchat install-agent-hook`** — installs a Claude Code `PreToolUse`
+  adapter that fires before `Edit`/`Write`/`MultiEdit`. Healthy rules are
+  injected as context; a contradicted rule denies the write with the reason.
+  Merges into an existing `.claude/settings.json` rather than overwriting it,
+  and re-running does not duplicate the entry.
+- **`install` warns when git ignores what it just wrote.** `.claude/` and
+  `.cursor/` are in a great many .gitignore files — this project's own included
+  — and a rule git will not track helps the person who ran install and nobody
+  else, which is the failure this tool exists to complain about.
+
+### Notes on what a gate can and cannot do
+
+`stale` never blocks. Reaching `contradicted` requires frozen evidence that is
+now gone, which is checkable; `stale` means files moved with nothing frozen to
+verify, and it fired on 65% of real commits. Blocking on that would stop work
+for noise, and a gate that cries wolf gets switched off.
+
+Gating also needs a host that exposes a pre-write hook. Claude Code and Cursor
+do. Copilot's path-scoped instructions are advisory. Nothing can gate what
+exposes no gate — git hooks and CI remain the editor-independent backstop.
+
+### Changed
+
+- `docs/integrations.md` leads with the ticket verbs. It previously told MCP
+  clients to call `list_agent_profiles` first and walked its example through
+  `run_evaluation`, foregrounding the lab in the document that teaches people to
+  use the server.
+
 ## 0.5.0 — 2026-08-30
 
 ### Added

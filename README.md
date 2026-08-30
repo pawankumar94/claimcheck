@@ -159,9 +159,23 @@ things the code already demonstrates does nothing — we
 [measured that](docs/evidence/honor-rate.md) and got 9/9 in both arms.
 
 **What if the agent just ignores it?**
-Sometimes it does — at 90%, roughly one invocation in ten still misses.
-`install-hook` is the path that does not depend on the agent choosing to look:
-the hook runs on commit either way.
+Sometimes it does — at 90%, roughly one invocation in ten still misses. Two
+answers, in increasing strength:
+
+```bash
+diedinchat install-agent-hook     # Claude Code: gate the write itself
+diedinchat install-hook --hook pre-commit   # works regardless of editor
+```
+
+The agent hook runs *before* an edit: it puts the rules covering that file in
+front of the model, and denies the write outright when one is contradicted.
+That closes the exact failure we measured — an agent editing a generated file
+having never looked. The git hook is the floor under everything, including a
+human editing by hand.
+
+Gating needs a host that exposes a pre-write hook. Claude Code and Cursor do;
+Copilot's path-scoped instructions are advisory only. Nothing can gate what
+exposes no gate, so git and CI stay the editor-independent backstop.
 
 **What does it cost?**
 Tokens. In the measured runs, tickets in the workspace raised mean cost per

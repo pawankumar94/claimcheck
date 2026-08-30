@@ -1,0 +1,13 @@
+{
+  "name": "gemini-honor-rate",
+  "description": "Gemini CLI profile for the honor-rate edit experiment. Write access lives in extraArgs so every arm is invoked identically -- the only thing that differs between conditions is what the seeded workspace contains.",
+  "command": "gemini",
+  "baseArgs": ["-o", "json", "-m", "gemini-3.1-pro-preview", "-p"],
+  "promptPlacement": "after-base",
+  "policyArgs": {},
+  "extraArgs": ["--approval-mode", "yolo"],
+  "output": { "type": "json", "resultField": "response" },
+  "timeoutMs": 300000,
+  "verified": false,
+  "verificationNote": "NOT VERIFIED for this experiment. The base invocation and JSON output shape come from profiles/gemini-cli.json, which was confirmed against a live gemini-cli 0.10.0. What has not been checked here is that `--approval-mode yolo` actually lets the CLI create files in the seeded workspace. That is the precondition for this whole task set: a read-only invocation scores VIOLATED in every arm, which looks exactly like a null result and is not one. Run one trial first and confirm the fixture files actually changed before paying for three."
+}

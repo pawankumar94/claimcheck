@@ -1,0 +1,13 @@
+{
+  "name": "claude-vertex-honor-rate",
+  "description": "Claude Code via Vertex AI for the honor-rate edit experiment. Write access lives in extraArgs so every arm is invoked identically -- the only thing that differs between conditions is what the seeded workspace contains.",
+  "command": "claude",
+  "baseArgs": ["--bare", "-p"],
+  "promptPlacement": "after-base",
+  "policyArgs": {},
+  "extraArgs": ["--allowedTools", "Bash,Read,Edit,Write", "--permission-mode", "dontAsk", "--output-format", "json"],
+  "output": { "type": "json", "resultField": "result", "costField": "total_cost_usd", "sessionIdField": "session_id" },
+  "timeoutMs": 300000,
+  "verified": false,
+  "verificationNote": "NOT VERIFIED for this experiment. Base invocation and output schema come from profiles/claude-code-vertex.json, confirmed against a live claude 2.1.220 on Vertex. Unverified here: that Edit/Write in allowedTools actually produces file creation in the seeded workspace, and that the pinned model is available on your deployment. Requires CLAUDE_CODE_USE_VERTEX=1, ANTHROPIC_VERTEX_PROJECT_ID, CLOUD_ML_REGION and GOOGLE_APPLICATION_CREDENTIALS in the environment -- deliberately not encoded here, because they are deployment config and must never be committed. Run one trial first and confirm the fixture files actually changed."
+}

@@ -18,9 +18,12 @@ export function validateProfile(profile: AgentProfile, source: string): void {
   if (profile.output.type === "json" && !profile.output.resultField) {
     throw new Error(`agent profile ${source}: output.type is "json" but output.resultField is not set`);
   }
-  if (Object.keys(profile.policyArgs).length === 0) {
-    throw new Error(`agent profile ${source} declares no policyArgs -- it can't implement any policy`);
-  }
+  // An empty policyArgs is legitimate. A policy can be realized by the
+  // workspace (TasksDoc.policy_overlays) or by the prompt
+  // (Task.prompt_by_policy) rather than by flags, and in those designs every
+  // arm must be invoked *identically* -- differing flags would be a second
+  // variable. Rejecting {} here forced such profiles to carry a dummy entry;
+  // runEvaluation already decides when a missing entry is allowed.
 }
 
 /** Dot-path field access, e.g. "usage.total_cost_usd" against a parsed JSON object. */

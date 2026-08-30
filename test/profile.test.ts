@@ -69,9 +69,11 @@ describe("validateProfile", () => {
     expect(() => validateProfile(broken, "test.json")).toThrow(/resultField/);
   });
 
-  it("rejects a profile with an empty policyArgs map", () => {
-    const broken: AgentProfile = { ...claudeCodeProfile, policyArgs: {} };
-    expect(() => validateProfile(broken, "test.json")).toThrow(/no policyArgs/);
+  it("accepts an empty policyArgs map, for policies realized by the workspace", () => {
+    // policy_overlays and prompt_by_policy designs invoke every arm with the
+    // same flags on purpose; differing flags would be a second variable.
+    const overlayRealized: AgentProfile = { ...claudeCodeProfile, policyArgs: {} };
+    expect(() => validateProfile(overlayRealized, "test")).not.toThrow();
   });
 
   it("accepts a well-formed profile", () => {

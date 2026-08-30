@@ -73,33 +73,83 @@ The keys were authored from the fixture before any run and are frozen. If one
 turns out to be badly specified, fix it in a new task set with its own run —
 do not patch it after seeing output.
 
-## Running it
+## Running it (M1)
+
+Three arms, one task set, one scorer. Every arm is invoked with identical
+flags — the only differences are what the workspace contains and, for the
+prompted arm, one appended sentence.
+
+| Arm | Workspace | Prompt |
+|---|---|---|
+| `no-tickets` | fixture only | plain |
+| `with-tickets` | fixture + `.diedinchat/` + the `AGENTS.md` block `install` writes | plain |
+| `with-tickets-prompted` | same as above | plain + *"Before editing, follow the repository instructions and inspect any relevant file-bound tickets."* |
+
+That gives two numbers from one run:
+
+- **`with-tickets` − `no-tickets`** — the unprompted lift. This is the
+  behavioural tier the `install` targets actually rely on, and it has never
+  been measured.
+- **`with-tickets-prompted` − `with-tickets`** — what the reminder buys. The
+  2026-08-30 published run was the prompted condition only, so it could not
+  separate these.
+
+### Credentials stay in your shell
+
+The profiles deliberately encode no keys. Export what your agent needs, then run.
+
+**Gemini CLI**
 
 ```bash
-diedinchat run \
-  --tasks examples/honor-rate/tasks.json \
-  --agent claude-code \
-  --policy with-tickets --policy no-tickets \
-  --trials 3
-diedinchat score --tasks examples/honor-rate/tasks.json
-diedinchat report --baseline no-tickets --candidate with-tickets
+export GEMINI_API_KEY=...        # your key, your shell
 ```
 
-`fixture_dir` and the overlays resolve relative to `tasks.json`, so this runs
-from any directory.
+**Claude Code via Vertex**
 
-### Before you spend budget on this
+```bash
+export CLAUDE_CODE_USE_VERTEX=1
+export ANTHROPIC_VERTEX_PROJECT_ID=...
+export CLOUD_ML_REGION=...
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+```
 
-**The agent must be able to write files.** Every other task set in this repo
-asks a question and reads an answer; this one requires the agent to edit its
-workspace, and an invocation with read-only tools will score `VIOLATED`
-everywhere in both arms — which looks like a null result and is not one. No
-profile in `profiles/` has been verified for write access under this task set.
-Check that first, on one trial, and confirm the files actually changed before
-paying for three.
+### Smoke test first — this is not optional
 
-The arms need no `policyArgs` entry: they are realized by the workspace, not
-by flags, so any profile can run them unedited.
+This is the only task set that needs the agent to **write files**. A read-only
+invocation scores `VIOLATED` in every arm, which looks exactly like "tickets do
+nothing" and is not. Neither profile is verified for write access.
+
+```bash
+diedinchat run --tasks examples/honor-rate/tasks.json \
+  --agent examples/honor-rate/gemini.json \
+  --policy with-tickets --trials 1 --out-dir /tmp/m1-smoke
+
+# The fixture files must have actually changed:
+node -e 'const r=require("/tmp/m1-smoke/h1-auth-in-routes__gemini-honor-rate__with-tickets__t0.json"); console.log(r.metrics.workspace_text || "(EMPTY - agent wrote nothing, fix write access before paying for a full run)")'
+```
+
+Swap `gemini.json` for `claude-vertex.json` to use Vertex instead.
+
+### Full run
+
+27 invocations: 3 tasks × 3 arms × 3 trials.
+
+```bash
+diedinchat run --tasks examples/honor-rate/tasks.json \
+  --agent examples/honor-rate/gemini.json \
+  --policy no-tickets --policy with-tickets --policy with-tickets-prompted \
+  --trials 3 --out-dir ./results/m1
+
+diedinchat score --tasks examples/honor-rate/tasks.json \
+  --raw-dir ./results/m1 --output ./results/m1-scored.json
+
+diedinchat report --input ./results/m1-scored.json \
+  --baseline no-tickets --candidate with-tickets
+```
+
+`report` compares two arms at a time; re-run it with
+`--baseline with-tickets --candidate with-tickets-prompted` for the second
+comparison.
 
 ## Publishing a result
 

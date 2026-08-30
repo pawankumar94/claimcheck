@@ -55,10 +55,22 @@ describe("isPass", () => {
 });
 
 describe("the shipped honor-rate task set", () => {
-  it("declares two overlays, a fixture, and frozen honor keys on every task", async () => {
+  it("declares three arms, a fixture, and frozen honor keys on every task", async () => {
     const doc = await loadTasksDoc(HONOR_TASKS);
     expect(doc.fixture_dir).toBe("fixture");
-    expect(Object.keys(doc.policy_overlays ?? {}).sort()).toEqual(["no-tickets", "with-tickets"]);
+    expect(Object.keys(doc.policy_overlays ?? {}).sort()).toEqual([
+      "no-tickets",
+      "with-tickets",
+      "with-tickets-prompted",
+    ]);
+    // The prompted arm must differ from the plain one by exactly the nudge
+    // sentence and nothing else, or it measures two variables at once.
+    for (const task of doc.tasks) {
+      const prompted = task.prompt_by_policy?.["with-tickets-prompted"];
+      expect(prompted, `${task.id} has no prompted variant`).toBeDefined();
+      expect(prompted!.startsWith(task.prompt)).toBe(true);
+      expect(prompted!.slice(task.prompt.length)).toMatch(/inspect any relevant file-bound tickets/);
+    }
     expect(doc.tasks).toHaveLength(3);
     for (const task of doc.tasks) {
       expect(task.honor, `${task.id} has no honor spec`).toBeDefined();

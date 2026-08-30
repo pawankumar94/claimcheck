@@ -4,7 +4,7 @@
 
 <h1 align="center">diedinchat</h1>
 
-<p align="center"><strong>Your agent agreed to a rule. Then the chat ended, and the rule went with it.</strong><br>diedinchat pins that rule to the files it was about, in git, where the next agent will find it — and tells you when it stops being true.</p>
+<p align="center"><strong>You told it the rule. Then the chat ended.</strong></p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/diedinchat"><img src="https://img.shields.io/npm/v/diedinchat?color=C7FF35&label=npm" alt="npm version"></a>
@@ -13,287 +13,193 @@
   <a href="https://github.com/pawankumar94/diedinchat/actions"><img src="https://github.com/pawankumar94/diedinchat/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
 </p>
 
+<p align="center">
+  <strong>0/10 → 9/10 rule compliance · 117 measured invocations · no model in the check · one JSON file per rule</strong>
+</p>
+
 ---
 
-## The problem
+## Before / after
 
-Monday, you tell Claude Code:
+Your `src/config.ts` is generated from a schema. Nothing in the file says so.
+You ask any coding agent to change the API base URL.
 
-> Auth only goes through `src/middleware.ts`. Don't call `requireUser()` in route handlers.
-
-It agrees. It even refactors a handler to match.
-
-**That sentence now exists in exactly one place: Monday's chat log.** Not in the
-repo. Not in a test. Not in CODEOWNERS. Nowhere a machine will ever look again.
-
-Wednesday, you open the same commit in Cursor. Empty chat. You ask for a new
-`/admin` route:
+**Without diedinchat** — it edits the generated file. The next build silently
+throws your change away:
 
 ```ts
-export function admin(req) {
-  requireUser(req);        // the rule nobody could see
-  return renderAdmin();
-}
+// src/config.ts        ← generated. edited anyway.
+export const config = {
+  apiBase: "https://api.acme.production",   // gone on next build
+};
 ```
 
-`git diff` shows a perfectly normal new file. Tests pass — they never encoded
-"auth lives in one file." Review is where you catch it, if you catch it.
+**With the rule pinned** — it edits the source and leaves the generated file
+alone:
 
-The model wasn't careless. **The constraint was never attached to the files it
-was about,** so no later agent could have seen it. Same story, different rules:
+```ts
+// src/config.schema.ts ← edited here
+  apiBase: "https://api.acme.production",
 
-| Someone said, in chat | About | What happens next session |
-|---|---|---|
-| "Don't put SQL in route handlers, only `src/db/`." | `src/db/`, `src/routes/` | An agent inlines a query in a new route |
-| "`config.ts` is generated. Edit `config.schema.ts`." | both files | An agent "fixes" the generated file; the next build overwrites it |
-| "All prices are integer cents." | `src/money.ts`, `src/billing/` | An agent writes `price * 1.1` in a billing helper |
+// src/config.ts        ← untouched
+  apiBase: "https://api.acme.test",
+```
 
-## Why nothing you already have fixes this
-
-Your repo has four mechanisms for encoding truth, and this falls through all of them.
-
-**Git records changes, not commitments.** It will tell you `admin.ts` was added.
-It cannot tell you that adding it broke a promise, because the promise was never
-a git object. Git has no type for a sentence about a file.
-
-**Tests lock behaviour, and this isn't behaviour.** "Auth lives in one file" is
-structural. Both implementations return the same thing for the same input, so
-both go green. You'd have to write a grep-shaped test and remember to keep it.
-
-**CODEOWNERS locks who may touch a path**, and says nothing about what is true of it.
-
-**Agent memory and rules files fight the wrong problem.** `.cursorrules`,
-`AGENTS.md`, stored memories, "summarise the last chat" — all of them try to
-push *more text* into the next context window. Three things go wrong:
-
-- **They aren't addressed to paths.** A rule in `.cursorrules` is about the
-  whole repo or nothing. It cannot fire *because you touched `src/routes/`*, so
-  it's either always loaded — diluting the window and costing tokens on every
-  turn — or not there when it matters.
-- **They never expire.** A memory saying "auth is in middleware" keeps saying it
-  after someone refactors `middleware.ts` out of existence. It states a dead
-  fact with full confidence, which is worse than saying nothing.
-- **They don't travel.** Cursor's memory is not Claude Code's memory. Switch
-  tools, or switch machines, and you start over.
-
-There is no object in a repository that means *"this sentence about these files
-must stay true."* That is the gap.
-
-## What diedinchat does
-
-One JSON file per constraint, in `.diedinchat/`, committed next to your code.
+Same repo, same request, same agent. The only difference is one file:
 
 ```json
 {
-  "id": "auth-surface",
-  "text": "Auth only goes through src/middleware.ts.",
-  "files": ["src/middleware.ts", "src/routes/"],
-  "evidence": ["withAuth"],
-  "hashes": { "src/middleware.ts": "sha256…" },
+  "text": "src/config.ts is generated from the schema. Never edit it directly.",
+  "files": ["src/config.ts", "src/config.schema.ts"],
+  "evidence": ["ConfigSchema"],
   "status": "supported"
 }
 ```
 
-Three properties follow from that, and they're what the alternatives lack:
+Both snippets are verbatim from
+[the measured run](docs/evidence/honor-invisible-v2-results.json).
 
-**It's addressed to paths.** `diedinchat status src/routes/` returns the two
-tickets about that directory and nothing else. An agent about to edit a file
-asks a question scoped to that file, instead of carrying every rule you've ever
-written in its context.
+## The numbers
 
-**It expires.** Freeze a phrase that must stay true — `withAuth`, say — and
-every read re-checks it against the files. When it stops holding, the ticket
-goes `contradicted` on its own, with nothing to run and no model to ask. This is
-the part no memory system does: **the claim knows when it stopped being true.**
-
-**It travels.** It's a file in your repo. Cursor, Claude Code, Codex, Copilot,
-a teammate, CI — same tickets, because they live next to the code rather than
-inside one vendor's session store.
-
-<p align="center">
-  <img src="docs/assets/handoff-loop.svg" width="100%" alt="A constraint stated on Monday is pinned into .diedinchat in git; the chat log ends at the session boundary, but the ticket crosses it and a different agent reads it on Wednesday">
-</p>
-
-### Four states, computed from disk
-
-No model is involved in deciding these. It's file hashes and string matching, so
-the answer is reproducible and auditable.
-
-| Status | Means |
-|---|---|
-| `open` | Pinned, but nothing frozen to check it against |
-| `supported` | The frozen evidence still holds |
-| `contradicted` | The evidence is gone. Red, the way a test goes red. |
-| `stale` | A pinned file changed and there was no evidence to check — re-check it by hand |
-
-`contradicted` is the state that matters. Git tells you a file changed; this
-tells you a *promise about it* stopped being true — which is why a ticket
-doesn't rot into confident misinformation the way a stored memory does.
-
-Freeze evidence when you pin, and the ticket checks itself. Pin without it and
-all you get is `stale` on any edit, which on real history fired on
-[65% of commits](docs/evidence/stale-noise.md) — noise, not signal.
-
-## Quickstart
-
-```bash
-npx diedinchat pin --text "Auth only goes through src/middleware.ts. Never check auth in a route handler." \
-  --file src/middleware.ts --file src/routes/ \
-  --evidence withAuth      # a phrase that must stay true; this is what makes it self-checking
-
-npx diedinchat install     # teach every agent in this repo to read tickets first
-```
-
-```bash
-npx diedinchat status src/routes/
-```
-
-```text
-supported  auth-only-goes-through-src-middleware-ts
-           Auth only goes through src/middleware.ts. Never check auth in a route handler.
-           files: src/middleware.ts, src/routes
-```
-
-| Command | |
-|---|---|
-| `diedinchat` | status of every ticket (the default; local and free) |
-| `diedinchat status <path>` | only tickets covering that path |
-| `diedinchat status --json` | machine-readable, for CI |
-| `diedinchat pin --text … --file …` | pin a constraint |
-| `diedinchat check` | re-evaluate against current files |
-| `diedinchat close <id>` / `unpin <id>` | retire it, or delete it |
-
-## Works with the agent you already use
-
-`install` writes the convention into the file each agent already loads — no
-server, no config edit:
-
-| Agent | File written |
-|---|---|
-| <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> Claude Code | `.claude/skills/diedinchat/SKILL.md` |
-| <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> Cursor | `.cursor/rules/diedinchat.mdc` |
-| <img src="brand/icons/copilot.svg" width="16" height="16" valign="middle" /> GitHub Copilot | `.github/instructions/diedinchat.instructions.md` |
-| <img src="brand/icons/windsurf.svg" width="16" height="16" valign="middle" /> Windsurf | `.windsurf/rules/diedinchat.md` |
-| <img src="brand/icons/cline.svg" width="16" height="16" valign="middle" /> Cline | `.clinerules/diedinchat.md` |
-| <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> Gemini / Antigravity | `AGENTS.md`, `skills/…` |
-| Any agent | `AGENTS.md`, in a fenced block |
-
-**Over MCP**, for clients that prefer tools to files:
-
-```bash
-diedinchat mcp     # pin_claim · list_claims_for_file · check_claim
-```
-
-**As a git hook**, when you'd rather not depend on an agent remembering:
-
-```bash
-diedinchat install-hook --hook pre-commit
-```
-
-That last one is the only path that holds no matter what the agent does. Setup
-per client is in [docs/integrations.md](docs/integrations.md).
-
-## Does it actually work?
-
-Four experiments with Claude Code, 117 invocations, every raw record committed.
-Two results exclude zero; two deliberately do not.
+Three rules a coding agent cannot read from the code. Ten trials each, with and
+without the rule pinned.
 
 <p align="center">
   <img src="docs/assets/what-the-agent-wrote.svg" width="100%" alt="For three rules, what Claude Code wrote with and without a pinned ticket, one dot per trial over ten trials each">
 </p>
 
-Same repository, same request, same agent. The only difference is whether the
-rule was pinned. Without a ticket the agent edited a generated file that the
-next build discards — **on all ten trials** — and treated a cents value as
-decimal currency on all ten of the pricing trials. With the rule pinned, it did
-neither.
+**18/20 versus 0/20.** +90 points, 95% interval +65 to +99.
 
-**18/20 versus 0/20. +90 points, 95% interval +65 to +99.**
-
-The third row is a control chosen before the run: a rule the agent already
-follows unaided. It scored 10/10 in **both** arms, +0 points, interval −22 to
-+22. Tickets moved the two things that were broken and left the working one
-alone — which is what separates this from a fixture rigged to flatter the tool.
-
-Full design, both remaining failures, and all 60 raw records:
-[docs/evidence/honor-invisible.md](docs/evidence/honor-invisible.md).
+The third row is a control, fixed before the run: a rule the agent already
+follows. It scored 10/10 in **both** arms. Tickets moved the two things that
+were broken and left the working one alone — which is the part that makes the
+other two rows worth believing.
 
 <p align="center">
   <img src="docs/assets/evidence-summary.svg" width="100%" alt="Forest plot of four experiments with 95 percent intervals: honor on constraints the code cannot express +90, capture +100, negative control +0, honor on inferable constraints +0">
 </p>
 
-**What it costs.** Tickets are not free: across the same 60 invocations, having
-them in the workspace raised mean cost per invocation from **$0.026 to $0.045
-(+72%)** and median latency from 22s to 31s. The agent reads the tickets and
-runs `status`, and that is real spend. On these short tasks the overhead is a
-large fraction of a small number; on longer work it amortises. Measure it on
-your own repo before pinning hundreds.
+Four experiments, 117 invocations, every raw record committed and re-runnable.
+Two exclude zero; two are nulls published anyway. Method, failures and data:
+[docs/evidence/](docs/evidence/).
 
-**Agents also write the tickets themselves.** With the convention installed, a
-rule mentioned in passing was pinned 6/6; without it, 0/6. +100 points, interval
-+43 to +107. [docs/evidence/capture-rate.md](docs/evidence/capture-rate.md).
-
-### What to pin
-
-Tickets do not make a model better at what it already does well — a separate run
-found **no effect at all** for constraints inferable from surrounding code, 9/9
-in every arm. Pin what the code cannot tell it:
-
-| Worth pinning | Not worth pinning |
-|---|---|
-| "`config.ts` is generated — edit the schema" | "handlers use `withAuth`" (the other handlers show it) |
-| "don't use lodash, it's installed but banned" | "SQL lives in `src/db/`" (`src/db/` is right there) |
-| "this returns cents despite the `number` type" | anything the code already demonstrates |
-
-That null is measured too: [docs/evidence/honor-rate.md](docs/evidence/honor-rate.md).
-
-**One more.** `stale` used to fire on 65% of commits for a file-pinned ticket and
-97% for a directory-pinned one. Frozen evidence now decides the outcome: 0%
-false alarms, still catching 11/11 injected breakages.
-[docs/evidence/stale-noise.md](docs/evidence/stale-noise.md).
-
-## Status
-
-Usable today for pinning, reading, and checking constraints. This repo uses it
-on itself; all four of its tickets are `supported`, and CI fails if one breaks.
-
-Known gaps, in the order they will bite you:
-
-- **A ticket pinned without evidence still goes `stale` on any edit** to its
-  paths. `pin` should require evidence, or generate it; today it is an optional
-  flag most people will skip.
-- **`--file` takes literal paths and directories only** — no globs, and
-  directory expansion ignores `.gitignore`.
-- **MCP lags the CLI**: `close` and `unpin` aren't exposed, so an MCP-only agent
-  can create tickets it can't retire.
-- **A ticket is not a guarantee.** At 90%, roughly one invocation in ten still
-  misses. `install-hook` is the path that does not depend on the agent looking.
-- **One agent, one model.** Everything measured so far is Claude Code on
-  `claude-sonnet-4-6`. Copilot, Cursor, Gemini and cheaper tiers are untested.
-
-## Documentation
-
-| Doc | Covers |
-|---|---|
-| [docs/how-it-works.md](docs/how-it-works.md) | The handoff, status derivation, and what is actually guaranteed |
-| [docs/integrations.md](docs/integrations.md) | Per-client MCP setup, library usage |
-| [docs/evidence/honor-rate.md](docs/evidence/honor-rate.md) | The published result, its design, and its limits |
-| [docs/lab.md](docs/lab.md) | The measurement harness used to test claims like the one above |
-| [PLANNER.md](PLANNER.md) | What is left to build |
-| [AGENTS.md](AGENTS.md) | Entry point for agents working in this repo |
-
-## Development
+## Install
 
 ```bash
-npm install
+npx diedinchat install
+```
+
+Writes the convention into the file your agent already reads — no server, no
+config edit, no account:
+
+| | |
+|---|---|
+| <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> Claude Code | `.claude/skills/diedinchat/SKILL.md` |
+| <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> Cursor | `.cursor/rules/diedinchat.mdc` |
+| <img src="brand/icons/copilot.svg" width="16" height="16" valign="middle" /> Copilot | `.github/instructions/diedinchat.instructions.md` |
+| <img src="brand/icons/windsurf.svg" width="16" height="16" valign="middle" /> Windsurf | `.windsurf/rules/diedinchat.md` |
+| <img src="brand/icons/cline.svg" width="16" height="16" valign="middle" /> Cline | `.clinerules/diedinchat.md` |
+| <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> Gemini | `AGENTS.md`, `skills/…` |
+| anything else | `AGENTS.md` |
+
+Then pin a rule — or just say it in chat and let the agent pin it for you
+(measured: 6/6 with the convention installed, 0/6 without):
+
+```bash
+diedinchat pin --text "src/config.ts is generated. Edit the schema." \
+  --file src/config.ts --file src/config.schema.ts \
+  --evidence ConfigSchema
+```
+
+```bash
+diedinchat status src/config.ts     # what rules cover this path
+diedinchat check --json             # for CI
+diedinchat install-hook --hook pre-commit
+```
+
+## How it works
+
+One JSON file per rule in `.diedinchat/`, committed next to your code. `files`
+is the address. `evidence` is a phrase that must stay true.
+
+**Status is recomputed from disk on every read. No model is involved.**
+
+| | |
+|---|---|
+| `supported` | the evidence still holds |
+| `contradicted` | the evidence is gone — red, the way a test goes red |
+| `stale` | files moved and nothing was frozen to check against |
+| `open` | pinned, nothing to verify yet |
+
+That last property is what a rules file cannot do. `.cursorrules` saying *"auth
+is in middleware"* keeps saying it after someone deletes middleware. A ticket
+re-checks itself and goes red.
+
+<p align="center">
+  <img src="docs/assets/handoff-loop.svg" width="100%" alt="A constraint stated on Monday is pinned into .diedinchat in git; the chat log ends at the session boundary, but the ticket crosses it and a different agent reads it on Wednesday">
+</p>
+
+## FAQ
+
+**How is this different from `.cursorrules` or agent memory?**
+Three ways. A rule in `.cursorrules` is about the whole repo, so it is either
+always in context — costing tokens every turn — or absent when it matters. It
+never expires, so it recites facts that stopped being true. And it does not
+travel: Cursor's memory is not Claude Code's. A ticket is addressed to paths,
+re-checks itself, and is a file in your repo.
+
+**Why not just write a test?**
+Tests lock behaviour. "This file is generated" is not behaviour — both versions
+return the same thing and both go green.
+
+**What should I pin?**
+Things the code cannot tell an agent: a generated file, a library that is
+installed but banned, a value that is cents behind a `number` type. Pinning
+things the code already demonstrates does nothing — we
+[measured that](docs/evidence/honor-rate.md) and got 9/9 in both arms.
+
+**What if the agent just ignores it?**
+Sometimes it does — at 90%, roughly one invocation in ten still misses.
+`install-hook` is the path that does not depend on the agent choosing to look:
+the hook runs on commit either way.
+
+**What does it cost?**
+Tokens. In the measured runs, tickets in the workspace raised mean cost per
+invocation from $0.026 to $0.045 and median latency from 22s to 31s. The agent
+reads them and runs `status`. On short tasks that is a large fraction of a small
+number.
+
+**Does it work with my agent?**
+`install` writes to nine targets and the store is plain files, so anything that
+reads your repo can use it. But every number above is Claude Code on
+`claude-sonnet-4-6` — Copilot, Cursor and Gemini are untested, and that is the
+next measurement.
+
+**Can I reproduce your numbers?**
+Yes, that is the point.
+
+```bash
+diedinchat run --tasks examples/honor-invisible/tasks-v2.json \
+  --agent examples/honor-rate/claude-vertex.json \
+  --policy no-tickets --policy with-tickets --trials 10
+diedinchat score --tasks examples/honor-invisible/tasks-v2.json
+diedinchat report --baseline no-tickets --candidate with-tickets
+```
+
+## Docs
+
+| | |
+|---|---|
+| [how-it-works.md](docs/how-it-works.md) | the handoff, status derivation, what is actually guaranteed |
+| [docs/evidence/](docs/evidence/) | every experiment, its design, and its raw records |
+| [integrations.md](docs/integrations.md) | per-client MCP setup |
+| [PLANNER.md](PLANNER.md) | what is left to build |
+
+```bash
 npm test        # 143 tests, no network or agent CLI required
-npm run build
-npm run typecheck
 ```
 
 Releases publish from GitHub Actions with npm provenance, so the registry
-attests which commit and workflow produced the tarball.
+attests which commit built the tarball.
 
-## License
-
-MIT. See [LICENSE](LICENSE).
+MIT.

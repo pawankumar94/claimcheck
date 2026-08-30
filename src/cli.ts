@@ -68,6 +68,74 @@ program
   .version(VERSION);
 
 program
+  .command("init")
+  .description(
+    "Set up diedinchat in this project: the rule your agent reads, a pre-write gate where the " +
+    "agent supports one, and a git hook that covers everything else. One command."
+  )
+  .option("--dir <path>", "project root", process.cwd())
+  .option("--fail-closed", "deny writes when diedinchat itself cannot be run")
+  .action(async (opts) => {
+    const detected = detectTargets(opts.dir);
+    // A host with a pre-write hook gets one; the others get the rule and rely
+    // on the git hook. Both paths are worth having, so this never picks one.
+    const gatable = AGENT_HOSTS.filter((h) => detected.some((t) => t.id === h));
+
+    const done: Array<[string, string, string]> = [];
+
+    for (const host of gatable) {
+      const out = await installAgentHook(opts.dir, host, { failClosed: opts.failClosed });
+      if (out.rule) done.push(["rule", out.rule, `${host} reads this before it edits`]);
+      done.push(["pre-write", out.settings, `${host} agent writes are gated`]);
+    }
+
+    // Every other detected target still gets the convention, just without a gate.
+    const ungated = detected.filter((t) => !gatable.includes(t.id as AgentHost));
+    if (ungated.length > 0) {
+      const body = await loadTemplate();
+      for (const target of ungated) {
+        const outcome = await installTarget(target, opts.dir, body);
+        done.push(["rule", outcome.path, `${target.label} — advisory, no gate available`]);
+      }
+    }
+
+    if (detected.length === 0) {
+      const body = await loadTemplate();
+      const outcome = await installTarget(findTarget("agents-md"), opts.dir, body);
+      done.push(["rule", outcome.path, "no agent detected — AGENTS.md is read by most"]);
+    }
+
+    try {
+      const hook = await installCheckHook(opts.dir, "pre-commit");
+      done.push(["pre-commit", hook.path, "covers hand edits, autocomplete, teammates, CI"]);
+    } catch {
+      done.push(["pre-commit", "(skipped)", "not a git repository"]);
+    }
+
+    console.log(
+      detected.length > 0
+        ? `\nDetected: ${detected.map((t) => t.label).join(", ")}\n`
+        : "\nNo coding agent detected; installed the portable convention.\n"
+    );
+    for (const [kind, path, why] of done) {
+      console.log(`  ${kind.padEnd(11)} ${path}`);
+      console.log(`  ${" ".repeat(11)} ${why}`);
+    }
+    console.log(
+      "\nThat is the setup. Now just say a rule in chat — your agent will pin it.\n" +
+        "Or pin one yourself:\n\n" +
+        '  diedinchat pin --text "src/config.ts is generated. Edit the schema." \\\n' +
+        "    --file src/config.ts --evidence ConfigSchema\n"
+    );
+    if (gatable.length === 0 && detected.length > 0) {
+      console.log(
+        "None of the detected agents expose a pre-write hook, so rules are advisory there.\n" +
+          "The pre-commit hook is what actually enforces them."
+      );
+    }
+  });
+
+program
   .command("status", { isDefault: true })
   .description("List tickets in this repo (default). Pass a path to see only tickets on that file or directory.")
   .argument("[path]", "file or directory to filter by")

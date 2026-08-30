@@ -3,6 +3,34 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.10.0 — 2026-08-30
+
+Onboarding was four commands across five concepts. It is now one.
+
+### Added
+
+- **`diedinchat init`.** Detects your agent, writes the rule it reads, installs a
+  pre-write gate where the agent supports one, and adds a git pre-commit hook.
+  Its output names what each layer covers, so the limits are visible at setup
+  rather than buried in docs: a pre-write hook only sees agent writes, and Tab
+  completions, hand edits and teammates fall to the git hook.
+- A **field report** issue template. Every number in the README comes from a
+  synthetic fixture and one agent; this is how that changes. It asks first about
+  writes that were blocked and should not have been — a wrong block stops
+  someone's work, and that is worth hearing about before it is worth shipping
+  more features.
+
+### Known limits, stated rather than implied
+
+- Evidence is substring and regex matching. That keeps `contradicted` fully
+  deterministic and auditable, with no model in the check, but it is weak for
+  claims whose meaning is not a phrase in the file.
+- A pre-write hook covers agent writes only. Cursor Tab, manual edits, and
+  anyone who never installed the hook are outside it, by design of the host.
+- Hook latency and false-block rate have no real-repo data behind them yet.
+  `gate` measures ~180 ms locally on a small fixture; whether that is noticeable
+  in a large repo is unmeasured.
+
 ## 0.9.0 — 2026-08-30
 
 The hook worked; the integration around it did the same job twice.

@@ -86,11 +86,15 @@ Two exclude zero; two are nulls published anyway. Method, failures and data:
 ## Install
 
 ```bash
-npx diedinchat install
+npx diedinchat init
 ```
 
-Writes the convention into the file your agent already reads — no server, no
-config edit, no account:
+One command. It detects your agent, writes the rule it reads, installs a
+pre-write gate where the agent supports one, and adds a git hook that covers
+everything else — hand edits, autocomplete, teammates, CI. No server, no
+config edit, no account.
+
+The rule goes into the file your agent already reads:
 
 | | |
 |---|---|
@@ -162,13 +166,17 @@ things the code already demonstrates does nothing — we
 Sometimes it does — at 90%, roughly one invocation in ten still misses. Two
 answers, in increasing strength:
 
+`init` sets both up. To be explicit, or to make the gate refuse when diedinchat
+itself cannot run:
+
 ```bash
-diedinchat install-agent-hook --agent claude-code
-diedinchat install-agent-hook --agent cursor
-diedinchat install-agent-hook --agent cursor --fail-closed   # deny if diedinchat can't run
-diedinchat install-hook --hook pre-commit                    # any editor, any human
-diedinchat review --markdown                                 # what this PR touches
+diedinchat install-agent-hook --agent cursor --fail-closed
+diedinchat review --markdown        # what rules this PR touches
 ```
+
+**A pre-write hook only covers agent writes.** Cursor's Tab completions, a hand
+edit, and a teammate who never installed anything are all outside it. That is
+what the git hook is for, and why `init` installs both.
 
 The agent hook runs *before* an edit: it puts the rules covering that file in
 front of the model, and denies the write outright when one is contradicted.
@@ -204,6 +212,13 @@ diedinchat run --tasks examples/honor-invisible/tasks-v2.json \
 diedinchat score --tasks examples/honor-invisible/tasks-v2.json
 diedinchat report --baseline no-tickets --candidate with-tickets
 ```
+
+## Used it on a real repo?
+
+Every number above comes from a synthetic fixture and one agent. If you ran it
+somewhere real, [tell us what happened](https://github.com/pawankumar94/diedinchat/issues/new?template=field-report.yml)
+— especially if it blocked a write it should not have. A wrong block stops your
+work, and we would rather hear about one than ship a gate people switch off.
 
 ## Docs
 

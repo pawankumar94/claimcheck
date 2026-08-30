@@ -1,0 +1,70 @@
+name: Field report
+description: You ran diedinchat on a real repo. Tell us what happened — good or bad.
+title: "[field report] "
+labels: ["field-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Every measured number in the README comes from a synthetic fixture and one
+        agent. This is how that changes. Partial reports are welcome — answer what
+        you know and skip the rest.
+
+  - type: input
+    id: setup
+    attributes:
+      label: Agent and version
+      placeholder: "Cursor 1.7 / Claude Code 2.1.220 / Copilot in VS Code"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: hook
+    attributes:
+      label: Did you install a pre-write hook?
+      options:
+        - "Yes, and it gated writes"
+        - "Yes, but I did not see it fire"
+        - "No — rule and git hook only"
+        - "The agent has no pre-write hook"
+    validations:
+      required: true
+
+  - type: textarea
+    id: false-blocks
+    attributes:
+      label: Did it ever block a write it should not have?
+      description: |
+        The most important question here. A wrong block stops your work, and we would
+        rather hear about one than ship a gate people switch off. Paste the rule and
+        what you were editing if you can.
+      placeholder: "It denied an edit to src/x.ts because … but that rule was actually fine because …"
+
+  - type: textarea
+    id: latency
+    attributes:
+      label: Was it fast enough to leave on?
+      description: |
+        `gate` measures ~180ms locally, but the thing that matters is whether the
+        agent felt slower. If you can, run `time diedinchat gate --path <a real file>`.
+
+  - type: textarea
+    id: rules
+    attributes:
+      label: What did you actually pin, and did it help?
+      description: |
+        We found tickets make no difference for rules an agent can infer from
+        surrounding code, and a large one for rules the code cannot express
+        (a generated file, a banned-but-installed dependency). Which kind were yours?
+
+  - type: textarea
+    id: friction
+    attributes:
+      label: Where did it get in your way?
+      description: Setup, wording, noise, anything that made you want to stop using it.
+
+  - type: input
+    id: scale
+    attributes:
+      label: Roughly how many rules, and how big is the repo?
+      placeholder: "4 rules, ~30k LOC monorepo"

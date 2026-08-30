@@ -55,7 +55,7 @@ That is not the model being dumb. The **constraint was never attached to `src/mi
 |---|---|---|
 | **`git diff`** | Which lines moved | That Monday *promised* auth only lives in `middleware.ts`. Git has no object for a sentence. |
 | **Context tools** (memories, `.cursorrules`, a stuffed `AGENTS.md`, “summarize last chat”) | Stuff more of the transcript into the next window | Tied to that agent / that machine. Doesn’t know which paths it’s about. Still recites last week’s sentence after `middleware.ts` changes. |
-| **diedinchat** | Is this sentence about these files still true? | — |
+| **diedinchat** | Is this sentence about these files still true? | Whether an agent *reads* the ticket is not guaranteed outside a git hook. A ticket on a busy directory goes stale on any edit. |
 
 Context tools fight amnesia. Git fights “what changed.” The hole is a **promise that cited files and then died in Monday’s thread.** A ticket on those paths is a tripwire: the next agent doesn’t need the chat, and the stamp rots when the files move.
 

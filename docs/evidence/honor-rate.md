@@ -21,6 +21,29 @@ This supports one narrow claim: on these three tasks, with Codex CLI 0.147.0,
 the presence of `.diedinchat/` changed edit behavior. It does not establish the
 same effect for other agents, repositories, task types, or ticket volume.
 
+### The prompt told the agent to look
+
+Every prompt in this run ended with: *"Before editing, follow the repository
+instructions and inspect any relevant file-bound tickets."*
+
+That wording is load-bearing and must be quoted whenever this number is. It
+means the run measured **whether tickets change the edits of an agent that
+consults them** — not whether an unprompted agent consults them at all. Those
+are different questions, and only the second one is answered by the behavioral
+tier the `install` targets rely on.
+
+Read against the [guarantee boundary](../how-it-works.md#the-guarantee-boundary),
+this is evidence for the adapter-backed tier, where delivery is arranged for the
+agent. The behavioral tier is still unmeasured. Removing that sentence and
+re-running is the cheapest experiment available, and it is not yet done.
+
+### The effect is concentrated, not uniform
+
+The per-task chart above is not three equal contributions. Scored by hand from
+the archived records, `generated-config` accounts for most of the gap and one
+task separates the conditions not at all. A three-task fixture cannot tell a
+general effect from a single task the agent reliably gets wrong unaided.
+
 ## Frozen design
 
 - Agent: authenticated Codex CLI 0.147.0
@@ -39,9 +62,17 @@ for every invocation. The separate per-invocation copies were removed because
 they duplicated this file.
 
 The maintained fixture and scorer live in
-[`examples/honor-rate/`](../../examples/honor-rate/). Treat a rerun as a new
-evaluation: freeze its task set, keep both conditions identical except for the
-tickets, and never overwrite this result after looking at new output.
+[`examples/honor-rate/`](../../examples/honor-rate/).
+
+> **The maintained fixture is not the one that produced this result.** Its
+> tasks and prompts differ — notably it does not tell the agent to inspect
+> tickets. Running it will not reproduce the numbers above, and should not be
+> described as having done so. The archived JSON here is the only faithful
+> record of this run.
+
+Treat a rerun as a new evaluation: freeze its task set, keep both conditions
+identical except for the tickets, and never overwrite this result after looking
+at new output.
 
 ## Manual audit
 

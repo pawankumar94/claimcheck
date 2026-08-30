@@ -15,7 +15,7 @@ written anywhere an agent could find it. Monday's session knows the rule.
 Wednesday's session, in a different tool, opens the same commit and sees only
 the files.
 
-![Cross-session handoff](diagrams/handoff-loop.svg)
+![Cross-session handoff](assets/handoff-loop.svg)
 
 *A constraint stated on Monday is pinned into `.diedinchat/`. The chat log ends at
 the boundary; the ticket crosses it and a different agent reads it on Wednesday.*
@@ -47,14 +47,19 @@ One file per ticket, so two branches adding tickets do not conflict.
 ticket cannot be stale-in-fact but green-on-paper. No model is involved at any
 point in this decision.
 
-![How a ticket's status is derived](diagrams/status-derivation.svg)
+![How a ticket's status is derived](assets/status-derivation.svg)
 
-*The first matching condition wins. `closed_at` beats everything, a changed hash
-beats evidence, and a ticket with no evidence can only ever be `open`.*
+*The first matching condition wins. `closed_at` beats everything, **broken
+evidence beats a changed hash**, and a ticket with no evidence can only ever be
+`open`.*
 
 The distinction that matters: **stale is not contradicted.** A hash change
 means the file moved, which is a prompt to re-check. A contradiction means the
 frozen evidence is gone, which is a failure.
+
+Contradiction is checked *first*, so a commit that both edits a pinned file and
+removes its evidence reports `contradicted`, not `stale`. The stronger signal
+wins; otherwise the most serious failure would hide behind routine churn.
 
 > **Known defect.** A ticket pinned to a directory goes `stale` when any byte
 > of any file under it changes, including a comment. In an active repo a
@@ -67,7 +72,7 @@ The honest question about any convention is *what happens when the agent does
 not cooperate.* Consumption paths are not equal, and the docs should never
 promise more than the mechanism delivers.
 
-![The guarantee boundary](diagrams/guarantee-boundary.svg)
+![The guarantee boundary](assets/guarantee-boundary.svg)
 
 *Read it as a fallback ladder. Only the top tier survives an agent that ignores
 every instruction file it was given.*

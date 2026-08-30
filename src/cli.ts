@@ -282,14 +282,28 @@ program
       return;
     }
 
+    const ignoredPaths: string[] = [];
     for (const target of targets) {
       const outcome = await installTarget(target, opts.dir, body, { force: opts.force });
       console.log(`  ${outcome.action.padEnd(9)} ${target.path}   (${target.label})`);
+      if (outcome.gitIgnored) ignoredPaths.push(target.path);
     }
     console.log(
       `\nDone. Your agent now pins assertions to files and checks tickets before editing.\n` +
-        `Tickets: diedinchat pin / status / check. Lab: diedinchat measure. MCP: diedinchat mcp.`
+        `Tickets: diedinchat pin / status / check. MCP: diedinchat mcp.`
     );
+
+    // A rule git will not track reaches the person who ran install and nobody
+    // else -- the exact failure this tool exists to complain about.
+    if (ignoredPaths.length > 0) {
+      console.warn(
+        `\n[warn] git ignores ${ignoredPaths.length === 1 ? "this path" : "these paths"}, so the rule ` +
+          `will not travel with your repo:\n` +
+          ignoredPaths.map((p) => `         ${p}`).join("\n") +
+          `\n       Teammates and CI will not get it, and a fresh clone starts with nothing.\n` +
+          `       Un-ignore it, or run: diedinchat install --target agents-md`
+      );
+    }
   });
 
 program

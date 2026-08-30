@@ -1,4 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
 import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { PACKAGE_ROOT } from "./resolve.js";
@@ -117,6 +119,8 @@ const MARKER_START = "<!-- diedinchat:start -->";
 const MARKER_END = "<!-- diedinchat:end -->";
 
 export interface InstallOutcome {
+  /** Set when git ignores the written path, so the rule will not reach a teammate. */
+  gitIgnored?: boolean;
   target: InstallTarget;
   path: string;
   action: "created" | "updated" | "appended" | "skipped";
@@ -127,6 +131,28 @@ export interface InstallOutcome {
  * re-install replaces diedinchat's own block and never touches anything else
  * the user has written in a shared file like AGENTS.md.
  */
+const execFileAsync = promisify(execFile);
+
+/**
+ * True when git is configured to ignore this path.
+ *
+ * This matters more than it looks. The whole premise is that the convention
+ * travels with the repository, and `.claude/` and `.cursor/` are in a great
+ * many .gitignore files -- this project's own included, until it was noticed.
+ * Writing the rule there and saying nothing means it works for the person who
+ * ran install and for nobody else, which is the exact failure diedinchat
+ * exists to complain about.
+ */
+export async function isGitIgnored(projectRoot: string, relPath: string): Promise<boolean> {
+  try {
+    // check-ignore exits 0 when the path IS ignored, 1 when it is not.
+    await execFileAsync("git", ["check-ignore", "-q", "--", relPath], { cwd: projectRoot });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function installTarget(
   target: InstallTarget,
   projectRoot: string,
@@ -135,6 +161,7 @@ export async function installTarget(
 ): Promise<InstallOutcome> {
   const fullPath = join(projectRoot, target.path);
   const rendered = target.render(body);
+  const gitIgnored = await isGitIgnored(projectRoot, target.path);
 
   if (target.append) {
     const block = `${MARKER_START}\n${rendered}\n${MARKER_END}`;
@@ -146,22 +173,22 @@ export async function installTarget(
           block
         );
         await writeFile(fullPath, next);
-        return { target, path: fullPath, action: "updated" };
+        return { target, path: fullPath, action: "updated", gitIgnored };
       }
       await writeFile(fullPath, `${current.trimEnd()}\n\n${block}\n`);
-      return { target, path: fullPath, action: "appended" };
+      return { target, path: fullPath, action: "appended", gitIgnored };
     }
     await mkdir(dirname(fullPath), { recursive: true });
     await writeFile(fullPath, `${block}\n`);
-    return { target, path: fullPath, action: "created" };
+    return { target, path: fullPath, action: "created", gitIgnored };
   }
 
   const existed = existsSync(fullPath);
   if (existed && !opts.force) {
     const current = await readFile(fullPath, "utf-8");
-    if (current === rendered) return { target, path: fullPath, action: "skipped" };
+    if (current === rendered) return { target, path: fullPath, action: "skipped", gitIgnored };
   }
   await mkdir(dirname(fullPath), { recursive: true });
   await writeFile(fullPath, rendered);
-  return { target, path: fullPath, action: existed ? "updated" : "created" };
+  return { target, path: fullPath, action: existed ? "updated" : "created", gitIgnored };
 }

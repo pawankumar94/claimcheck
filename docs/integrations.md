@@ -24,15 +24,21 @@ client wants that line written down.
 
 ## The tools it exposes
 
-| Tool | Purpose |
-|---|---|
-| `list_agent_profiles` | Discovery. Returns bundled agent profiles (with their policy names and verification status) and example task sets. **Call this first**, since it is how a client learns valid arguments for the others. |
-| `run_evaluation` | Runs tasks × agents × policies × trials. Spawns real agent CLIs and spends real API budget. |
-| `score_results` | Matches each answer against its pre-registered key. |
-| `generate_report` | Aggregates into a markdown report with pass rate, cost, and latency. |
+The ticket tools are the product. Call these:
 
-Because `list_agent_profiles` reports names rather than paths, a client never
-has to know where npm installed the package.
+| Tool | What it does |
+|---|---|
+| `list_claims_for_file` | **Call this before editing a path.** Returns the rules covering it, with live status. Takes `includeClosed` to see retired ones. |
+| `pin_claim` | Pin a rule to one or more paths. Pass `evidence` — a phrase that must stay true — or the rule can only ever report `open` or `stale`. |
+| `check_claim` | Re-evaluate against current files. No model involved: hashes and frozen evidence only. |
+| `close_claim` | Retire a rule, keeping its history. |
+| `unpin_claim` | Delete a rule permanently. Prefer `close_claim`. |
+
+The server also exposes the measurement harness — `list_agent_profiles`,
+`run_evaluation`, `score_results`, `generate_report`, `start_run`,
+`submit_answers`, `compare_runs`. Those drive A/B experiments against agent CLIs
+and **spend real API budget**. They are how the claims in the README were
+measured; they are not what the tool is for. See [lab.md](lab.md).
 
 ## Client setup
 
@@ -115,15 +121,21 @@ your client's current MCP docs if a block here doesn't take.
 
 ## A typical session
 
-Once connected, ask the client in plain language and it picks the tools:
+```
+You:   don't put auth in route handlers, it lives in src/middleware.ts
+Agent: pin_claim { text: "...", files: ["src/middleware.ts", "src/routes/"],
+                   evidence: ["withAuth"] }
+       -> .diedinchat/auth-surface.json, status: supported
 
-> Use diedinchat to test whether restricting my agent's tools changes task
-> success. Run the bundled example against gemini-cli with 3 trials, then
-> show me the report.
+--- days later, different editor, empty chat ---
 
-The client will call `list_agent_profiles` to discover what's available,
-`run_evaluation` with `example: "claim-001-tool-count"`, then `score_results`
-and `generate_report`.
+You:   add a /admin route
+Agent: list_claims_for_file { path: "src/routes/" }
+       -> auth-surface (supported): auth lives in src/middleware.ts
+       writes the handler using withAuth
+```
+
+Nothing in that exchange spends API budget or leaves the machine.
 
 ## Cost and safety
 

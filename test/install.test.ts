@@ -2,6 +2,10 @@ import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+
+const execFileAsync = promisify(execFile);
 import { TARGETS, detectTargets, findTarget, installTarget, loadTemplate } from "../src/core/install.js";
 
 let root: string;
@@ -123,4 +127,27 @@ describe("skill-host targets", () => {
     expect(outcome.action).toBe("created");
     expect(await readFile(join(root, ".agents/skills/diedinchat/SKILL.md"), "utf-8")).toContain("Pin assertions to files");
   });
+  it("flags a target that git ignores, on every write path", async () => {
+    // The premise is that the convention travels with the repo. .claude/ and
+    // .cursor/ are in a great many .gitignore files -- this project's own
+    // included -- so writing there silently helps only the person who ran
+    // install. Both the append and non-append paths must report it.
+    const root = await mkdtemp(join(tmpdir(), "install-ignored-"));
+    await execFileAsync("git", ["init", "--quiet", root]);
+    await writeFile(join(root, ".gitignore"), ".cursor/\n");
+    const body = await loadTemplate();
+
+    const cursor = await installTarget(findTarget("cursor"), root, body);
+    expect(cursor.action).toBe("created");
+    expect(cursor.gitIgnored, "a fresh non-append write must report it").toBe(true);
+
+    // Writing it twice takes a different branch; the flag has to survive that.
+    expect((await installTarget(findTarget("cursor"), root, body)).gitIgnored).toBe(true);
+
+    // AGENTS.md is not ignored here, so it must not be flagged.
+    expect((await installTarget(findTarget("agents-md"), root, body)).gitIgnored).toBe(false);
+
+    await rm(root, { recursive: true, force: true });
+  });
+
 });

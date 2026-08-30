@@ -107,12 +107,19 @@ command = "npx"
 args = ["-y", "diedinchat", "mcp"]
 ```
 
-### Anything else (Windsurf / Zed / Claude Desktop)
+### Smithery
 
-> **Not on Smithery yet.** An earlier version of this page told you to run
-> `npx @smithery/cli install diedinchat`. That listing does not exist — the
-> command fails and the link 404s. It is removed rather than left as a promise
-> the project does not keep. Tracked in [PLANNER.md](../PLANNER.md).
+```bash
+npx -y smithery mcp add pawankumar94/diedinchat
+```
+
+[The listing](https://smithery.ai/servers/pawankumar94/diedinchat) installs a
+bundled copy, so it needs no global `diedinchat`. It prompts for a **project
+root**: an MCP client launches the server in its own working directory rather
+than your repository, and without that setting every lookup reads the wrong
+`.diedinchat/` — or none.
+
+### Anything else (Windsurf / Zed / Claude Desktop)
 
 Configure manually: most other MCP clients (Windsurf, Zed, Claude Desktop, Continue, and the rest)
 accept the same `mcpServers` object shown under Cursor above; only the file

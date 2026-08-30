@@ -121,6 +121,24 @@ diedinchat check --json             # for CI
 diedinchat install-hook --hook pre-commit
 ```
 
+### Or over MCP
+
+For clients that prefer tools to files, via
+[Smithery](https://smithery.ai/servers/pawankumar94/diedinchat):
+
+```bash
+npx -y smithery mcp add pawankumar94/diedinchat
+```
+
+That installs a bundled copy, so it needs no global `diedinchat`. It asks for a
+**project root** — the repository whose `.diedinchat/` you want it to read.
+Set it: an MCP client starts the server in its own working directory rather than
+your repo, and without it every lookup comes back empty.
+
+Five tools: `list_claims_for_file` (call it before editing), `pin_claim`,
+`check_claim`, `close_claim`, `unpin_claim`. Running `diedinchat mcp` directly
+does the same thing and takes the root from wherever you launch it.
+
 ## How it works
 
 One JSON file per rule in `.diedinchat/`, committed next to your code. `files`

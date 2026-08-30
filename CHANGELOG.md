@@ -3,6 +3,20 @@
 Notable changes per release. This project is pre-1.0: minor versions may
 change the public API.
 
+## 0.11.1 — 2026-08-30
+
+### Changed
+
+- **Ticket verbs are registered before the lab tools.** Clients and directories
+  showcase whatever a server registers first, and the
+  [Smithery listing](https://smithery.ai/servers/pawankumar94/diedinchat) was
+  using `list_agent_profiles` — a measurement tool that spends real API budget —
+  as its example call. `list_claims_for_file` comes first now.
+- README and `docs/integrations.md` document the Smithery install, including the
+  part that decides whether it works at all: set the **project root**, because an
+  MCP client starts the server in its own working directory rather than your
+  repository.
+
 ## 0.11.0 — 2026-08-30
 
 Makes the MCPB bundle actually usable, which is also what fills in an empty

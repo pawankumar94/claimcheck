@@ -30,65 +30,9 @@ import type { RawRecord } from "./types.js";
 export function createServer(): McpServer {
   const server = new McpServer({ name: "diedinchat", version: VERSION });
 
-  server.registerTool(
-    "list_agent_profiles",
-    {
-      title: "List available agent profiles and example task sets",
-      description:
-        "Discovery entry point -- call this first. Lists the agent profiles bundled with diedinchat " +
-        "(each with the policy names it supports and whether its CLI flags have been verified against " +
-        "a live install), plus the example task sets shipped with the package. Use the returned names " +
-        "directly as `agents` and `example` arguments to run_evaluation.",
-      inputSchema: {},
-    },
-    async () => {
-      const [profiles, examples] = await Promise.all([describeBuiltinProfiles(), listBuiltinExamples()]);
-      return {
-        content: [
-          {
-            type: "text",
-            text: JSON.stringify({ agentProfiles: profiles, exampleTaskSets: examples }, null, 2),
-          },
-        ],
-      };
-    }
-  );
-
-  server.registerTool(
-    "pin_claim",
-    {
-      title: "Pin an assertion to files",
-      description:
-        "Writes a ticket to .diedinchat/<id>.json bound to the given files. Use this whenever you assert " +
-        "something about the repo that the next session or a different agent will need. Do not leave " +
-        "that sentence only in chat.",
-      inputSchema: {
-        text: z.string().describe("The assertion"),
-        files: z.array(z.string()).min(1).describe("File or directory paths relative to the project root"),
-        id: z.string().optional().describe("Ticket id; default is a slug of text"),
-        evidence: z
-          .array(z.string())
-          .optional()
-          .describe("Frozen phrases that must remain in the files for the ticket to stay supported"),
-        agent: z.string().optional(),
-        root: z.string().optional().describe("Project root. Defaults to $DIEDINCHAT_ROOT, then the current working directory."),
-      },
-    },
-    async ({ text, files, id, evidence, agent, root }) => {
-      const { claim, path, action } = await pinClaim({
-        root: root ?? defaultRoot(),
-        text,
-        files,
-        ...(id ? { id } : {}),
-        ...(agent ? { agent } : {}),
-        ...(evidence && evidence.length > 0 ? { evidence } : {}),
-      });
-      return {
-        content: [{ type: "text", text: JSON.stringify({ action, path, claim }, null, 2) }],
-      };
-    }
-  );
-
+  // Ticket verbs are registered first on purpose. Clients and directories
+  // showcase whatever comes first, and a lab tool that spends real API budget is
+  // the wrong thing to put in front of someone evaluating this.
   server.registerTool(
     "list_claims_for_file",
     {
@@ -126,6 +70,41 @@ export function createServer(): McpServer {
             ),
           },
         ],
+      };
+    }
+  );
+
+  server.registerTool(
+    "pin_claim",
+    {
+      title: "Pin an assertion to files",
+      description:
+        "Writes a ticket to .diedinchat/<id>.json bound to the given files. Use this whenever you assert " +
+        "something about the repo that the next session or a different agent will need. Do not leave " +
+        "that sentence only in chat.",
+      inputSchema: {
+        text: z.string().describe("The assertion"),
+        files: z.array(z.string()).min(1).describe("File or directory paths relative to the project root"),
+        id: z.string().optional().describe("Ticket id; default is a slug of text"),
+        evidence: z
+          .array(z.string())
+          .optional()
+          .describe("Frozen phrases that must remain in the files for the ticket to stay supported"),
+        agent: z.string().optional(),
+        root: z.string().optional().describe("Project root. Defaults to $DIEDINCHAT_ROOT, then the current working directory."),
+      },
+    },
+    async ({ text, files, id, evidence, agent, root }) => {
+      const { claim, path, action } = await pinClaim({
+        root: root ?? defaultRoot(),
+        text,
+        files,
+        ...(id ? { id } : {}),
+        ...(agent ? { agent } : {}),
+        ...(evidence && evidence.length > 0 ? { evidence } : {}),
+      });
+      return {
+        content: [{ type: "text", text: JSON.stringify({ action, path, claim }, null, 2) }],
       };
     }
   );
@@ -223,6 +202,30 @@ export function createServer(): McpServer {
       const removed = await unpinClaim(root ?? defaultRoot(), id);
       return {
         content: [{ type: "text", text: JSON.stringify({ removed: removed.id, path: removed.path }, null, 2) }],
+      };
+    }
+  );
+
+  server.registerTool(
+    "list_agent_profiles",
+    {
+      title: "List available agent profiles and example task sets",
+      description:
+        "Discovery entry point -- call this first. Lists the agent profiles bundled with diedinchat " +
+        "(each with the policy names it supports and whether its CLI flags have been verified against " +
+        "a live install), plus the example task sets shipped with the package. Use the returned names " +
+        "directly as `agents` and `example` arguments to run_evaluation.",
+      inputSchema: {},
+    },
+    async () => {
+      const [profiles, examples] = await Promise.all([describeBuiltinProfiles(), listBuiltinExamples()]);
+      return {
+        content: [
+          {
+            type: "text",
+            text: JSON.stringify({ agentProfiles: profiles, exampleTaskSets: examples }, null, 2),
+          },
+        ],
       };
     }
   );

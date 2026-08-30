@@ -131,14 +131,41 @@ remain green on a clean tree.
 
 ---
 
-## Phase 4 — Publish the convention
+## Phase 4 — Publish the convention (shipping)
 
-npm name `diedinchat` is reserved (0.1.0). That is **not** a launch.
+`diedinchat@0.3.0` is on npm, published from GitHub Actions with SLSA
+provenance, so the registry attests which commit and workflow built the
+tarball. CI runs typecheck / build / test on Node 18.17 and 22 and fails a
+release whose tag disagrees with `package.json` or whose tarball exceeds 3 MB.
+Releases are cut from a GitHub Release; `workflow_dispatch` runs the same path
+with `--dry-run`.
 
-- Smithery: verify [`smithery.yaml`](smithery.yaml) after a real listing.
-  Do not submit the directory until a stranger can pin a ticket without
-  reading this file.
+Still open:
+
+- **MCP is behind the CLI.** `close`, `unpin`, and `--json` landed on the CLI
+  but the server still exposes only `pin_claim`, `list_claims_for_file`, and
+  `check_claim`. An agent that reaches diedinchat only over MCP can create
+  tickets and never retire them. Close that gap before advertising MCP.
+- Smithery: verify [`smithery.yaml`](smithery.yaml) after a real listing. Do
+  not submit the directory until a stranger can pin a ticket without reading
+  this file.
 - GitHub social preview: human in Settings → `brand/social/og-1280x640.png`.
+- 0.2.0 and earlier carry no provenance and cannot get it retroactively.
+
+### Not shipped, and load-bearing
+
+Two defects are known, reproduced, and unfixed. Both bite the first real user,
+not the demo:
+
+- **Stale thrash.** A ticket pinned to a directory flips `stale` when any byte
+  of any file under it changes, including a comment. On an active repo a
+  directory ticket is stale after nearly every commit, and a signal that is
+  always red is a signal nobody reads. This is the single most likely reason
+  adoption fails.
+- **`--file` takes literal paths only.** No globs (`src/**/*.ts` errors), and
+  directory expansion ignores `.gitignore`, so pinning a directory hashes build
+  output. Note the honor-rate criteria already use globs, so the two halves of
+  the product disagree about what a path is.
 
 
 ---

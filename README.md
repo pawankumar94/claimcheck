@@ -4,396 +4,226 @@
 
 <h1 align="center">diedinchat</h1>
 
-<p align="center"><strong>File-bound claims for coding agents.</strong><br>The chat ends. What it learned about your files should not.</p>
+<p align="center"><strong>Your coding agent agreed to a rule. Then the chat ended.</strong><br>diedinchat pins that rule to the files it was about, in git, where the next agent will find it.</p>
 
 <p align="center">
+  <a href="https://www.npmjs.com/package/diedinchat"><img src="https://img.shields.io/npm/v/diedinchat?color=C7FF35&label=npm" alt="npm version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-11110F.svg" alt="MIT license"></a>
-  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D18.17-C7FF35.svg" alt="Node 18.17 or newer"></a>
+  <a href="package.json"><img src="https://img.shields.io/badge/node-%3E%3D18.17-11110F.svg" alt="Node 18.17 or newer"></a>
+  <a href="https://github.com/pawankumar94/diedinchat/actions"><img src="https://github.com/pawankumar94/diedinchat/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
 </p>
 
-<p align="center">
-  <img src="brand/social/diedinchat-hero.png" width="100%" alt="A terminal archivist retrieves a file-bound claim from archived Monday, Tuesday, and Wednesday chat sessions">
-</p>
+---
 
-## The sentence died in chat
+## Try it in 30 seconds
 
-You have an app like this:
+```bash
+npx diedinchat pin --text "Auth only goes through src/middleware.ts. Never check auth in a route handler." \
+  --file src/middleware.ts --file src/routes/
 
-```
-src/middleware.ts      # the only place that checks the session
-src/routes/home.ts
-src/routes/settings.ts
+npx diedinchat install     # teach every agent in this repo to read tickets first
 ```
 
-Monday, Claude Code is in the repo. You say:
+You now have a git-tracked ticket in `.diedinchat/` that any agent, in any
+editor, can read. Ask for its status any time:
 
-> Auth only goes through `src/middleware.ts`. Do not call `requireUser()` in route handlers.
+```bash
+npx diedinchat status src/routes/
+```
 
-It agrees. It even refactors a handler to match. That sentence is now **only in Monday’s chat log**. It is not in the repo. It is not in a test. It is not in CODEOWNERS.
+```text
+supported  auth-only-goes-through-src-middleware-ts
+           Auth only goes through src/middleware.ts. Never check auth in a route handler.
+           files: src/middleware.ts, src/routes
+```
 
-Wednesday you open the same commit in Cursor (or Codex, or a new Claude session). Chat is empty. You say:
+## The problem
 
-> Add `src/routes/admin.ts` for `/admin`.
+Monday, you tell Claude Code:
 
-Nothing in the tree tells the new agent about Monday’s rule. It ships this:
+> Auth only goes through `src/middleware.ts`. Don't call `requireUser()` in route handlers.
+
+It agrees. It even refactors a handler to match. **That sentence now exists in
+exactly one place: Monday's chat log.** Not in the repo. Not in a test. Not in
+CODEOWNERS.
+
+Wednesday you open the same commit in Cursor. Empty chat. You ask for a new
+`/admin` route, and you get this:
 
 ```ts
-// src/routes/admin.ts
 export function admin(req) {
-  requireUser(req); // session check, again
+  requireUser(req);        // the rule nobody could see
   return renderAdmin();
 }
 ```
 
-`git diff` looks like a normal new file. Tests still pass: they never encoded “auth lives in one file.” Review is where you notice, if you notice.
+`git diff` shows a normal new file. Tests pass — they never encoded "auth lives
+in one file." Code review is where you catch it, if you catch it.
 
-That is not the model being dumb. The **constraint was never attached to `src/middleware.ts` and `src/routes/`**, so no later agent could see it.
+The model wasn't careless. **The constraint was never attached to the files it
+was about,** so no later agent could have seen it.
 
-**Not a `git diff` problem. Not a memory problem.**
+<p align="center">
+  <img src="docs/assets/handoff-loop.svg" width="100%" alt="A constraint stated on Monday is pinned into .diedinchat in git; the chat log ends at the session boundary, but the ticket crosses it and a different agent reads it on Wednesday">
+</p>
 
-| | What it answers | What it misses |
-|---|---|---|
-| **`git diff`** | Which lines moved | That Monday *promised* auth only lives in `middleware.ts`. Git has no object for a sentence. |
-| **Context tools** (memories, `.cursorrules`, a stuffed `AGENTS.md`, “summarize last chat”) | Stuff more of the transcript into the next window | Tied to that agent / that machine. Doesn’t know which paths it’s about. Still recites last week’s sentence after `middleware.ts` changes. |
-| **diedinchat** | Is this sentence about these files still true? | Whether an agent *reads* the ticket is not guaranteed outside a git hook. A ticket on a busy directory goes stale on any edit. |
+## What a ticket is
 
-Context tools fight amnesia. Git fights “what changed.” The hole is a **promise that cited files and then died in Monday’s thread.** A ticket on those paths is a tripwire: the next agent doesn’t need the chat, and the stamp rots when the files move.
-
-Same pattern, different files:
-
-
-| Someone said (in chat) | Files it was about | What happens next session |
-|---|---|---|
-| “Don’t put SQL in route handlers, only `src/db/`.” | `src/db/`, `src/routes/` | Agent inlines a query in a new route |
-| “`config.ts` is generated. Edit `config.schema.ts`.” | `src/config.ts`, `src/config.schema.ts` | Agent “fixes” the generated file; next build overwrites it |
-| “All prices are cents in `src/money.ts`. No floats.” | `src/money.ts`, `src/billing/` | Agent adds `price * 1.1` in a billing helper |
-
-Tests lock behavior. CODEOWNERS lock who may touch a path. **Nothing locks the sentences agents keep losing when the chat ends.**
-
-## What we are building
-
-A ticket pinned to paths, stored in the repo, visible to whatever agent opens it next.
+One JSON file per constraint, in `.diedinchat/`, committed alongside your code.
 
 ```json
 {
   "id": "auth-surface",
-  "text": "Auth only goes through src/middleware.ts. Do not check auth in route handlers.",
+  "text": "Auth only goes through src/middleware.ts.",
   "files": ["src/middleware.ts", "src/routes/"],
-  "status": "open"
+  "evidence": ["withAuth"],
+  "hashes": { "src/middleware.ts": "sha256…" },
+  "status": "supported"
 }
 ```
 
-`.diedinchat/auth-surface.json` is git-tracked. It is not in anyone’s chat.
+`files` is the address. `hashes` snapshots those files at pin time. `evidence`
+is optional — phrases that must still appear for the claim to hold.
 
-Three things that ticket does:
+**Status is recomputed from disk on every read. No model is involved.**
 
-1. **Handoff** — the next agent, in any tool, sees the promise before editing those paths.
-2. **Stale** — you pull, `middleware.ts` changed, the ticket flips to `stale`. Git says the file moved; this says a *belief* may be dead. No LLM required.
-3. **Contradicted** — an edit breaks the frozen evidence. The ticket goes red, the way a test goes red.
+| Status | Means |
+|---|---|
+| `open` | Pinned, but no frozen evidence to check against |
+| `supported` | Files unchanged and the evidence still holds |
+| `stale` | A pinned file changed — the belief may be dead, re-check it |
+| `contradicted` | The evidence is gone. Red, the way a test goes red. |
 
-It is not agent memory (“remember I like tabs”). It is not a leaderboard. It is not “did this chat lie.” It is a **test for a sentence about files**.
-
-## How it works with every agent
-
-There is no world where we ship twelve deep IDE plugins first. The product that can be industry-wide is a **convention in the repo**, then adapters:
-
-| Layer | What | Who it hits |
-|---|---|---|
-| **Files** | `.diedinchat/` in git | Every tool that can read the project |
-| **Install** | One rule written into the file each agent already loads | Claude, Cursor, Copilot, Codex, Gemini, Windsurf, Cline, `AGENTS.md` |
-| **MCP** | `pin_claim` / `list_claims_for_file` / `check_claim` | Any MCP client, same server |
-| **IDE chrome** | Stamp on a file in the tree (later) | Cursor / VS Code — optional |
-
-Same tickets if you switch tools, because they live next to the code.
-
-```
-You:  "don't put auth in routes, only middleware"
-Agent: pin → .diedinchat/auth-surface.json
-
---- days later, different IDE, empty chat ---
-
-You:  "add a /admin route"
-Agent: list tickets on src/routes/ → sees the stamp → puts auth in middleware
-```
-
-`diedinchat install` already writes into those instruction files. The template now teaches pinning and checking tickets, with the lab method as a footnote.
-
-What’s left to build (cross-agent replication and publishing) is in
-[`PLANNER.md`](PLANNER.md). Brand/icons are paused.
-
-## Where we are
-
-**On `main`:** `pin` / `status` / `check` / `close` / `unpin`, a `.diedinchat/` store,
-MCP tools (`pin_claim`, `list_claims_for_file`, `check_claim`), and an
-install template that teaches pinning rather than only evals. Bare
-`diedinchat` is `status` (local, free), not a budget-spending measure.
-
-```bash
-diedinchat pin --text "Auth only through middleware." --file src/middleware.ts
-diedinchat status src/middleware.ts
-diedinchat check
-diedinchat close auth-only-through-middleware
-diedinchat status --all
-diedinchat unpin auth-only-through-middleware
-```
-
-Use `status --json` and `check --json` in scripts or CI. Optional Git hooks
-run the deterministic check without relying on an agent to remember it:
-
-```bash
-diedinchat install-hook --hook post-merge
-diedinchat install-hook --hook pre-commit
-```
-
-Hook installation is idempotent and preserves existing hook content inside a
-separate fenced block.
-
-### This repository uses its own tickets
-
-The constraints are not illustrative documentation. They are tracked under
-[`.diedinchat/`](.diedinchat/) and evaluated against the files implementing
-them:
-
-```text
-supported  agent-profile-boundary
-supported  default-command-is-status
-supported  preserve-path-containment
-supported  repo-local-ticket-store
-```
-
-For example, `preserve-path-containment` is pinned to
-`src/core/claims.ts` with frozen evidence for the path-escape guard. Run
-`diedinchat status` at the repository root to inspect all four, or
-`diedinchat status src/core/claims.ts` to route only the relevant tickets.
-
-### What we still need to prove
+That distinction is the point. Git tells you a file changed. This tells you a
+*promise about it* may no longer be true.
 
 <p align="center">
-  <img src="docs/assets/benchmark-design.svg" width="100%" alt="Paired public benchmark design: the same coding agent solves the same real repository tasks with and without diedinchat tickets">
+  <img src="docs/assets/status-derivation.svg" width="100%" alt="Status is derived in a fixed order: closed, then contradicted when frozen evidence is gone, then stale when a hash changed, then open without evidence, otherwise supported">
 </p>
 
-The first fixture run showed that tickets can change Codex's edits. That is a
-[preliminary mechanism check](docs/evidence/honor-rate.md), not yet the
-developer-value claim.
+## Why not a test, a rules file, or agent memory
 
-The public comparison must use real repository issues and answer three useful
-questions: does diedinchat increase official test-passing task resolution,
-reduce repeated constraint violations, and reduce rework? Same task, commit,
-agent, model, prompt, and permissions; only the repository tickets change.
+|  | Covers | Misses |
+|---|---|---|
+| **Tests** | Behaviour you can execute | "Auth lives in one file" is not a behaviour. Tests pass either way. |
+| **`.cursorrules`, `AGENTS.md`, memories** | Getting more text into the next context window | Tied to one agent or machine. Doesn't know which paths it's about. Still recites the rule after the file changed underneath it. |
+| **`git diff`** | Which lines moved | Not that anyone *promised* something about those lines. |
+| **CODEOWNERS** | Who may touch a path | Nothing about what is true of it. |
+| **diedinchat** | Is this sentence about these files still true? | Whether an agent *reads* it is only guaranteed through the git hook. A ticket on a busy directory goes stale on any edit. |
 
-**Still the lab:** `diedinchat measure` runs controlled coding-agent
-experiments. The lab remains supporting evidence, not the product pitch.
+## Works with the agent you already use
 
-If you are here to run the lab, skip to [Lab: measuring a config claim](#lab-measuring-a-config-claim).
-
----
-
-## Lab: measuring a config claim
-
-This is what the CLI does today. It answers a narrower question: *did this agent-config change actually help, or is that a vibe?*
-
-```bash
-git clone https://github.com/pawankumar94/diedinchat.git && cd diedinchat
-npm install && npm run build && npm link
-diedinchat
-```
-
-It finds whichever agent CLI you already have, runs a public benchmark against
-it twice (once with a lean tool surface, once with a cluttered one), and tells
-you whether the difference is real or noise.
-
-> On npm: `npx diedinchat`. Clone-and-link above is for hacking on this repo.
-
-
-### What a result looks like
-
-The lab reports a difference with an interval on it, never a bare rate:
-
-**+4 points, 95% CI -21 to +28.** The interval spans zero, so a run like that
-found no evidence either way. That is the point: not a leaderboard number, but
-a bounded answer to "did this change do anything."
-
-The claimcheck-era tool-count runs that used to live in `benchmarks/` have been
-retired with the old direction. The run that matters for this product is honor
-rate `with-tickets` vs `no-tickets`, same tasks, keys frozen first.
-
-The task set, fixture, and honor scorer are in
-[examples/honor-rate/](examples/honor-rate/). Its first result is retained as
-a [compact preliminary record](docs/evidence/honor-rate.md). It proves the
-harness can detect changed behavior; it does not show the gain developers will
-see on real issues.
-
-### Teach your agent the method
-
-```bash
-diedinchat install
-```
-
-It detects which coding agents your project uses and writes diedinchat's method
-into the file each one already reads:
+Tickets live in the repo, so switching tools doesn't lose them. `install`
+writes the convention into the file each agent already loads — no server, no
+config edit:
 
 | Agent | File written |
 |---|---|
 | <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> Claude Code | `.claude/skills/diedinchat/SKILL.md` |
 | <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> Cursor | `.cursor/rules/diedinchat.mdc` |
 | <img src="brand/icons/copilot.svg" width="16" height="16" valign="middle" /> GitHub Copilot | `.github/instructions/diedinchat.instructions.md` |
-| <img src="brand/icons/hermes.png" width="16" height="16" valign="middle" /> Hermes Agent | `.hermes/skills/diedinchat/SKILL.md` |
 | <img src="brand/icons/windsurf.svg" width="16" height="16" valign="middle" /> Windsurf | `.windsurf/rules/diedinchat.md` |
 | <img src="brand/icons/cline.svg" width="16" height="16" valign="middle" /> Cline | `.clinerules/diedinchat.md` |
-| <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> Antigravity / Gemini | `skills/…`, `AGENTS.md` |
-| Any agent | `AGENTS.md`, appended in a fenced block |
-| Portable | `skills/…`, `.agents/skills/…` (Agent Skills) |
+| <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> Gemini / Antigravity | `AGENTS.md`, `skills/…` |
+| Any agent | `AGENTS.md`, in a fenced block |
 
-Use `--target cursor` for one, `--all` for every target, `--list` to see the
-table above. Re-running is idempotent, and the `AGENTS.md` block is fenced with
-markers so it never touches anything else in that file.
+`--target cursor` for one, `--all` for every target, `--list` to see them all.
+Re-running is idempotent.
 
-### Measuring in more detail
-
-The zero-argument run is deliberately small and cheap: 10 tasks, 2 trials, 40
-invocations, a few minutes. It prints what it is about to spend and waits for
-you to say yes.
+**Over MCP**, for clients that prefer tools to files:
 
 ```bash
-diedinchat                     # quick look
-diedinchat --full              # whole task set, 3 trials
-diedinchat --agent codex --yes
+diedinchat mcp     # pin_claim · list_claims_for_file · check_claim
 ```
 
-Its tasks and ground truth come from the
-[Berkeley Function Calling Leaderboard](https://github.com/ShishirPatil/gorilla),
-so the corpus is not self-authored. See
-[examples/bfcl-tool-count/](examples/bfcl-tool-count/).
+Per-client setup is in [docs/integrations.md](docs/integrations.md).
 
-Authoring your own tasks is the extension path, not the starting point. When
-you want it, the pipeline is four commands and the formats are in
-[docs/architecture.md](docs/architecture.md):
+**As a git hook**, for when you'd rather not depend on an agent remembering:
 
 ```bash
-diedinchat run --tasks my-tasks.json --agent codex --policy a --policy b --trials 3
-diedinchat score --tasks my-tasks.json
-diedinchat report
-diedinchat chart
+diedinchat install-hook --hook pre-commit
+diedinchat install-hook --hook post-merge
 ```
 
-### How the lab works
+This is the only path that holds regardless of what the agent does. Hook
+installation is idempotent and preserves existing hook content in a separate
+fenced block.
 
-Three inputs, one pipeline:
+## Commands
 
-| Input | What it is | Agent-specific? |
-|---|---|---|
-| **Tasks** (`tasks.json`) | Questions with pre-registered acceptance criteria | No |
-| **Policies** | The configurations under test, such as `few-tools` vs `many-tools` | No |
-| **Agent profiles** (`profiles/*.json`) | How to invoke one agent's CLI, and how each policy maps to its flags | Yes, only here |
-
-```
-diedinchat run     calls the agent CLI once per task x policy x trial, writes raw JSON
-diedinchat score   matches each answer against its pre-registered criteria
-diedinchat report  verdict, pass rate, and a 95% interval on the difference
-diedinchat chart   SVG charts, including the interval drawn against zero
-```
-
-Confining agent syntax to the profile is what keeps the rest portable.
-Supporting a new agent means writing one JSON file, never touching pipeline
-code.
-
-### Agent support
-
-| Agent | Profile | Status |
-|---|---|---|
-| <img src="brand/icons/claude.svg" width="16" height="16" valign="middle" /> **Claude Code** | [`claude-code.json`](profiles/claude-code.json) | Verified end to end. Invokes CLI in `--bare` mode; flags, output parsing, and cost reporting verified. |
-| <img src="brand/icons/gemini.svg" width="16" height="16" valign="middle" /> **Gemini CLI** | [`gemini-cli.json`](profiles/gemini-cli.json) | Verified end to end. Reports tokens rather than USD, so `cost` shows `n/a`. |
-| <img src="brand/icons/openai.svg" width="16" height="16" valign="middle" /> **Codex CLI** | [`codex.json`](profiles/codex.json) | Verified end to end. Policy axis is `--ignore-user-config`, so the contrast depends on how many MCP servers you have configured. |
-| <img src="brand/icons/cursor.svg" width="16" height="16" valign="middle" /> **Cursor CLI** | [`examples/agent-profiles/`](examples/agent-profiles/) | Template only, flags unverified. |
-| Anything else | | Write a profile, see below. |
-
-Every profile records its own verification status, and `diedinchat run` warns
-when it uses an unverified one, so a result carries that caveat instead of
-looking more solid than it is.
-
-### Writing an agent profile
-
-```json
-{
-  "name": "my-agent",
-  "command": "my-agent-cli",
-  "baseArgs": ["run", "--headless"],
-  "promptPlacement": "after-base",
-  "policyArgs": {
-    "few-tools": ["--tools", "read,grep"],
-    "many-tools": ["--tools", "all"]
-  },
-  "extraArgs": ["--json"],
-  "output": { "type": "json", "resultField": "answer", "costField": "usage.cost_usd" }
-}
+```bash
+diedinchat                                   # status of every ticket (default)
+diedinchat status src/routes/                # only tickets covering a path
+diedinchat status --json                     # machine-readable, for CI
+diedinchat pin --text "…" --file src/a.ts    # pin a constraint
+diedinchat check                             # re-evaluate against current files
+diedinchat close <id>                        # retire it, keep the history
+diedinchat unpin <id>                        # delete it
 ```
 
-| Field | Purpose |
+The bare command is `status` — local, instant, and it spends nothing.
+
+## Does it actually change what agents do?
+
+Codex CLI honored **9 of 9 edits with tickets present, and 5 of 9 without**.
+A **+44 point** difference, 95% interval **+2 to +70**, excluding zero. Scored
+on the git diff of the workspace, not on what the agent claimed it did.
+
+<p align="center">
+  <img src="docs/assets/honor-rate-summary.svg" width="720" alt="Codex honored 100 percent of edits with tickets and 56 percent without; the 95 percent interval on the 44 point difference excludes zero">
+</p>
+
+What that covers, and what it doesn't: the prompts in that run told the agent
+to consult tickets, so it measures whether tickets change the edits of an agent
+*that looks* — not whether an agent looks unprompted. Three tasks, one agent,
+one model. Full design, raw records, and limits are in
+[docs/evidence/honor-rate.md](docs/evidence/honor-rate.md).
+
+**Next:** a paired run on real repository issues — same task, commit, agent,
+model, prompt and permissions, with only the tickets differing. Design in
+[PLANNER.md](PLANNER.md).
+
+## Status
+
+Usable today for pinning, reading, and checking constraints. This repository
+uses it on itself — all four of its tickets are `supported`, and CI checks
+them.
+
+Known gaps, in the order they will bite you:
+
+- **A ticket pinned to a directory goes `stale` on any byte change under it**,
+  including a comment. On an active repo, directory tickets thrash.
+- **`--file` takes literal paths and directories only** — no globs, and
+  directory expansion ignores `.gitignore`.
+- **MCP lags the CLI**: `close` and `unpin` are not exposed, so an MCP-only
+  agent can create tickets it cannot retire.
+- **The developer-value benchmark is not built yet.** The result above is a
+  mechanism check on fixtures, not a measurement of what you gain on real work.
+
+[PLANNER.md](PLANNER.md) tracks all of it.
+
+## Documentation
+
+| Doc | Covers |
 |---|---|
-| `policyArgs` | Maps each policy name to that agent's flags. Tool names and flag syntax are not standardized across agents, so this translation is per-agent by necessity. |
-| `promptPlacement` | `after-base` (default), `end`, or `stdin`, depending on how the CLI accepts a prompt. |
-| `output` | `json` parses stdout and reads fields by dot-path. `text` treats stdout as the answer. |
-| `verified` | Keep `false` with a `verificationNote` until you have run it against a live install and checked the output. |
-
-### Use it as an MCP server
-
-```bash
-diedinchat mcp
-```
-
-Two paths are exposed today. **In-agent** (`start_run`, `submit_answers`,
-`compare_runs`) has the agent you are already talking to answer the tasks
-itself. **Subprocess** (`list_agent_profiles`, `run_evaluation`,
-`score_results`, `generate_report`) drives an external agent CLI through a
-profile. Ticket verbs (`pin_claim`, `list_claims_for_file`, `check_claim`)
-are on this same server; the lab tools remain.
-
-Per-client setup for Claude Code, Cursor, VS Code, Gemini CLI, and Codex is in
-[docs/integrations.md](docs/integrations.md).
-
-### Scope and limits (lab)
-
-Worth stating plainly, since the output looks like data:
-
-- **A single trial is not a result.** Model sampling varies. Use at least three
-  trials before treating a difference as real.
-- **Underpowered is not equivalent.** "Not distinguishable" means the run could
-  not see an effect, not that none exists.
-- **Scoring is deterministic string matching**, not comprehension. Criteria are
-  auditable and frozen before a run, but you should still read the failures.
-- **Cross-agent comparisons carry a confound.** Within-agent comparisons are
-  the sound use for *quality*. Cross-tool tests for tickets are a *protocol*
-  check: did agent B honor a ticket agent A wrote? That is allowed. “Which
-  agent is better” is not.
-- **Results are scoped to the task set.** Function-selection findings do not
-  automatically transfer to code generation — or to “will an agent honor a stamp.”
-
-`diedinchat report` prints these alongside every report.
+| [docs/how-it-works.md](docs/how-it-works.md) | The handoff, status derivation, and what is actually guaranteed |
+| [docs/integrations.md](docs/integrations.md) | Per-client MCP setup, library usage |
+| [docs/evidence/honor-rate.md](docs/evidence/honor-rate.md) | The published result, its design, and its limits |
+| [docs/lab.md](docs/lab.md) | The measurement harness used to test claims like the one above |
+| [PLANNER.md](PLANNER.md) | What is left to build |
+| [AGENTS.md](AGENTS.md) | Entry point for agents working in this repo |
 
 ## Development
 
 ```bash
-npm test        # 137 tests, no network or agent CLI required
+npm install
+npm test        # 143 tests, no network or agent CLI required
 npm run build
 npm run typecheck
 ```
 
-The suite covers the full lab pipeline with a stub agent and a local git repo, so
-you can validate changes without spending API budget.
-
-| Doc | Covers |
-|---|---|
-| [docs/how-it-works.md](docs/how-it-works.md) | How tickets work: the handoff, status derivation, and what is actually guaranteed |
-| [docs/architecture.md](docs/architecture.md) | Internals and extension points |
-| [docs/integrations.md](docs/integrations.md) | Per-client setup, library usage |
-| [AGENTS.md](AGENTS.md) | Entry point for coding agents working in this repo |
-
-## Adding a lab claim
-
-Copy [examples/bfcl-tool-count/](examples/bfcl-tool-count/) or
-[examples/claim-001-tool-count/](examples/claim-001-tool-count/): a new
-`tasks.json` plus policies, reusing whatever agent profiles you already have.
-Claims are independent, and nothing assumes there is only one.
+Releases publish from GitHub Actions with npm provenance, so the registry
+attests which commit and workflow produced the tarball.
 
 ## License
 

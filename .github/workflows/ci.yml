@@ -26,6 +26,11 @@ jobs:
       - run: npm run build
       - run: npm test
 
+      # Eat our own cooking: this repo pins its own constraints, so a change
+      # that breaks one should fail here rather than be noticed in review.
+      - name: Check this repo's own tickets
+        run: node dist/cli.js check --json
+
   # A release must not ship 5 MB of README art again, and must not ship a
   # tarball that omits something the CLI needs at runtime.
   package:

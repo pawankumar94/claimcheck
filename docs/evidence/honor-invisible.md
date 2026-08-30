@@ -109,6 +109,22 @@ At 90%, roughly one in ten invocations still misses. A ticket is not a
 guarantee; the git hook is the path that does not depend on the agent choosing
 to look.
 
+## What it costs
+
+Tickets are not free. Across these same 60 invocations, with the tickets present
+in the workspace:
+
+| | mean cost | mean latency | median latency |
+|---|---|---|---|
+| no ticket | $0.0261 | 22s | 22s |
+| ticket pinned | $0.0449 | 34s | 31s |
+
+**+72% cost, +55% median latency.** The agent reads the tickets and runs
+`status`, and that is real spend. These are short tasks, so a fixed overhead is
+a large fraction of a small number; on longer work it amortises. This is one
+fixture with three tickets — it is not a measurement of what a repository with
+fifty tickets costs, which is M3 and has not been run.
+
 ## Limits
 
 - **One agent, one model.** Everything here is Claude Sonnet 4.6 on Vertex.
@@ -116,8 +132,8 @@ to look.
   following is exactly where they would be expected to differ.
 - **Three constraints in a synthetic fixture.** Real repositories have more
   constraints, more noise, and more competing context.
-- **Nothing here measures cost.** Token overhead and latency with many tickets
-  present is M3, which has not been run.
+- **Cost is measured for three tickets only.** Overhead at realistic ticket
+  volume is M3, which has not been run.
 - **This is honor, not capture.** Whether an agent writes the ticket in the first
   place is [capture-rate.md](capture-rate.md).
 

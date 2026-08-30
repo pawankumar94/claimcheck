@@ -32,7 +32,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "prepublishOnly": "npm run typecheck && npm run build && npm run test",
-    "m0": "npm run build && node scripts/m0-stale-noise.mjs . 30 12"
+    "m0": "npm run build && node scripts/m0-stale-noise.mjs . 30 12",
+    "chart:summary": "npm run build && node scripts/summary-chart.mjs"
   },
   "keywords": [
     "diedinchat",

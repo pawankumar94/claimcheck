@@ -195,6 +195,13 @@ per client is in [docs/integrations.md](docs/integrations.md).
 
 ## Does it actually work?
 
+Four experiments, 117 agent invocations, every raw record committed. Two results
+exclude zero; two deliberately do not.
+
+<p align="center">
+  <img src="docs/assets/evidence-summary.svg" width="100%" alt="Forest plot of four experiments: honor on constraints the code cannot express +90 points, capture +100, negative control +0, honor on inferable constraints +0, each with a 95 percent interval">
+</p>
+
 **Yes — on constraints your code cannot express.** Claude Sonnet 4.6, three
 constraints an agent cannot infer, 60 invocations, zero harness errors:
 
@@ -217,6 +224,13 @@ agent already gets right unaided scored 10/10 in *both* arms — +0 points,
 interval −22 to +22. Tickets moved the two things that were broken and left the
 working one alone. Full design, both remaining failures, and all 60 raw records:
 [docs/evidence/honor-invisible.md](docs/evidence/honor-invisible.md).
+
+**What it costs.** Tickets are not free: across the same 60 invocations, having
+them in the workspace raised mean cost per invocation from **$0.026 to $0.045
+(+72%)** and median latency from 22s to 31s. The agent reads the tickets and
+runs `status`, and that is real spend. On these short tasks the overhead is a
+large fraction of a small number; on longer work it amortises. Measure it on
+your own repo before pinning hundreds.
 
 **Agents also write the tickets themselves.** With the convention installed,
 constraints stated in passing were pinned 6/6; without it, 0/6. +100 points,

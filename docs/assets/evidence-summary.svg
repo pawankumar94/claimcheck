@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 370" width="760" height="370" role="img" aria-label="Measured effect of pinned tickets across four experiments, each with a 95 percent confidence interval on the difference in percentage points.">
+<title>What has been measured</title>
+<text x="24" y="26" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="13" font-weight="600" fill="#6e7781">Difference with tickets vs without, in percentage points (95% interval)</text>
+<line x1="444.5333333333333" y1="52" x2="444.5333333333333" y2="308" stroke="#6e7781" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.8"/>
+<text x="444.5333333333333" y="46" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">no effect</text>
+<text x="379.2" y="354" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">-25</text>
+<text x="509.8666666666667" y="354" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">+25</text>
+<text x="575.2" y="354" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">+50</text>
+<text x="640.5333333333333" y="354" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">+75</text>
+<text x="705.8666666666667" y="354" text-anchor="middle" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10" fill="#6e7781">+100</text>
+<text x="24" y="72" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12" font-weight="600" fill="#6e7781">Honor — constraints the code can't express</text>
+<text x="24" y="89" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">18/20 with · 0/20 without</text>
+<line x1="614.5121597880099" y1="76" x2="702.1908705150205" y2="76" stroke="#d64550" stroke-width="2"/>
+<line x1="614.5121597880099" y1="70" x2="614.5121597880099" y2="82" stroke="#d64550" stroke-width="2"/>
+<line x1="702.1908705150205" y1="70" x2="702.1908705150205" y2="82" stroke="#d64550" stroke-width="2"/>
+<circle cx="679.7333333333333" cy="76" r="5" fill="#d64550"/>
+<text x="712.1908705150205" y="80" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#d64550">+90</text>
+<text x="24" y="134" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12" font-weight="600" fill="#6e7781">Capture — agent writes the ticket itself</text>
+<text x="24" y="151" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">6/6 with · 0/6 without</text>
+<line x1="555.8340146951189" y1="138" x2="725.2326519715477" y2="138" stroke="#d64550" stroke-width="2"/>
+<line x1="555.8340146951189" y1="132" x2="555.8340146951189" y2="144" stroke="#d64550" stroke-width="2"/>
+<line x1="725.2326519715477" y1="132" x2="725.2326519715477" y2="144" stroke="#d64550" stroke-width="2"/>
+<circle cx="705.8666666666667" cy="138" r="5" fill="#d64550"/>
+<text x="728" y="142" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#d64550">+100</text>
+<text x="24" y="196" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12" font-weight="600" fill="#6e7781">Negative control — agent already correct</text>
+<text x="24" y="213" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">10/10 with · 10/10 without · not distinguishable</text>
+<line x1="386.7383223421305" y1="200" x2="502.32834432453615" y2="200" stroke="#6e7781" stroke-width="2"/>
+<line x1="386.7383223421305" y1="194" x2="386.7383223421305" y2="206" stroke="#6e7781" stroke-width="2"/>
+<line x1="502.32834432453615" y1="194" x2="502.32834432453615" y2="206" stroke="#6e7781" stroke-width="2"/>
+<circle cx="444.5333333333333" cy="200" r="5" fill="#6e7781"/>
+<text x="512.3283443245361" y="204" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#6e7781">+0</text>
+<text x="24" y="258" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="12" font-weight="600" fill="#6e7781">Honor — constraints it can infer anyway</text>
+<text x="24" y="275" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="10.5" fill="#6e7781">9/9 with · 9/9 without · not distinguishable</text>
+<line x1="381.7453044451202" y1="262" x2="507.32136222154645" y2="262" stroke="#6e7781" stroke-width="2"/>
+<line x1="381.7453044451202" y1="256" x2="381.7453044451202" y2="268" stroke="#6e7781" stroke-width="2"/>
+<line x1="507.32136222154645" y1="256" x2="507.32136222154645" y2="268" stroke="#6e7781" stroke-width="2"/>
+<circle cx="444.5333333333333" cy="262" r="5" fill="#6e7781"/>
+<text x="517.3213622215465" y="266" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="11" font-weight="600" fill="#6e7781">+0</text>
+</svg>
